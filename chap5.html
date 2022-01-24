@@ -1,0 +1,3280 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>2018実践II</title>
+<link rel="stylesheet" type="text/css" href="./files/manual.css">
+<script language="javascript" src="./files/css.js"></script>
+	
+	<script type="text/javascript" src="./js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushPhp.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushCss.js"></script>
+	<link type="text/css" rel="stylesheet" href="./syntaxhighlighter/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>  
+</head>
+
+<body>
+<h1>PHPとMySQLによるWebアプリケーションの基礎</h1>
+<form>
+  <div class="ar"> 
+		<input type="button" value="標準" onClick="css_print()">
+		<input type="button" value="拡大" onClick="css_presen()">
+  </div>
+</form>
+
+<h2>Chapter 5　PHPとMySQLの連携</h2>
+<h3>5.1　phpMyAdminの操作</h3>
+<p>MySQL 4.1以上のバージョンでは，データベース名，テーブル名，フィールド名等データベースの構造を記述する文字に日本語文字コードは使わないことを強く勧めます．
+ 
+  <p class="caution-print">（注）MySQL 4.1以上では，これらのデータベースの構造の記述にはUNICODEのutf-8コードのみが使われるようになりました．2006年9月時点では，例えばシフトJISコードで記述したフィールド名等はutf-8コードへ変換はされません．入力を拒否されます．詳細は， http://www.mysql.gr.jp/frame/modules/bwiki/index.php?cmd=read&amp;page=FAQ#content_1_40を参照してください．</p>
+
+
+<h4>5.1.1　データベースの作成</h4>
+<p>phpMyAdminを使ってデータベースの作成する方法を確認します。MySQLサーバに接続後、画面上部にある「データベース」メニューをクリックして下さい。</p>
+ 
+<img src="./files/030401.gif" width="504" height="352">
+
+<p>データベースの管理画面が表示されます</p>
+
+<img src="./files/050102.gif" width="504" height="352">
+
+<p>画面には作成済みのデータベースの一覧が表示されています。
+現在は7つのデータベースが作成済みです。</p>
+
+<img src="./files/050103.gif" width="404" height="252">
+
+<p>では新規にデータベースを作成します。「新規データベースを作成する」と書かれた下にあるテキストボックスに作成するデータベースの名前を入力して下さい。</p>
+
+<img src="./files/050104.gif" width="404" height="252">
+
+<p>今回はデータベース名として'personal'と入力しました。その右側には文字セットと照合順序を選択できますが、デフォルトで表示されている「照合順序」のままにした場合はデフォルトの文字セットと照合順序が使われます。では「作成」ボタンを押して下さい。</p>
+
+<img src="./files/050105.gif" width="304" height="252">
+
+<p>「personal」データベースが作成されました。データベースのリストにも追加されてデータベースの数が8個になっているのが確認できます。
+
+なお現在のデフォルトの照合順序が何に設定されているかはphpMyAdminのホーム画面で表示されています。</p>
+
+<img src="./files/050106.gif" width="504" height="352">
+
+<h4>5.1.2 　データベースの削除</h4>
+<p>作成済みのデータベースを削除する方法を確認します。phpMyAdminの画面で画面上部の「データベース」メニューをクリックして下さい。データベースの管理画面が表示されます。</p>
+ 
+  <img src="./files/050201.gif" width="504" height="352">
+
+<p>表示されているデータベースリストの中で削除したいデータベースにチェックを付けて下さい。</p>
+ 
+  <img src="./files/050202.gif" width="304" height="352">
+
+<p>データベースリストの右下あたりにある「削除」と書かれた箇所をクリックして下さい。</p>
+
+<img src="./files/050203.gif" width="404" height="352">
+
+<p>確認画面が表示されます。</p>
+
+<img src="./files/050204.gif" width="504" height="352">
+
+<p>削除してよろしければ「はい」ボタンを押して下さい。</p>
+
+<img src="./files/050205.gif" width="504" height="352">
+
+<p>データベースの削除が実行されました。また実際に実行されたSQL文も表示されています。</p>
+
+<img src="./files/050206.gif" width="404" height="252">
+
+<p>データベースリストからも指定したデータベースが削除されていることが確認できます。</p>
+
+<h4>5.1.3  テーブル作成</h4>
+<p>phpMyAdminを使ってテーブルの作成する方法を確認します。まずはテーブルを作成する対象となるデータベースを選択します。MySQLサーバに接続後、画面上部にある「データベース」メニューをクリックして下さい。</p>
+
+<img src="./files/050301.gif" width="504" height="352">
+ 
+ <p>データベースの管理画面が表示されます。</p>
+
+<img src="./files/050302.gif" width="504" height="352">
+
+<p>データベースリストの中からテーブルを作成するデータベースの名前をクリックして下さい。今回は"personal"データベースにテーブルを作成します。</p>
+
+<img src="./files/050303.gif" width="300" height="252">
+
+<p>クリックしたデータベースに移動しテーブルの管理画面が表示されます。</p>
+ 
+<img src="./files/050304.gif" width="504" height="352">
+
+<p>現在はデータベースに1つもテーブルが作成されていない状態です。それではテーブルを作成します。作成するテーブル名と、テーブル内に定義するカラム数を入力して下さい。今回はテーブル名を"friend"、カラム数は2とします。</p>
+
+<img src="./files/050305.gif" width="500" height="252">
+
+<p>入力が終わりましたら右に表示されている「実行する」ボタンを押して下さい。次のような画面が表示されます。</p>
+ 
+ <img src="./files/050306.gif" width="500" height="352">
+ <p></p>
+ 
+ <img src="./files/050307.gif" width="500" height="352">
+
+<p>作成するテーブルの詳細設定画面となります。カラム毎に「カラム」「種別」「長さ/値」「デフォルト値」「照合順序」「属性」「ヌル(NULL)」「インデックス」「AUTO_INCREMENT」「コメント」について必要な箇所を設定していきます。</p>
+
+<img src="./files/050308.gif" width="400" height="252">
+
+<p>今回は次のように入力しました。</p>
+
+<img src="./files/050309.gif" width="400" height="252">
+
+<p>各カラムについて入力が終わりましたら画面下部にある「保存する」ボタンを押して下さい。</p>
+
+<img src="./files/0503010.gif" width="500" height="252">
+
+<p>テーブルが作成され、データベースのテーブル管理画面が再度表示されます。</p>
+
+<img src="./files/0503011.gif" width="500" height="252">
+
+<p>作成済みのテーブルは画面上部のテーブルリストに表示されます。</p>
+
+<h4>5.1.4　テーブルの削除</h4>
+
+<p>作成済みのデータベースからテーブルを削除する方法を確認します。phpMyAdminの画面で画面上部の「データベース」メニューをクリックして下さい。データベースの管理画面が表示されます。</p>
+ 
+ <img src="./files/050401.gif" width="500" height="252">
+
+<p>表示されているデータベースリストから対象となるテーブルが含まれているデータベース名をクリックして下さい。 </p>
+
+<img src="./files/050402.gif" width="400" height="252">
+
+<p>テーブルの管理画面が表示されます。</p>
+ 
+  <img src="./files/050403.gif" width="500" height="252">
+
+<p>表示されているテーブルリストの中から削除したいテーブルの「削除」と書かれたリンクをクリックして下さい。</p>
+
+<img src="./files/050404.gif" width="500" height="252">
+
+<p>確認のダイアログが表示されます。削除してよければ「OK」ボタンを押して下さい。(実行されるSQL文として DROP TABLE customer )が表示されています。</p>
+
+<img src="./files/050405.gif" width="500" height="252">
+
+<p>テーブルが削除されました。</p>
+
+<img src="./files/050406.gif" width="500" height="252">
+
+<p>テーブルリストからも対象のテーブルが削除されていることが確認できます。</p>
+
+<h4>5.1.5　テーブルへのデータ追加</h4>
+
+<p>phpMyAdminを使ってテーブルに新しいデータを追加する方法を確認します。MySQLサーバに接続後、画面上部にある「データベース」メニューをクリックして下さい。</p>
+
+<img src="./files/050501.gif" width="500" height="252">
+
+<p>データベース管理画面が表示されます。表示されたデータベースリストの中から対象となるテーブルが含まれているデータベース名をクリックして下さい。</p>
+
+<img src="./files/050502.gif" width="400" height="252">
+
+<p>テーブル管理画面が表示されます。</p>
+
+<img src="./files/050503.gif" width="500" height="252">
+
+<p>テーブルにデータを追加するには、表示されてテーブルリストの中から対象となるテーブルの中に表示されている「挿入」と書かれたリンクをクリックして下さい。</p>
+
+<img src="./files/050504.gif" width="400" height="52">
+
+<p>データの追加画面が表示されます。</p>
+
+<img src="./files/050505.gif" width="500" height="252">
+
+<h4>5.1.6　データの追加方法</h4>
+<p>デフォルトでは2つのデータを同時に追加できるようになっています。そしてカラム毎に値を入力できるようになっています。もし1つだけデータを追加したい場合には最初のブロックで各カラムに値を入力した後で「実行する」ボタンを押して下さい。「実行する」ボタンはどこのボタンでも構いません。</p>
+
+<img src="./files/050506.gif" width="500" height="252">
+
+<p>この時、「無視」の左にあるチェックボックスにチェックが入っている必要があります。もしチェックが入っていない場合、2つ目のデータとして値がそれぞれ空のデータを同時に追加しようとするため、次のようなエラーが表示されます。(全てのカラムが空のデータを許容する場合はエラーとはなりません)。</p>
+
+<img src="./files/050507.gif" width="500" height="352">
+
+<p>よって1つだけデータを追加したい場合は「無視」の左にあるチェックボックスにチェックをしておいて下さい。その上で「実行する」ボタンを押すと次のようにデータがテーブルに追加されます</p>
+
+<img src="./files/050508.gif" width="500" height="352">
+
+<p>この時実行されているSQL文も表示されています。
+
+INSERT文によって"personal"データベースの"friend"テーブルにデータが1つ追加されています。
+
+2つのデータを追加したい場合は最初のブロックと次のブロックでそれぞれ各カラムに値を入力し、その後で「実行する」ボタンを押して下さい。</p>
+
+<img src="./files/050509.gif" width="500" height="252">
+
+<p>今度は2つのデータを同時に追加しますので「無視」の左側にあるチェックボックスはチェックを外しておく必要があります(2番目のエリアに入力を行なうと、通常は自動的にチェックが外れます)。
+
+「実行する」ボタンを押すと今度は2つのデータがテーブルに追加されます。</p>
+
+<img src="./files/050510.gif" width="500" height="352">
+
+<p>この時実行されているSQL文も表示されています。
+
+INSERT文によって"personal"データベースの"friend"テーブルにデータが2つ追加されています。</p>
+
+
+
+<h4>5.1.7　同時に追加するデータの数を設定</h4>
+<p>デフォルトでは2つのデータを同時に追加できるようになっていますが最小1、最大40まで一度に追加することができます。データの追加画面で画面一番下をご覧下さい。</p>
+ 
+<img src="./files/050511.gif" width="500" height="352">
+
+<p>現在は"2"になっています。ドロップダウンメニューをクリックして同時に追加するデータの数を選択して下さい。</p>
+ 
+  <img src="./files/050512.gif" width="300" height="152">
+
+<p>"5"を選んだ場合は一度に5つのデータが追加できるようになります。</p>
+
+ <img src="./files/050513.gif" width="500" height="352">
+
+<p>"1"を選んだ場合は1つのデータの入力画面がしか表示されなくなります。</p>
+
+ <img src="./files/050514.gif" width="500" height="352">
+
+<p>※ ただしこの設定はデータを登録するとリセットされてしまいます。恒久的な変更を行なうには「設定」で行なう必要があります。</p>
+
+<h4>5.1.8　データを連続して追加</h4>
+<p>デフォルトではデータを入力し「実行する」ボタンを押すとテーブル管理画面に戻ります。この挙動を変更し「実行する」ボタンを押すとデータを追加した後で改めてデータ入力画面を表示させることができます。連続してデータを入力したい場合などは変更しておくと便利です。
+
+挙動を変更する場合はデータ入力画面の下記の箇所にあるドロップダウンメニューをクリックして下さい。</p>
+
+<img src="./files/050515.gif" width="500" height="352">
+
+<p>デフォルトでは「前のページに戻る」になっていますので「新しいレコードを追加する」を選択して下さい。</p>
+
+<img src="./files/050516.gif" width="300" height="102">
+
+<p>では実際に試してみます。「新しいレコードを追加する」になっている状態でデータを1つ入力し「実行する」ボタンを押して下さい。</p>
+
+<img src="./files/050517.gif" width="500" height="352">
+
+<p>データが追加された上で、改めてデータの追加画面が表示されていることが分かります.</p>
+
+<img src="./files/050518.gif" width="500" height="352">
+
+<p>連続してデータを追加されたい場合に都度テーブル管理画面に戻らなくなりますので設定変更すると便利です。</p>
+
+<h4>5.1.9　テーブルのデータの削除</h4>
+
+<p>phpMyAdminを使ってテーブルに格納されているデータを削除する方法を確認します。この操作はデータの管理画面にて行ないます。</p>
+
+<img src="./files/050601.gif" width="500" height="352">
+
+<p>対象となるテーブルには次のデータが格納されています。</p>
+
+<img src="./files/050602.gif" width="300" height="152">
+
+<p>削除を行なうにはデータリストの画面で削除したいデータの「削除」と書かれた箇所をクリックして下さい</p>
+
+<img src="./files/050603.gif" width="300" height="152">
+
+<p>確認ダイアログが表示されます。削除して宜しければ「OK」ボタンを押して下さい。(実際に実行されるSQL文も DELETE FROM `personal`.`friend` WHERE `friend`.`id`= 3 と表示されています)。</p>
+
+<img src="./files/050604.gif" width="300" height="152">
+
+<p>データが削除されました。</p>
+
+<img src="./files/050605.gif" width="500" height="352">
+
+<p>表示されたデータリストを見ると対象となったデータが削除されていることが確認できます。</p>
+
+
+<h3>5.2　MySQLによるWebアプリケーションの基礎</h3>
+<p>MySQLによるWebアプリケーションを構築する前提として，以下OSとしてWindows Vista，WWWシステムとしてApache2.0，サーバサイドのスクリプト言語としてPHP5を使用します．ubuntuの場合は若干ことなります．</p>
+
+<h4>5.2.1　Webアプリケーション用ユーザの作成</h4>
+<h5>ユーザ「webapl」の作成</h5>
+<p>WebアプリケーションプログラムからMySQLにアクセスできる権限を有するユーザを作成します．ここでは「webapl」とします．</p>
+<p>（１）コマンドプロンプトからユーザ「root」でmysqlを起動します．</p>
+ 
+      <pre class="brush:php;">
+C:\Documents and Settings\yamada&gt;mysql -u root -p
+Enter password: ********
+Welcome to the MySQL monitor. Commands end with ; or \g.
+Your MySQL connection id is 2 to server version: 5.0.24-community-nt
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql&gt;
+</pre>
+
+<p>（２） ユーザの作成はGRANT文で行います． </p> 
+      <p class="command-print">GRANT　権限タイプ<br>
+        　　ON　　データベース名.テーブル名<br>
+        　　TO　　ユーザ名　[IDENTIFIED　BY　'パスワード']</p>
+    
+<p>localhostサーバに登録されているwebaplユーザ（webapl@localhost）に，すべてのデータベースのすべてのテーブルに対して（*.*)，すべての権限を与えるGRANT文は以下のようになります．パスワードは'passs1234'としています．</p> 
+      <pre class="brush:php;">
+mysql&gt; GRANT ALL PRIVILEGES ON *.*
+-&gt; TO webapl@localhost IDENTIFIED BY 'pass1234';
+Query OK, 0 rows affected (0.20 sec)
+
+mysql&gt; FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.09 sec)
+
+mysql&gt;
+</pre>
+
+    
+<p>なお，GRANT文を実行した後には，必ず「FLUSH PRIVILEGES」文を実行します．</p>
+<p>（３）webaplユーザが有効か確認します．一度，mysqlを終了し，ユーザwebaplでmysqlを起動します．パスワードが設定されているので，「竏恥」オプションを付加します．mysqlが起動するとパスワードを聞いてきますので，パスワードを入力します．</p>
+ 
+
+      <pre class="brush:php;">
+C:\Documents and Settings\yamada&gt;mysql -u webapl -p
+Enter password: ********
+Welcome to the MySQL monitor. Commands end with ; or \g.
+Your MySQL connection id is 5 to server version: 5.0.24-community-nt
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql&gt; SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| db_hanbai_kanri    |
+| db_hanbai_kanri2   |
+| mysql              |
+| test               |
++--------------------+
+5 rows in set (0.19 sec)
+
+mysql&gt; USE db_hanbai_kanri;
+Database changed
+
+mysql&gt; SET NAMES sjis;
+Query OK, 0 rows affected (0.06 sec)
+
+mysql&gt; SELECT * FROM tbl_shouhin_hyou;
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1001         | 地方御前    | 1000  |
+| 1002         | 山の幸御膳  | 1200  |
+| 1003         | 海の幸御膳  | 1400  |
++--------------+-------------+-------+
+3 rows in set (0.02 sec)
+
+mysql&gt;
+</pre>
+
+
+<p>ユーザwebaplで「db_販売管理」データベースにアクセスできることが確認できました．なお，windowsの場合は，文字化けしないように，mysqlを起動したら早い段階に「SET NAMES sjis;」を実行する．</p>
+    
+<h4>5.2.2　PHPファイルの漢字コード</h4>
+<p>以上 の環境では，PHPファイルに漢字を使う場合は 「UTF8コード」 である必要があります．一般にWindows環境では，エディターは漢字コードとしてSHIFT-JIS（SJIS)コードを使用しています．</p><p>（１）　したがって，たとえばエディターソフトの「サクラエディタ」を使う場合は，作成したPHPファイル等を保存する場合は，以下のように「UTF8コード」に設定して保存する必要があります．「名前をつけて保存」ダイアログボックスの下の「エンコードの種類」で「Unicode(UTF-8）」を選択し，「保存」ボタンをクリックします．</p>
+ 
+<img src="./files/040201.png" width="500">
+
+<p>（２）逆に，「UTF8コード」で記述されたPHPファイル等をエディターで読み取る場合も，漢字コードの種類を「Unicode(UTF-8)」に設定します．「ファイルを開く」ダイアログボックスの下の「エンコードの種類」で「Unicode(UTF-8)」を選択し，「開く」ボタンをクリックします．なお，「自動判定」でいい場合もあります．</p> 
+<img src="./files/040202.png" width="500">
+
+
+<h4>5.2.3　データベースサーバへの接続</h4>
+<p>PHPでMySQLで作成したデータベースにアクセスするには，まずデータベースサーバ（ホスト）に接続する必要があります．データベースサーバに接続するには，mysqliクラスをオブジェクト化してから使います．</p>
+ 
+      <p class="command-print"> $mysqli = new mysqli(ホスト名,ユーザ名,パスワード,データベース名);</p>
+
+<p>ここでは，ホスト名は「localhost」，ユーザ名は「webapl」，パスワードは「pass123」とします．PHPのソースコードの例を以下に示します．</p>
+ 
+      <pre class="brush:php;">
+$db_host = "localhost";
+$db_user = "username";
+$db_passwd = "pass";
+$db_name = "myblog";
+
+$mysqli = new mysqli($db_host,$db_user,$db_passwd,$db_name);
+</pre>
+
+<p>戻り値$mysqliには，データベースへの接続IDが代入されます．この後は，この接続IDを参照してデータベースにアクセスします．</p>
+
+<h4>5.2.4　データベースの選択</h4>
+<!--
+<p>次に，接続したデータベースサーバの中から利用するデータベースを選択します．データベースを選択するには，mysql_select_db()関数を使います．</p>
+ 
+      <p class="command-print">mysql_select_db(データベース名，接続ID)</p>
+<p>ここでは，データベースとして「db_hanbai_kanri」を選択することとします．</p> 
+      <pre class="brush:php;">
+$db_name = "dbname";
+mysql_select_db($db_name,$db);
+</pre>
+
+<p>選択に成功すれば，戻り値はTRUE，失敗すればFALSEとなります．ここでは，戻り値を使わないステートメントとしています．</p>
+-->
+
+<h4>5.2.5　SQL文の実行</h4>
+<p>選択したデータベースに対してSQL文を実行するには，query（）関数を実行します．</p>
+ 
+      <p class="command-print">結果ID　=　$mysqli->query（SQL文）;</p>
+<p>データベースのに接続した直後に，文字化けを防ぐために，以下のSQL文を必ず実行します．</p> 
+
+<pre class="brush:php;">
+$str_sql = "set names utf8;";
+$rs = $mysqli->query($str_sql);
+</pre>
+
+<p>まず，ここでは，tbl_商品表テーブルからすべてのフィールドとすべてのレコードを表示するSQL文を実行します．</p>
+ 
+<pre class="brush:php;">
+$str_sql = "select * from tbl_shouhin_hyou;";
+$rs = $mysqli->query($str_sql);
+</pre>
+
+<p>戻り値には，SQL文の処理結果が格納されます．これを「結果ID」あるいは「結果セット」と呼びます．</p>
+    
+<p>テーブルtbl_shouhin_hyouは下の「tbl_shouhin_hyou.sql」から作成しましょう。</p>
+<pre class="brush:php;">
+CREATE TABLE `tbl_shouhin_hyou` (
+  `shouhin_code` varchar(4) COLLATE utf8_unicode_ci NOT NULL,
+  `shouhin_mei` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `tanka` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `tbl_shouhin_hyou`
+--
+
+INSERT INTO `tbl_shouhin_hyou` (`shouhin_code`, `shouhin_mei`, `tanka`) VALUES
+('1002', '山の幸御前', 1200),
+('1003', '海の幸御前', 1400),
+('1004', '松竹梅御前', 1800),
+('2001', 'ランチ', 800),
+('1001', '地方御膳', 900);
+
+ALTER TABLE `tbl_shouhin_hyou`
+  ADD PRIMARY KEY (`shouhin_code`);
+COMMIT;
+</pre>  
+    
+<h4>5.2.6　レコードの読み取り</h4>
+<p>結果セットには現在のレコードを示すポインタがあります．最初は結果セットの第１レコードを示しています．現在のレコードのデータをフィールド名をキー値とする連想配列で読み出すには，fetch_assoc（）関数を使います．while文と組み合わせることにより，結果セット内のレコードを順次読み出すことができます．</p>
+ 
+      <pre class="brush:php;">
+while($rs->fetch_assoc())
+{
+	//各レコードごとの処理
+}
+</pre>
+
+<p>各レコードごとに，フィールド名とその値を表示するソースコードの例を以下に示します．</p>
+
+<pre class="brush:php;">
+while($arr_item = $rs->fetch_assoc())
+{
+
+  foreach($arr_item as $key =&gt; $value)
+  {
+    print "[{$key}] = {$value}&lt;br&gt;\n";
+  }
+  print "&lt;br&gt;\n";
+
+}
+</pre>
+
+<h4>5.2.7　データベースサーバへの接続の切断</h4>
+
+<p>データベースに対する処理がすべて終わったら，データベースサーバへの接続を切断します．</p>
+ 
+      <p class="command-print">$mysqli->close（）</p>
+      <pre class="brush:php;">
+$mysqli->close();
+</pre>
+
+
+<h4>5.2.8　テーブルの表示例</h4>
+<p>データベースサーバに接続し，一つのテーブル全体を参照し，ブラウザに表示するもっとも簡単なPHPスクリプト「connect.php」を以下に示します．内容は，上記の一連の処理を一つの流れとして，まとめて記述したものです．</p> 
+「connect.php」
+      <pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;connect.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ 
+ print "データベースへの接続テスト<br>";
+ 
+ //データベースサーバ名の設定
+ $db_host  = "localhost";
+ 
+ //ユーザ名の設定
+ $db_user  = "root";
+ 
+ //パスワードの設定
+ $db_passwd = "root";
+    
+ //データベース名の設定
+ $db_name = "my_blog";
+ 
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+    
+ //テーブル名の設定
+ $tb_name = "tbl_shouhin_hyou";
+ 
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ mysqli_set_charset($mysqli,"utf8");
+ 
+ //SQL文の設定
+ $str_sql = "select * from " . $tb_name;
+ 
+ //SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ //結果セット内の各レコードを順次参照し，連想配列に代入
+ while($arr_item = $rs->fetch_assoc())
+ {
+ 
+  //レコード内の各フィールド名と値を順次参照
+  foreach($arr_item as $key => $value)
+  {
+   //フィールド名と値を表示
+   print "[{$key}] = {$value}<br>\n";
+  }
+  print "<br>\n";
+ }
+ 
+ //データベースサーバへの接続の切断
+ $mysqli->close();
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>この「connect.php」ファイルをユーザ「test」のホームディレクトリである「C:\MAMP\htdocs」のフォルダに保存します．ブラウザを開き，URLに「http://localhost/connect.php」と記入しアクセスします．以下のようにデータベース「db_販売管理」の中のテーブル「tbl_商品表」のすべてのレコードのすべてのフィールド名と値が表示されます．</p>
+ 
+<img src="./files/040203.png" width="400">
+
+<p>
+次のように，Connectionsディレクトリをconnet.phpが存在するディレクトリに作成します．
+そして，Connectionsディレクトリ内にlocalhost.phpを作成し，その中にデータベース関連の
+設定を全て記述しておけば，次回から，ユーザ名，パスワード，データベース名などの設定情報を
+全て自分の環境に書き直す必要がなくなるため，手間を減らすことができます．
+</p>
+
+localhost.php
+<pre class="brush:php;">
+&lt;?php
+
+ //データベースサーバ名の設定
+ $db_host  = "localhost";
+
+ //ユーザ名の設定
+ $db_user  = "username";
+
+ //パスワードの設定
+ $db_passwd = "pass";
+
+ //データベース名の設定
+ $db_name = "dbname"; 
+
+ //テーブル名の設定
+ $tb_name = "tbl_shouhin_hyou";
+ 
+?&gt;
+</pre>
+connectr.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;connectr.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ 
+  require_once('./Connections/localhost.php');
+ 
+ print "データベースへの接続テスト<br>";
+ 
+ //データベースサーバへの接続
+$mysqli = new mysqli($dbhost, $db_user, $db_passwd, $db_name);
+ 
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql);
+ 
+ //SQL文の設定
+ $str_sql = "select * from " . $tb_name;
+ 
+ //SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ //結果セット内の各レコードを順次参照し，連想配列に代入
+ while($arr_item = $rs->fetch_assoc())
+ {
+ 
+  //レコード内の各フィールド名と値を順次参照
+  foreach($arr_item as $key => $value)
+  {
+   //フィールド名と値を表示
+   print "[{$key}] = {$value}<br>\n";
+  }
+  print "<br>\n";
+ }
+ 
+ //データベースサーバへの接続の切断
+ $mysqli->close();
+ 
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>なお，PHPには外部ファイルを使用するのに際して４つの関数がある。</p>
+
+<ul>
+<li>include(): 引数に指定した外部ファイルでエラーが発生した場合でも、呼び出し元の（つまりinclude()関数を記述したファイル）後続処理は続行される。</li>
+
+<li>require(): 外部ファイルでエラーが発生しても、呼び出し元の後続処理は停止する。</li>
+
+<li>include_once(): 呼び出し元のスクリプトが一回読み込まれていれば、その後、何回呼び出し元のスクリプトが実行されてもinclude_once()関数の引数に指定されたスクリプトは一回しか実行されない。つまり、関数の再定義や変数の再計算は行われない。include()と同様で、引数のスクリプトでエラーが発生しても呼び出し元の後続処理は続行される。</li>
+
+<li>require_once(): 処理はinclude_onceと同様で、require_once()関数の引数に指定したスクリプトでエラーが発生した場合は後続処理を停止する。</li>
+</ul>
+
+<p>４つの関数の引数はファイルパスをシングルクォーテーションでくくって指定するが、下記のようにパスには絶対パスと相対パスの両方が使える。また、ファイルにはphpファイル以外にもhtmlファイルや画像ファイルも指定できる。</p>
+
+<h3>5.3　データベースやテーブルのメタデータの表示</h3>
+<h4>5.3.1　データベースの一覧表示</h4>
+<p>接続したデータベースサーバ内にある利用可能なデータベースの一覧表示を行うには，まずmysql_list_dbs()関数を呼びます．</p>
+ 
+      <p class="command-print">結果ID =　mysql_list_dbs(接続ID)</p>
+    <p>※この関数は PHP 4.3.0 で非推奨になり、PHP 7.0.0 で MySQL 拡張モジュール 全体とあわせて削除されました</p>
+<p>結果IDに対応する結果セットには，１レコードごとにデータベースに関する情報が格納されています．そのレコードからmysql_db_name()関数でデータベース名を取得します．</p> 
+      <p class="command-print">データベース名　=　mysql_db_name(結果ID,レコード番号)</p>
+        <p>※この関数は PHP 4.3.0 で非推奨になり、PHP 7.0.0 で MySQL 拡張モジュール 全体とあわせて削除されました</p>
+<p>なお，レコード番号は0から始まります．サンプルファイル「show_databases.php」を以下に示します．データベースの一覧表示のためのユーザ定義関数show_databases()を定義し，利用しています．</p>
+ 
+      <pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;show_databases.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+
+$mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+
+if (mysqli_connect_errno()){
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+ 
+ // データベースの一覧表示の関数呼び出し（ユーザ定義関数）
+ show_databases($mysqli);
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+ 
+// ----------------------------------------------
+// データベースの一覧表示の関数の定義
+function show_databases($mysqli)
+{
+ // データベースリストの取得]
+ $rs = $mysqli->query("show databases");
+ 
+ // 結果セット内のレコード数の取得
+ $num_rows = $rs->num_rows;
+ 
+ print "<table border=1 cellpadding=0 cellspacing=0>\n";
+ print "<tr>\n";
+ print "<td align=center>Database</td>\n";
+ print "</tr>\n";
+ 
+ // 結果セット内のレコードを順次参照
+ while ($row_rs = $rs->fetch_assoc())
+ {
+  // データベース名の取得
+  $db_name = $row_rs['Database'];
+ 
+  // データベース名の表示
+  print "<tr>\n";
+  print "<td>{$db_name}</td>\n";
+  print "</tr>\n";
+ }
+ 
+ print "</table>\n";
+ 
+ // 結果セットの解放
+ mysqli_free_result($rs);
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+<p>結果はたとえば，以下のように表示されます．</p>
+ 
+<img src="./files/040301.png" width="450">
+
+
+<h4>5.3.2　テーブルの一覧表示</h4>
+<p>データベース内のテーブルの一覧表示を行うには，mysql_list_tables()関数を使います．</p> 
+      <p class="command-print">結果ID =　mysql_list_tables(データベース名,接続ID)</p>
+        <p>※この関数は PHP 4.3.0 で非推奨になり、PHP 7.0.0 で MySQL 拡張モジュール 全体とあわせて削除されました</p>
+<p>結果IDに対応する結果セットには，１レコードごとにテーブルに関する情報が格納されています．そのレコードからmysql_table_name()関数でテーブル名を取得します．なお，レコード番号は0から始まります．</p> 
+      <p class="command-print">テーブル名　=　mysql_table_name(結果ID,レコード番号)</p>
+<p>サンプルファイル「show_tables.php」を以下に示します．テーブルの一覧表示のためのユーザ定義関数show_tables()を定義し，利用しています．</p>
+ 
+      <pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;show_tables.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+$mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+
+if (mysqli_connect_errno()){
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+    
+ // テーブルの一覧表示の関数呼び出し（ユーザ定義関数）
+ show_tables($mysqli,$db_name);
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+ 
+// ----------------------------------------------
+// テーブルの一覧表示の関数の定義
+function show_tables($mysqli,$db_name)
+{
+ // 指定されたデータベース内のテーブルリストの取得
+ $rs = $mysqli->query("show tables");
+ 
+ // 結果セット内のレコード数の取得
+ $num_rows = $rs->num_rows;
+ 
+ print "<table border=1 cellpadding=0 cellspacing=0>\n";
+ print "<tr>\n";
+ print "<td align=center>Tables in {$db_name}</td>\n";
+ print "</tr>\n";
+ 
+ // テーブルがある場合
+ if($num_rows > 0)
+ {
+      // 結果セット内のレコードを順次参照
+     while ($row_rs = $rs->fetch_assoc()){  
+       // テーブル名の表示
+       print "<tr>\n";
+       print "<td>".$row_rs['Tables_in_'. $db_name . '']."</td>\n";
+       print "</tr>\n";
+     }
+ }
+ // テーブルが無い場合
+ else
+ {
+  print "<tr>\n";
+  print "<td>テーブルはありません</td>\n";
+  print "</tr>\n";
+ }
+ print "</table>\n";
+ 
+ // 結果セットの解放
+ mysqli_free_result($rs);
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果はたとえば，以下のように表示されます． </p>
+ 
+<img src="./files/040302.png" width="450">
+
+
+<h4>5.3.3　フィールド属性の一覧表示</h4>
+<p>テーブル内のフィールド属性の一覧表示を行うには，mysql_list_fields()関数を使います．</p> 
+      <p class="command-print">結果ID =　mysql_list_fields(データベース名,テーブル名,接続ID)</p>
+        <p>※この関数は PHP 4.3.0 で非推奨になり、PHP 7.0.0 で MySQL 拡張モジュール 全体とあわせて削除されました</p>
+<p>結果IDに対応する結果セットには，１レコードごとにフィールドに関する情報が格納されています．そのレコードからmysql_field_name()関数でテーブル名を取得し，mysql_fieldtype()関数でデータ型を取得し，mysql_field_len()関数でフィールドの長さを取得し，mysql_field_flag()関数でフラグを取得します．なお，レコード番号は0から始まります．</p> 
+      <p class="command-print">フィールド名　　　　=　mysql_field_name(結果ID,レコード番号)<br>
+        データ型　　　　　　=　mysql_field_type(結果ID,レコード番号)<br>
+        フィールドの長さ　　=　mysql_field_len(結果ID,レコード番号)<br>
+        フィールドのフラグ　=　mysql_field_flags(結果ID,レコード番号) </p>
+        <p>※この関数は PHP 4.3.0 で非推奨になり、PHP 7.0.0 で MySQL 拡張モジュール 全体とあわせて削除されました</p>
+
+<p>サンプルファイル「show_fields.php」を以下に示します．フィールド属性の一覧表示のためのユーザ定義関数show_fields()を定義し，利用しています．</p> 
+      <pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;show_fields.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+  require_once('./Connections/localhost.php');
+ 
+$mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+    
+if (mysqli_connect_errno()){
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+ // テーブルの一覧表示の関数呼び出し（ユーザ定義関数）
+ show_fields($db_name,$tb_name, $mysqli);
+ 
+ // データベースサーバの切断
+ $mysqli->close();  
+ 
+// ----------------------------------------------
+// フィールド属性の一覧表示の関数の定義
+function show_fields($db_name,$tbl_name,$mysqli)
+{
+ // 指定されたデータベース，テーブル内のフィールドリストの取得
+ $sql_query = "Show columns from {$tbl_name}";
+ $rs = $mysqli->query($sql_query);
+ 
+ // 結果セット内のレコード数の取得
+ $num_rows = $rs->num_rows;
+ 
+ print "テーブル「{$tbl_name}」内のフィールド属性一覧\n";
+ print "<table border=1 cellpadding=0 cellspacing=0>\n";
+ print "<tr>\n";
+ print "<td align=center>フィールド名</td>\n";
+ print "<td align=center>データ型(長さ)</td>\n";
+ print "<td align=center>フラグ</td>\n";
+ print "</tr>\n";
+ 
+ // フィールドがある場合
+ if($num_rows > 0)
+ {
+
+  // 結果セット内のレコードを順次参照
+      while ($row_rs = $rs->fetch_assoc())
+      {
+       // フィールド名の取得
+       $field_name = $row_rs['Field'];
+     
+       // データ型の取得
+       $field_type = $row_rs['Type'];
+     
+       // フィールドのフラグの取得
+       $field_flags = $row_rs['Extra'];
+     
+     
+       // フラグがヌルなら半角スペースとする
+       if($field_flags == '')
+       {
+        $field_flags=' ';
+       }
+     
+       // フィールド属性の表示
+       print "<tr>\n";
+       print "<td>{$field_name}</td>\n";
+       print "<td>{$field_type}</td>\n";
+       print "<td>{$field_flags}</td>\n";
+       print "</tr>\n";
+      }
+ }
+ 
+ // フィールドが無い場合
+ else
+ {
+  print "<tr>\n";
+  print "<td>フィールドはありません</td>\n";
+  print "</tr>\n";
+ }
+ print "</table>\n";
+ 
+ // 結果セットの解放
+ mysqli_free_result($rs);
+}
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果はたとえば，以下のように表示されます． </p>
+ 
+	<img src="./files/040303.png" width="450">
+
+
+<h3>5.4　データベースの作成</h3>
+<h4>5.4.1　メタデータ表示用のユーザ定義関数</h4>
+<p>以下，5.3で作成したMySQLデータベースのメタデータ表示用のユーザ定義関数をインクルードファイルcommon_mysql.php内に記述し，利用することとします．</p>
+
+「common_mysql.php」
+      <pre class="brush:php;">
+&lt;?php
+// インクルードファイル(common_mysql.php)
+// MySQL関連のユーザ定義関数
+// by T.YAMADA  2006-09-14
+
+// ----------------------------------------------
+// テーブルのフィールド名を配列に格納する関数の定義
+function arr_fields_name($rs,&$arr_fields_name)
+{
+// $rs        結果ID(R)
+// $arr_fields_name フィールド名を格納した添字配列(W)
+// 戻り値 = TRUE  テーブルにフィールド名がある場合
+//     = FALSE テーブルにフィールド名がない場合
+ 
+ // フィールド名を格納する配列の初期化
+ $arr_fields_name = array();
+ 
+ // 結果セットの最初のレコードのフィールド名と値を連想配列に取得
+ $arr_record = $rs->fetch_assoc();
+ 
+ // 結果セットのポインター（レコード位置）を最初に戻す
+ mysqli_data_seek($rs,0);
+ 
+ // フィールドがある場合
+ if(is_array($arr_record))
+ {
+  $arr_fields_name = array_keys($arr_record);
+  $result = TRUE;
+ }
+ 
+ // フィールドがない場合
+ else
+ {
+  $result = FALSE;
+ }
+ return $result;
+}
+
+// ----------------------------------------------
+// データベースの一覧表示の関数の定義
+function show_databases($mysqli)
+{
+ // データベースリストの取得]
+ $rs = $mysqli->query("show databases");
+ 
+ // 結果セット内のレコード数の取得
+ $num_rows = $rs->num_rows;
+ 
+ print "<table border=1 cellpadding=0 cellspacing=0>\n";
+ print "<tr>\n";
+ print "<td align=center>Database</td>\n";
+ print "</tr>\n";
+ 
+ // 結果セット内のレコードを順次参照
+ while ($row_rs = $rs->fetch_assoc())
+ {
+  // データベース名の取得
+  $db_name = $row_rs['Database'];
+ 
+  // データベース名の表示
+  print "<tr>\n";
+  print "<td>{$db_name}</td>\n";
+  print "</tr>\n";
+ }
+ 
+ print "</table>\n";
+ 
+ // 結果セットの解放
+ mysqli_free_result($rs);
+}
+
+// ----------------------------------------------
+// フィールド属性の一覧表示の関数の定義
+function show_fields($db_name,$tbl_name,$mysqli)
+{
+ // 指定されたデータベース，テーブル内のフィールドリストの取得
+ $sql_query = "Show columns from {$tbl_name}";
+ $rs = $mysqli->query($sql_query);
+ 
+ // 結果セット内のレコード数の取得
+ $num_rows = $rs->num_rows;
+ 
+ print "テーブル「{$tbl_name}」内のフィールド属性一覧\n";
+ print "<table border=1 cellpadding=0 cellspacing=0>\n";
+ print "<tr>\n";
+ print "<td align=center>フィールド名</td>\n";
+ print "<td align=center>データ型(長さ)</td>\n";
+ print "<td align=center>フラグ</td>\n";
+ print "</tr>\n";
+ 
+ // フィールドがある場合
+ if($num_rows > 0)
+ {
+
+  // 結果セット内のレコードを順次参照
+      while ($row_rs = $rs->fetch_assoc())
+      {
+       // フィールド名の取得
+       $field_name = $row_rs['Field'];
+     
+       // データ型の取得
+       $field_type = $row_rs['Type'];
+     
+       // フィールドのフラグの取得
+       $field_flags = $row_rs['Extra'];
+     
+     
+       // フラグがヌルなら半角スペースとする
+       if($field_flags == '')
+       {
+        $field_flags=' ';
+       }
+     
+       // フィールド属性の表示
+       print "<tr>\n";
+       print "<td>{$field_name}</td>\n";
+       print "<td>{$field_type}</td>\n";
+       print "<td>{$field_flags}</td>\n";
+       print "</tr>\n";
+      }
+ }
+ 
+ // フィールドが無い場合
+ else
+ {
+  print "<tr>\n";
+  print "<td>フィールドはありません</td>\n";
+  print "</tr>\n";
+ }
+ print "</table>\n";
+ 
+ // 結果セットの解放
+ mysqli_free_result($rs);
+}
+
+// -----------------------------------------------
+// テーブルの全データの一覧表示関数の定義
+function show_records($db_name,$tbl_name,$mysqli)
+{
+// $db_name     データベース名(R)
+// $tbl_name     テーブル名(R)
+// $mysqli       接続ID(R)
+// 戻り値 = TRUE  テーブルにフィールド名がある場合
+//      = FALSE テーブルにフィールド名がない場合
+ 
+ // SQL文の作成
+ $str_sql = "SELECT * FROM {$tbl_name}";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // フィールドがある場合
+ if(arr_fields_name($rs,$arr_fields_name))
+ {
+  // 表の表示の開始
+  print "<table border=1 celpadding=0 cellspacing=0>\n";
+ 
+  // 表のヘッダー部（フィールド名）の表示開始
+  print "<tr>\n";
+ 
+  // 配列の値を順次参照
+  foreach($arr_fields_name as $field_name)
+  {
+   // フィールド名の表示
+   print "<td align=center>{$field_name}</td>\n";
+  }
+  // 表のヘッダー部の表示終了
+  print "</tr>\n";
+ 
+  // 結果セットの各レコードを順次，連想記憶に格納する
+  while($arr_record = $rs->fetch_assoc())
+  {
+   // 行の表示の開始
+   print "<tr>\n";
+ 
+   foreach($arr_record as $field_name => $field_value)
+   {
+    // フィールド値をセル内に表示
+    print "<td>{$field_value}</td>\n" ;
+   }
+   // 行の表示の終わり
+   print "</tr>\n";
+  }
+  // 表の表示の終了
+  print "</table>\n";
+ 
+  $result = TRUE;
+ }
+ 
+ // フィールドがない場合
+ else
+ {
+  $result = FALSE;
+ }
+ // 結果セットの解放
+ mysqli_free_result();
+ 
+ return $result;
+}
+
+// -----------------------------------------------
+// 結果セットの全データの一覧表示関数の定義
+function show_rs($rs)
+{
+// $rs     結果セット(R)
+// 戻り値 = TRUE  結果セットにフィールド名がある場合
+//      = FALSE 結果セットにフィールド名がない場合
+ 
+ // フィールドがある場合
+ if(arr_fields_name($rs,$arr_fields_name))
+ {
+  // 表の表示の開始
+  print "<table border=1 celpadding=0 cellspacing=0>\n";
+ 
+  // 表のヘッダー部（フィールド名）の表示開始
+  print "<tr>\n";
+ 
+  // 配列の値を順次参照
+  foreach($arr_fields_name as $field_name)
+  {
+   // フィールド名の表示
+   print "<td align=center>{$field_name}</td>\n";
+  }
+  // 表のヘッダー部の表示終了
+  print "</tr>\n";
+ 
+  // 結果セットの各レコードを順次，連想記憶に格納する
+  while($arr_record = $rs->fetch_assoc())
+  {
+   // 行の表示の開始
+   print "<tr>\n";
+ 
+   foreach($arr_record as $field_name => $field_value)
+   {
+    // フィールド値をセル内に表示
+    print "<td>{$field_value}</td>\n" ;
+   }
+   // 行の表示の終わり
+   print "</tr>\n";
+  }
+  // 表の表示の終了
+  print "</table>\n";
+ 
+  $result = TRUE;
+ }
+ 
+ // フィールドがない場合
+ else
+ {
+  $result = FALSE;
+ }
+ return $result;
+}
+// ----------------------------------------------
+// テーブルの一覧表示の関数の定義
+function show_tables($mysqli,$db_name)
+{
+ // 指定されたデータベース内のテーブルリストの取得
+ $rs = $mysqli->query("show tables");
+ 
+ // 結果セット内のレコード数の取得
+ $num_rows = $rs->num_rows;
+ 
+ print "<table border=1 cellpadding=0 cellspacing=0>\n";
+ print "<tr>\n";
+ print "<td align=center>Tables in {$db_name}</td>\n";
+ print "</tr>\n";
+ 
+ // テーブルがある場合
+ if($num_rows > 0)
+ {
+      // 結果セット内のレコードを順次参照
+     while ($row_rs = $rs->fetch_assoc()){  
+       // テーブル名の表示
+       print "<tr>\n";
+       print "<td>".$row_rs['Tables_in_'. $db_name . '']."</td>\n";
+       print "</tr>\n";
+     }
+ }
+ // テーブルが無い場合
+ else
+ {
+  print "<tr>\n";
+  print "<td>テーブルはありません</td>\n";
+  print "</tr>\n";
+ }
+ print "</table>\n";
+ 
+ // 結果セットの解放
+ mysqli_free_result($rs);
+}
+
+
+// ----------------------------------------------
+// テーブルの存在チェック関数の定義
+function table_exists($db_name,$tbl_name,$mysqli)
+{
+ // テーブルリストの取得
+ $rs = $mysqli->query("show tables");
+ // 結果セットの1レコード分を添え字配列として取得する
+ while($arr_row = $rs->fetch_row())
+ {
+  // 添え字配列内にテーブル名が存在する場合
+  if(in_array($tbl_name,$arr_row))
+  {
+   return true;
+  }
+ }
+ return false;
+}
+
+
+?>
+
+</pre>
+
+<h4>5.4.2　データベースの作成</h4>
+<p>データベースの作成には，SQL文の「CREATE　DATABASE」文を使います．</p> 
+      <p class="command-print">CREATE DATABASE データベース名;</p>
+      <p class="caution-print">（注）mysql_create_db()関数はPHP5.0ではなくなりました．</p>
+<p>データベースの削除には，SQL文の「DROP　DATABASE」文を使います．</p> 
+      <p class="command-print">DROP DATABASE データベース名;</p>
+     
+      <p class="caution-print">（注）mysql_drop_db()関数はPHP5.0ではなくなりました．</p>
+<p>サンプルファイル「create_db.php」を以下に示します．冒頭でインクルードファイルcommon_mysql.phpを読み込んでいます．</p> 
+
+「create_db.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;create_db.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+  require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+$mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+
+if (mysqli_connect_errno()){
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+  
+ // テーブルの一覧表示の関数呼び出し（ユーザ定義関数）
+ show_tables($mysqli,$db_name);
+ 
+ // データベースの一覧表示
+ show_databases($mysqli);
+ print "<br>\n";
+ 
+ // データベースの作成
+ $db_name = 'db_test';
+ $str_sql = "CREATE DATABASE {$db_name};";
+ if($mysqli->query($str_sql))
+ {
+  print "データベース「{$db_name}」を作成しました．<br><br>\n";
+ }
+ else
+ {
+  exit('データベース作成失敗');
+ }
+ 
+ // データベースの一覧再表示
+ show_databases($mysqli);
+ 
+ // データベースの削除
+ $str_sql = "DROP DATABASE {$db_name};";
+ if($mysqli->query($str_sql))
+ {
+  print "データベース「{$db_name}」を削除しました．<br><br>\n";
+ }
+ else
+ {
+  exit('データベース削除失敗');
+ }
+
+ 
+ // データベースの一覧再々表示
+ show_databases($mysqli);
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<h3><img src="./files/040401.png" width="450"></h3>
+
+<h3>5.5　テーブルの作成</h3>
+<h4>5.5.1　テーブルの作成</h4>
+<p>テーブルを作成するには，SQL文の「CREATE　TABLE」文を実行します．</p> 
+      <p class="command-print">CREATE TABLE テーブル名<br>
+        (<br>
+        　フィールド名1　データ型1（長さ1）,<br>
+        　フィールド名2　データ型2（長さ2）,<br>
+        　　　：<br>
+        　PRIMARY KEY(フィールド名)<br>
+        );<br>
+      </p>
+<p>テーブルを削除するには，SQL文の「DROP　TABLE」文を実行します．</p> 
+      <p class="command-print">DROP　TABLE　テーブル名;</p>
+<p>以下にサンプルファイル「create_table.php」を示します．テーブルがデータベース内に存在するかチェックするユーザ定義関数table_exists()関数を定義して使用しています．</p> 
+
+「create_table.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;create_table.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+  require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+$mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+
+if (mysqli_connect_errno()){
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql);
+ 
+ // テーブルの一覧表示
+ show_tables($mysqli,$db_name);
+ print "<br>\n";
+ 
+ // テーブルが存在しない場合
+ $tbl_name = "tbl_test";
+ if(!table_exists($db_name,$tbl_name,$mysqli))
+ {
+ 
+  // テーブル作成用SQL文
+  $str_sql = "CREATE TABLE {$tbl_name}"
+      . "("
+      . "shouhin_code CHAR(4),"
+      . "shouhin_mei CHAR(16),"
+      . "tanaka    INTEGER,"
+      . "PRIMARY KEY(shouhin_code)"
+      . ");";
+  print '$str_sql= ' . "'{$str_sql}'<br><br>";
+ 
+  // SQL文の実行
+  $mysqli->query($str_sql);
+  print "テーブル「{$tbl_name}」を作成しました．<br><br>\n";
+ 
+  // テーブルの一覧表示
+  show_tables($mysqli,$db_name);
+  print "<br>\n";
+ 
+  // フィールド属性の一覧表示
+  show_fields($db_name,$tbl_name,$mysqli);
+  print "<br>\n";
+ }
+ 
+ // テーブルが存在する場合
+ else
+ {
+  print "テーブル「{$tbl_name}」は作成済みです．<br>\n";
+ }
+ 
+ // テーブルが存在する場合
+ if(table_exists($db_name,$tbl_name,$mysqli))
+ {
+  // テーブル削除用SQL文
+  $str_sql = "DROP TABLE {$tbl_name};";
+ 
+  // SQL文の実行
+  $mysqli->query($str_sql);
+  print "テーブル「{$tbl_name}」を削除しました．<br><br>\n";
+ 
+  // テーブルの一覧表示
+  show_tables($mysqli,$db_name);
+  print "<br>\n";
+ }
+ 
+ // テーブルが存在しない場合
+ else
+ {
+  print "テーブル「{$tbl_name}」はありません．<br>\n";
+ }
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+ 
+ ----------------------------------------------
+ テーブルの存在チェック関数の定義
+function table_exists($db_name,$tbl_name,$mysqli)
+{
+ // テーブルリストの取得
+ $rs = $mysqli->query("show tables");
+ // 結果セットの1レコード分を添え字配列として取得する
+ while($arr_row = $rs->fetch_row())
+ {
+  // 添え字配列内にテーブル名が存在する場合
+  if(in_array($tbl_name,$arr_row))
+  {
+   return true;
+  }
+ }
+ return false;
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/040402.png" width="450"></p>
+    <p class="caution-print">【注意】以後，テーブルの存在チェック関数「table_exists()」はインクルードファイル「common_mysql.php」内に追加して記述することとします．すなわち，このコードで記述した「table_exists()」を「common_mysql.php」に移植して下さい．</p>
+
+    
+<h3>5.6　レコードの参照</h3>
+<h4>5.6.1　テーブルの全データの取得</h4>
+<p>テーブルに格納されているレコードのデータを取得するにはSQL文の「SELECT」文を使います．レコードデータを取得することをレコードの読み取りあるいはレコードの参照ともいいます．テーブルのすべてのレコードのすべてのフィールドのデータを参照する場合は，以下のSELECT文を使います．「*」はワイルドカードといい，ここでは「すべてのフィールド」を意味します．</p> 
+      <p class="command-print">SELECT * FROM テーブル名;</p>
+<p>サンプルファイル「select.php」を以下に示します．</p> 
+
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;select.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql);
+ 
+ 
+ // 参照するテーブル
+ $tbl_name = "tbl_shouhin_hyou";
+ 
+ // SQL文の作成
+ $str_sql = "SELECT * FROM {$tbl_name}";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // 表の表示の開始
+ print "<table border=1 celpadding=0 cellspacing=0>\n";
+ 
+ // 結果セットの各レコードを順次，連想配列に格納する
+ while($arr_record = $rs->fetch_assoc())
+ {
+  // 行の表示の開始
+  print "<tr>\n";
+ 
+  // 連想配列のキー値をフィールド名に，
+  // 値をフィールド値として取り出す
+  foreach($arr_record as $field_name => $field_value)
+  {
+   // フィールド値をセル内に表示
+   print "<td>{$field_value}</td>\n" ;
+  }
+ 
+  // 行の表示の終わり
+  print "</tr>\n";
+ }
+ 
+ // 表の表示の終了
+ print "</table>\n";
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果の例を以下に示します．</p> 
+<p><img src="./files/040601.png" width="450"></p>
+
+<h4>5.6.2　レコードの参照結果の表形式での表示</h4>
+<p>レコードの参照結果を一般的な表形式で表示する方法について示します．テーブルタグ「&lt;table&gt;を使って，各レコードのフィールドデータを１行づつ表のセルに入れながら表示していきます．サンプルファイル「select02.php」を以下に示します．</p>
+
+「select02.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;select.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql);
+ 
+ 
+ // 参照するテーブル
+ $tbl_name = "tbl_shouhin_hyou";
+ 
+ // SQL文の作成
+ $str_sql = "SELECT * FROM {$tbl_name}";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // 表の表示の開始
+ print "<table border=1 celpadding=0 cellspacing=0>\n";
+ 
+ // 結果セットの各レコードを順次，連想配列に格納する
+ while($arr_record = $rs->fetch_assoc())
+ {
+  // 行の表示の開始
+  print "<tr>\n";
+ 
+  // 連想配列のキー値をフィールド名に，
+  // 値をフィールド値として取り出す
+  foreach($arr_record as $field_name => $field_value)
+  {
+   // フィールド値をセル内に表示
+   print "<td>{$field_value}</td>\n" ;
+  }
+ 
+  // 行の表示の終わり
+  print "</tr>\n";
+ }
+ 
+ // 表の表示の終了
+ print "</table>\n";
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p>
+ 
+	<img src="./files/040602.png" width="450">
+
+
+<h4>5.6.3　テーブルのヘッダー部の表示</h4>
+<p>上記の例では，テーブルのヘッダー部にフィールド名が表示されていません．以下に，表のヘッダー部にあらかじめフィールド名を表示する方法を示します．サンプルファイル「select03.php」を以下に示します．</p>
+ 
+「select03.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;select.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql);
+ 
+ 
+ // 参照するテーブル
+ $tbl_name = "tbl_shouhin_hyou";
+ 
+ // SQL文の作成
+ $str_sql = "SELECT * FROM {$tbl_name}";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // 表の表示の開始
+ print "<table border=1 celpadding=0 cellspacing=0>\n";
+ 
+ // テーブルのフィールド名の取得
+ // 指定されたデータベース，テーブル内のフィールドリストの取得
+ $rs2 = $mysqli->query("Show columns from {$tbl_name}");
+ 
+ // 結果セット内のフィールド数の取得
+ $num_rows = $rs2->field_count;
+ 
+ // フィールドがある場合
+ if($num_rows > 0)
+ {
+  // 表のヘッダー部（フィールド名）の表示開始
+  print "<tr>\n";
+ 
+  // 結果セット内のレコードを順次参照
+  while ($arr_record = $rs->fetch_field())
+  {
+   // フィールド名の取得
+   $field_name = $arr_record->name;
+ 
+   // フィールド名をセル内に表示
+   print "<td align=center>{$field_name}</td>\n";
+  }
+  // 表のヘッダー部の表示終了
+  print "</tr>\n";
+ 
+  // 結果セットの各レコードを順次，連想記憶に格納する
+  while($arr_record = $rs->fetch_assoc())
+  {
+   // 行の表示の開始
+   print "<tr>\n";
+ 
+   // 連想配列のキー値をフィールド名に，
+   // 値をフィールド値として取り出す
+   foreach($arr_record as $field_name => $field_value)
+   {
+    // フィールド値をセル内に表示
+    print "<td>{$field_value}</td>\n" ;
+   }    
+   // 行の表示の終わり
+   print "</tr>\n";
+  }
+ }
+ // 表の表示の終了
+ print "</table>\n";
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/040603.png" width="450"></p>
+
+
+<h4>5.6.4　テーブルの全レコード表示用ユーザ定義関数「show_records()」</h4>
+<p>テーブルの全レコード表示はテーブルデータの確認用によく使うので，ユーザ定義関数 「show_records()」 として定義しておくこととします．</p><p>テーブルの全レコード表示用ユーザ定義関数「show_records()」を使用したサンプルファイルを以下に示します．結果セットのフィールド名を配列に格納するユーザ定義関数「arr_fields_name（）」も定義して使っています．</p><p>サンプルファイル「show_records.php」を以下に示します．</p> 
+
+「show_records.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;select.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql);
+ 
+ 
+ // 参照するテーブル
+ $tbl_name = "tbl_shouhin_hyou";
+ 
+ // テーブルの全レコードの一覧表示
+ print "テーブル「{$tbl_name}」のレコード一覧<br>\n";
+ show_records($db_name,$tbl_name,$mysqli);
+ 
+ // 結果セットの解放
+ mysqli_free_result();
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+ 
+// -----------------------------------------------
+// テーブルの全データの一覧表示関数の定義
+function show_records($db_name,$tbl_name,$mysqli)
+{
+// $db_name     データベース名(R)
+// $tbl_name     テーブル名(R)
+// $mysqli       接続ID(R)
+// 戻り値 = TRUE  テーブルにフィールド名がある場合
+//      = FALSE テーブルにフィールド名がない場合
+ 
+ // SQL文の作成
+ $str_sql = "SELECT * FROM {$tbl_name}";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // フィールドがある場合
+ if(arr_fields_name($rs,$arr_fields_name))
+ {
+  // 表の表示の開始
+  print "<table border=1 celpadding=0 cellspacing=0>\n";
+ 
+  // 表のヘッダー部（フィールド名）の表示開始
+  print "<tr>\n";
+ 
+  // 配列の値を順次参照
+  foreach($arr_fields_name as $field_name)
+  {
+   // フィールド名の表示
+   print "<td align=center>{$field_name}</td>\n";
+  }
+  // 表のヘッダー部の表示終了
+  print "</tr>\n";
+ 
+  // 結果セットの各レコードを順次，連想記憶に格納する
+  while($arr_record = $rs->fetch_assoc())
+  {
+   // 行の表示の開始
+   print "<tr>\n";
+ 
+   foreach($arr_record as $field_name => $field_value)
+   {
+    // フィールド値をセル内に表示
+    print "<td>{$field_value}</td>\n" ;
+   }
+   // 行の表示の終わり
+   print "</tr>\n";
+  }
+  // 表の表示の終了
+  print "</table>\n";
+ 
+  $result = TRUE;
+ }
+ 
+ // フィールドがない場合
+ else
+ {
+  $result = FALSE;
+ }
+ // 結果セットの解放
+ mysqli_free_result();
+ 
+ return $result;
+}
+ 
+// ----------------------------------------------
+// テーブルのフィールド名を配列に格納する関数の定義
+function arr_fields_name($rs,&$arr_fields_name)
+{
+// $rs        結果ID(R)
+// $arr_fields_name フィールド名を格納した添字配列(W)
+// 戻り値 = TRUE  テーブルにフィールド名がある場合
+//     = FALSE テーブルにフィールド名がない場合
+ 
+ // フィールド名を格納する配列の初期化
+ $arr_fields_name = array();
+ 
+ // 結果セットの最初のレコードのフィールド名と値を連想配列に取得
+ $arr_record = $rs->fetch_assoc();
+ 
+ // 結果セットのポインター（レコード位置）を最初に戻す
+ mysqli_data_seek($rs,0);
+ 
+ // フィールドがある場合
+ if(is_array($arr_record))
+ {
+  $arr_fields_name = array_keys($arr_record);
+  $result = TRUE;
+ }
+ 
+ // フィールドがない場合
+ else
+ {
+  $result = FALSE;
+ }
+ return $result;
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/040604.png" width="450"></p>
+
+<h4>5.6.5　結果セットの全レコード表示用ユーザ定義関数「show_rs()」</h4>
+<p>結果セットの全レコード表示関数をテーブルの全レコード表示関数 「show_records()」と同様に，ユーザ定義関数「show_rs()」として定義しておくこととします．</p><p>テーブルの全レコード表示用ユーザ定義関数「show_rs()」を使用したサンプルファイルを以下に示します．</p><p>サンプルファイル「show_rs.php」を以下に示します．</p> 
+
+「show_rs.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;select.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+  require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql);
+ 
+ 
+ // 参照するテーブル
+ $tbl_name = "tbl_shouhin_hyou";
+ 
+ // SQL文の作成
+ $str_sql = "SELECT * FROM {$tbl_name}";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // テーブルの全レコードの一覧表示
+ print "テーブル「{$tbl_name}」のレコード一覧<br>\n";
+ show_rs($rs);
+ 
+ // 結果セットの解放
+ mysqli_free_result();
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+ 
+// -----------------------------------------------
+// 結果セットの全データの一覧表示関数の定義
+function show_rs($rs)
+{
+// $rs     結果セット(R)
+// 戻り値 = TRUE  結果セットにフィールド名がある場合
+//      = FALSE 結果セットにフィールド名がない場合
+ 
+ // フィールドがある場合
+ if(arr_fields_name($rs,$arr_fields_name))
+ {
+  // 表の表示の開始
+  print "<table border=1 celpadding=0 cellspacing=0>\n";
+ 
+  // 表のヘッダー部（フィールド名）の表示開始
+  print "<tr>\n";
+ 
+  // 配列の値を順次参照
+  foreach($arr_fields_name as $field_name)
+  {
+   // フィールド名の表示
+   print "<td align=center>{$field_name}</td>\n";
+  }
+  // 表のヘッダー部の表示終了
+  print "</tr>\n";
+ 
+  // 結果セットの各レコードを順次，連想記憶に格納する
+  while($arr_record = $rs->fetch_assoc())
+  {
+   // 行の表示の開始
+   print "<tr>\n";
+ 
+   foreach($arr_record as $field_name => $field_value)
+   {
+    // フィールド値をセル内に表示
+    print "<td>{$field_value}</td>\n" ;
+   }
+   // 行の表示の終わり
+   print "</tr>\n";
+  }
+  // 表の表示の終了
+  print "</table>\n";
+ 
+  $result = TRUE;
+ }
+ 
+ // フィールドがない場合
+ else
+ {
+  $result = FALSE;
+ }
+ return $result;
+}
+ 
+// ----------------------------------------------
+// テーブルのフィールド名を配列に格納する関数の定義
+function arr_fields_name($rs,&$arr_fields_name)
+{
+// $rs        結果ID(R)
+// $arr_fields_name フィールド名を格納した添字配列(W)
+// 戻り値 = TRUE  テーブルにフィールド名がある場合
+//     = FALSE テーブルにフィールド名がない場合
+ 
+ // フィールド名を格納する配列の初期化
+ $arr_fields_name = array();
+ 
+ // 結果セットの最初のレコードのフィールド名と値を連想配列に取得
+ $arr_record = $rs->fetch_assoc();
+ 
+ // 結果セットのポインター（レコード位置）を最初に戻す
+ mysqli_data_seek($rs,0);
+ 
+ // フィールドがある場合
+ if(is_array($arr_record))
+ {
+  $arr_fields_name = array_keys($arr_record);
+  $result = TRUE;
+ }
+ 
+ // フィールドがない場合
+ else
+ {
+  $result = FALSE;
+ }
+ return $result;
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/040605.png" width="450"></p>
+    <p class="caution-print">【注意】以後，テーブルの全レコードの表示関数「show_tables()」，結果セットの全レコードの表示関数「show_rs()」，および結果セットのフィールド名配列取得関数「arr_fields_name()」はインクルードファイル「common_mysql.php」内に追加して記述することとします．</font> 
+    </p>
+    
+
+<h4>5.6.6　テーブルの一部のデータを表示</h4>
+<p>すべてのレコードの指定したフィールド名のみを参照したい場合は，以下のSELECT文を使います．</p> 
+      <p class="command-print">SELECT フィールド名1,　フィールド名2,・・・,フィールド名n　FROM テーブル名;</p>
+<p>特定の条件を満たすレコードのすべてのフィールドを参照する場合は，SELECT文に条件を記述するWHERE句を付加します．</p> 
+      <p class="command-print">SELECT * FROM テーブル名　WHERE　条件式;</p>
+<p>特定の条件を満たすレコードの指定のフィールドを参照する場合は，以下のようなSELECT文を使います．</p> 
+      <p class="command-print">SELECT 　　フィールド名1,　フィールド名2,・・・,フィールド名n　<br>
+        　　FROM 　テーブル名<br>
+        　　WHERE　条件式;</p>
+<p>サンプルファイル「select06.php」を以下に示します．</p> 
+
+「select06.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;select06.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql);
+ 
+ 
+ // 参照するテーブル
+ $tbl_name = "tbl_shouhin_hyou";
+ 
+ // 全レコード，全フィールド表示用SQL文の作成
+ $str_sql = "SELECT * FROM {$tbl_name};";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // テーブルの全レコードの一覧表示
+ print "テーブル「{$tbl_name}」の全レコード，全フィールドデータ一覧<br>\n";
+ show_rs($rs);
+ print "<br>\n";
+ 
+ // 結果セットの解放
+ mysqli_free_result($rs);
+ 
+ // 指定したフィールドのみを参照するSQL文の作成
+ $str_sql = "SELECT shouhin_mei,tanka FROM {$tbl_name};";
+ 
+ // SQL文の実行
+ $rs2 = $mysqli->query($str_sql);
+ 
+ // 結果セットの表示
+ print "\"{$str_sql}\"<br>\n";
+ show_rs($rs2);
+ print "<br>\n";
+ 
+ // 結果セットの解放
+ mysqli_free_result($rs2);
+ 
+ // 条件にあったレコードのみを抽出するSQL文の作成
+ $str_sql = "SELECT * FROM {$tbl_name}"
+      . " WHERE shouhin_code = 1002";
+ 
+ // SQL文の実行
+ $rs3 = $mysqli->query($str_sql);
+ 
+ // 結果セットの表示
+ print "\"{$str_sql}\"<br>\n";
+ show_rs($rs3);
+ print "<br>\n";
+ 
+ // 結果セットの解放
+ mysqli_free_result($rs3);
+ 
+ // 条件にあったレコードの指定のフィールド名みを抽出するSQL文の作成
+ $str_sql = "SELECT shouhin_mei,tanka FROM {$tbl_name}"
+      . " WHERE shouhin_mei = '海の幸御前'";
+ 
+ // SQL文の実行
+ $rs4 = $mysqli->query($str_sql);
+ 
+ // 結果セットの表示
+ print "\"{$str_sql}\"<br>\n";
+ show_rs($rs4);
+ print "<br>\n";
+ 
+ // 結果セットの解放
+ mysqli_free_result($rs4);
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/040606.png" width="500"></p>
+    
+
+<h3>5.7　レコードの追加</h3>
+<h4>5.7.1　テーブルへのデータの入力</h4>
+<p>テーブルへデータを入力するには，テーブルにレコードを順次追加する操作になります．レコードの追加には「INSERT　INTO」文を使います．１回に１レコードのみ追加できます．</p> 
+        <p class="command-print">INSERT INTO テーブル名<br>
+          　　　　　　　　(フィールド名1,フィールド名2,・・・,フィールド名n）<br>
+          　VALUES　　(値1　　　　　,値2　　　　　,・・・,値n);</p>
+<p>最初のかっこ「(・・・)」の中に，レコードの中のデータを入力するフィールド名を[,」（半角カンマ）で区切って記入します．VALUES句のあとの「(・・・)」の中に，各フィールドに入力するデータを前のかっこに記入した順番と同じ順番で記入します．つまり，フィールド名1には値1が入力され，フィールド名2には値2が順次入力されます．テーブルのすべてのフィールドにデータを入力するときは，テーブル名の直後のかっこおよびフィールド名の記述は省略できます．ただし，値の記入順は，テーブルを作成したときのフィールドの記入順にあわせる必要があります．また，値の記入位置には，変数を使うことも可能です．なお，値として直接文字列を記入する場合は，文字列を「'」（シングルクォーテーション）あるいは「"」（ダブルクォーテーション）で囲む必要があります．「"」（ダブルクォーテーション）で囲んだ場合は，文字列中にエスケープ記号などの特殊記号があると再評価されるので，注意が必要です．サンプルファイル「insert.php」を以下に示します．</p> 
+
+「insert.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;include.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql);
+ // レコードを追加するテーブル
+ $tbl_name = "tbl_shouhin_hyou";
+ 
+ // テーブルの中の全レコード一覧表示
+ show_records($db_name,$tbl_name,$mysqli);
+ print "<br>\n";
+ 
+ // レコード追加のSQL文の作成
+ $str_sql = "INSERT INTO {$tbl_name} "
+      . "(shouhin_code,shouhin_mei ,tanka)"
+      . " VALUES "
+      . "('2001' ,'ランチ',800);";
+ 
+ // SQL文の実行
+ $mysqli->query($str_sql);
+ 
+ // SQL文の表示
+ print "\"{$str_sql}\"<br>\n";
+ 
+ // テーブルの中の全レコード一覧再表示
+ show_records($db_name,$tbl_name,$mysqli);
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+        <p class="caution-print">（注）Webアプリケーションの場合は，「SET NAMES」は実行しなくても，文字化けおきないようです．</p>
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/040701.png" width="500">
+        </p>
+      
+
+<h3>5.8　レコードの修正</h3>
+<h4>5.8.1　テーブルのデータの修正</h4>
+<p>テーブルのデータを修正（更新）するには，SQLコマンドの「UPDATE」文を使います．</p> 
+        <p class="command-print">UPDATE テーブル名<br>
+          　SET　　　フィールド名1= 値1,フィールド名2 = 値2,・・・,フィールド名n = 値n<br>
+          　WHERE　更新条件; </p>
+<p>SET句で更新するフィールド名と更新後の値を「=」で結んで記述します．複数のフィールドを同時に更新する場合は，「,」（カンマ）で区切ります．すべてのレコードでなく条件にあったレコードのも更新する場合は，更新条件をWHERE句に記述します．</p><p>サンプルファイル「update.php」を以下に示します．</p> 
+
+
+「update.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;update.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql);
+ 
+ // レコードを更新するテーブル
+ $tbl_name = "tbl_shouhin_hyou";
+ 
+ // テーブルの中の全レコード一覧表示
+ show_records($db_name,$tbl_name,$mysqli);
+ print "<br>\n";
+ 
+ // レコード更新のSQL文の作成
+ $str_sql = "UPDATE {$tbl_name} "
+       . " SET shouhin_mei= '地方御膳',tanka = 900"
+       . " WHERE shouhin_code = '1001';";
+ 
+ // SQL文の実行
+ $mysqli->query($str_sql);
+  
+ // SQL文の表示
+ print "\"{$str_sql}\"<br>\n";
+ 
+ // テーブルの中の全レコード一覧再表示
+ show_records($db_name,$tbl_name,$mysqli);
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/040801.png" width="500"></p>
+      
+<h3>5.9　レコードの削除</h3>
+<h4>5.9.1　テーブルのデータの削除</h4>
+<p>テーブルのデータを削除するには，SQLコマンドの「DELETE」文を使い該当するレコードを削除します．</p> 
+        <p class="command-print">DELETE FROM テーブル名 <br>
+          　WHERE　削除条件; </p>
+<p>ただ，このDELETE文は慎重に使う必要があります．一旦データを削除すると元へ戻らなくなります．条件式は慎重に確認しましょう．サンプルファイル「delete.php」を以下に示します．</p> 
+
+delete.php
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;delete.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql); 
+ 
+ // レコードを削除するテーブル
+ $tbl_name = "tbl_shouhin_hyou";
+ 
+ // テーブルの中の全レコード一覧表示
+ show_records($db_name,$tbl_name,$mysqli);
+ print "<br>\n";
+ 
+ // テスト用レコードの追加
+ $str_sql = "INSERT INTO {$tbl_name}"
+      . " (shouhin_code,shouhin_mei ,tanka)"
+      . " VALUES "
+      . " ('9999' ,'パスタ',1100);";
+ 
+ // SQL文の実行
+ $mysqli->query($str_sql);
+ 
+ // テーブルの中の全レコード一覧表示
+ show_records($db_name,$tbl_name,$mysqli);
+ print "<br>\n";
+ 
+ // レコード削除のSQL文の作成
+ $str_sql = "DELETE from {$tbl_name} "
+      . " WHERE shouhin_code = 9999;";
+ 
+ // SQL文の実行
+ $mysqli->query($str_sql);
+  
+ // SQL文の表示
+ print "\"{$str_sql}\"<br>\n";
+ 
+ // テーブルの中の全レコード一覧再表示
+ show_records($db_name,$tbl_name,$mysqli);
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/040901.png" width="500"></p>
+      
+<h3>5.10　レコードの並べ替え</h3>
+<h4>5.10.1　テーブルのレコードの並べ替え（ソート）</h4>
+<p>あるフィールドの値に注目してレコードの表示順の並べ替え（ソート）を行うにはSQL文の「SELECT」文でORDER句を使います．</p> 
+        <p class="command-print">SELECT　＊　FROM　テーブル名<br>
+          　　ORDER BY　　フィールド名</p>
+<p>ORDER　BYの後のフィールド名の値にしたがって昇順（辞書順あるいは小さい方から大きい方へ）に並べ替えます．並べ替えを降順（辞書の逆順あるいは大きい方から小さい方へ）に並べ替えるときは，フィールド名の後に半角スペースをはさんで，「DESC]をオプションで記述します．</p> 
+        <p class="command-print">SELECT　＊　FROM　テーブル名<br>
+          　　ORDER BY　　フィールド名 DESC</p>
+
+<p>サンプルテーブルは下の「tbl_shouhin_hyou2.sql」を使います</p>
+<pre class="brush:php;">
+CREATE TABLE `tbl_shouhin_hyou2` (
+  `shouhin_code` varchar(4) COLLATE utf8_unicode_ci NOT NULL,
+  `shouhin_mei` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `tanka` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tbl_shouhin_hyou2` (`shouhin_code`, `shouhin_mei`, `tanka`) VALUES
+('1001', '田舎御前', 1000),
+('1002', '山の幸御前', 1200),
+('1003', '海の幸御前', 1500),
+('1004', '七福神御前', 3000),
+('1005', '松竹梅御前', 2000),
+('1006', '鶴亀御前', 2500);
+</pre>
+
+<p>サンプルファイル「order.php」を以下に示します．</p> 
+
+order.php
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;order.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql); 
+ 
+ // レコードを並べ替えるテーブル
+ $tbl_name = "tbl_shouhin_hyou2";
+ 
+ // テーブルの中の全レコード一覧表示
+ show_records($db_name,$tbl_name,$mysqli);
+ print "<br>\n";
+ 
+ // レコードの並べ替え
+ $str_sql = "SELECT * FROM {$tbl_name}"
+       . " ORDER BY tanka;";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // SQL文の表示
+ print "\"{$str_sql}\"<br>\n";
+ 
+ // 結果セットの中の全レコード一覧表示
+ show_rs($rs);
+ print "<br>\n";
+ 
+ // レコードの逆順での並べ替え
+ $str_sql = "SELECT * FROM {$tbl_name}"
+       . " ORDER BY tanka DESC;";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // SQL文の表示
+ print "\"{$str_sql}\"<br>\n";
+ 
+ // 結果セットの中の全レコード一覧表示
+ show_rs($rs);
+ 
+ // データベースサーバの切断
+ $mysqli->close()
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/041001.png" width="500"></p>
+        
+      
+      
+<h4>5.10.2　複数のフィールドでの並べ替え</h4>
+<p>複数のフィールドに着目した並べ替えもできます．その場合は，ORDER　BY句の後に並べ替えの優先度の高い順に「,」（半角カンマ）で区切ってフィールド名を記述します．</p> 
+        <p class="command-print">SELECT　＊　FROM　テーブル名<br>
+          　　ORDER BY　　フィールド名1,フィールド名2,・・・,フィールド名n</p>
+<p>最初にフィールド名1の値の順にしたがって並べ替えられ，フィールド名1の値が同じレコードが複数あった場合は次にフィールド名2の値にしたがって並べ替えられます．たとえば，学生の名簿をまず学部別に並べ替え，次に同じ学部内の学科別に並べ替えそして同じ学科内の学籍番号順に並べ替えるようなときに使います．</p>
+
+<h3>5.11　あいまい検索</h3>
+<h4>5.11.1　LIKE演算子とワイルドカード文字「%」</h4>
+<p>WHERE句で，文字列の部分一致条件を使う場合は，LIKE演算子とワイルドカード文字「%」（半角）を使います．ワイルドカード文字「%」は０文字以上の任意の文字列を意味します．末尾が「定食」となる商品名を含むいわゆる後方一致検索の場合は，「LIKE　'%定食」のようにします'．
+</p> 
+        <p class="command-print">WHERE　フィールド名　LIKE　'%文字列'</p>
+<p>前方一致検索の場合は，「LIKE　'山%'」のようにします．</p> 
+        <p class="command-print">WHERE　フィールド名　LIKE　'文字列%'</p>
+<p>部分一致検索の場合は，「LIKE　'%幸%'」のようにします．</p> 
+        <p class="command-print">WHERE　フィールド名　LIKE　'%文字列%'</p>
+<p>文字列に変数「$str」を使う場合は，変数を示す特殊文字「$」を再評価する必要があるので，「'」（シングルクォーテーション）の代わりに「"」（ダブルクォーテーション）で囲みます．変数は「{　}」で囲みます．</p> 
+        <p class="command-print">WHERE　フィールド名　LIKE　"'%{$str}%"</p>
+<p>サンプルファイル「like.php」を以下に示します．</p> 
+<p>テーブル「table_shouhin_hyou3」は下のコードから追加してください</p>
+<pre class="brush:php;">
+CREATE TABLE `tbl_shouhin_hyou3` (
+  `shouhin_code` varchar(4) COLLATE utf8_unicode_ci NOT NULL,
+  `shouhin_mei` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `tanka` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+INSERT INTO `tbl_shouhin_hyou3` (`shouhin_code`, `shouhin_mei`, `tanka`) VALUES
+('1001', '田舎定食', 1000),
+('1002', '山の幸定食', 1200),
+('1003', '海の幸定食', 1500),
+('1004', '七福神御前', 3000),
+('1005', '松竹梅御前', 2000),
+('1006', '鶴亀御前', 2500);
+
+ALTER TABLE `tbl_shouhin_hyou3`
+  ADD PRIMARY KEY (`shouhin_code`);
+COMMIT;
+</pre>
+「like.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;like.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続・データベースの選択
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql); 
+ 
+ // 検索対象テーブル
+ $tbl_name = "tbl_shouhin_hyou3";
+ show_records($db_name,$tbl_name,$mysqli);
+ print "<br>\n";
+ 
+ // あいまい検索（LIKE演算子）
+ // 後方一致検索
+ $str_sql = "SELECT * FROM {$tbl_name} "
+       . " WHERE shouhin_mei LIKE '%定食';";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // 結果セットの中の全レコード一覧表示
+ print "\"{$str_sql}\"<br>\n";
+ show_rs($rs);
+ print "<br>\n";
+ 
+ // 前方一致検索
+ $str_sql = "SELECT * FROM {$tbl_name} "
+       . " WHERE shouhin_mei LIKE '山%';";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // 結果セットの中の全レコード一覧表示
+ print "\"{$str_sql}\"<br>\n";
+ show_rs($rs);
+ print "<br>\n";
+ 
+ // 部分一致検索
+ $str = '幸';
+ $str_sql = "SELECT * FROM {$tbl_name} "
+       . " WHERE shouhin_mei LIKE '%{$str}%';";
+ 
+ // SQL文の実行
+ $rs = $mysqli->query($str_sql);
+ 
+ // 結果セットの中の全レコード一覧表示
+ print "\"{$str_sql}\"<br>\n";
+ show_rs($rs);
+ print "<br>\n";
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/041101.png" width="500"></p>
+        
+      
+<h4>5.11.2　LIKE演算子とワイルドカード文字「_」</h4>
+<p>WHERE句で，特定の長さの文字列に一致する条件を指定する場合は，ワイルドカード文字「_」（半角のアンダーバー）を使います．冒頭が「鶴亀」で４文字の商品名を含むレコードを参照する場合は，「LIKE　'鶴亀_ 
+        _'」とします．（「_ _」は２個連続した半角のアンダーバーの意味です．ここでは分かりやすいように，間に半角スペースを挿入していますが，SQL文では，半角スペースは入れません）．</p> 
+        <p class="command-print">WHERE　フィールド名　LIKE　'文字列_ _'</p>
+      
+
+<h4>5.11.3　IN演算子</h4>
+<p>WHERE句で，いくつかの特定の値に一致する場合の条件式には，IN演算子を使います．「1000」あるいは「1500」のいずれかに一致する場合という条件式は，「IN(1000,1500)」と記述します．
+</p> 
+        <p class="command-print">WHERE　フィールド名　IN　（候補値1,　候補値2,・・・,候補値n）</p>
+      
+
+<h4>5.11.4　BETWEEN演算子</h4>
+<p>下限値から上限値までの間の任意の値に一致する条件式は，BETWEEN演算子を使います．</p> 
+        <p class="command-print">WHERE　フィールド名　BETWEEN　下限値 AND　上限値</p>
+<p>以上のサンプルファイル「between.php」を以下に示します．</p> 
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;like.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続・データベースの選択
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql); 
+ 
+ // 検索対象テーブル
+ $tbl_name = "tbl_shouhin_hyou3";
+ show_records($db_name,$tbl_name,$mysqli);
+ print "<br>\n";
+ 
+ // あいまい検索（LIKE演算子）
+ // 文字列長を指定したい場合
+ // (鶴亀の後に任意の2文字を含む４文字の文字列を検索する例）
+ $str_sql = "SELECT * FROM {$tbl_name} "
+       . " WHERE shouhin_mei LIKE '鶴亀__';";
+ 
+ // SQL文の実行
+ $rs1 = $mysqli->query($str_sql);
+ 
+ // 結果セットの中の全レコード一覧表示
+ print "\"{$str_sql}\"<br>\n";
+ show_rs($rs1);
+ print "<br>\n";
+ 
+ // IN演算子
+ $str_sql = "SELECT * FROM {$tbl_name} "
+       . " WHERE tanka IN(1000,1500);";
+ 
+ // SQL文の実行
+ $rs2 = $mysqli->query($str_sql);
+ 
+ // 結果セットの中の全レコード一覧表示
+ print "\"{$str_sql}\"<br>\n";
+ show_rs($rs2);
+ print "<br>\n";
+ 
+ // BETWEEN演算子
+ $str_sql = "SELECT * FROM {$tbl_name} "
+       . " WHERE tanka BETWEEN 2000 AND 3000;";
+ 
+ // SQL文の実行
+ $rs3 = $mysqli->query($str_sql);
+ 
+ // 結果セットの中の全レコード一覧表示
+ print "\"{$str_sql}\"<br>\n";
+ show_rs($rs3);
+ print "<br>\n";
+ 
+ // 結果セット（結果ID）の開放
+ mysqli_free_result($rs1);
+ mysqli_free_result($rs2);
+ mysqli_free_result($rs3);
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p>
+
+        <img src="./files/041102.png" width="500">
+
+
+<h3>5.12　集約関数</h3>
+<h4>5.12.1　フィールド値に対する演算</h4>
+<p>参照したレコードの特定のフィールド名に着目して，そのフィールド名の値が数値の場合，最大値，最小値，平均値などの演算を行うことができます．このような演算を行う関数を集約関数あるいは集合関数と呼びます．たとえば，フィールド値の平均値を計算する場合は，AVG()関数を使います．この集約関数の結果を参照する場合は，mysql_result（）関数で，結果セットの最初のレコード（レコード番号=0）の最初のフィールド（フィールド番号=0）を参照します．</p> 
+        <p>※この関数は PHP 4.3.0 で非推奨になり、PHP 7.0.0 で MySQL 拡張モジュール 全体とあわせて削除されました</p>
+<p>今回はこちらで独自関数mysqli_result()を作成し使用します</p>
+        <p class="command-print">
+    function mysqli_result($res,$row=0,$col=0){ 
+        $numrows = mysqli_num_rows($res); 
+        if ($numrows && $row &lt;= ($numrows-1) && $row >=0){
+        mysqli_data_seek($res,$row);
+        $resrow = (is_numeric($col)) ? mysqli_fetch_row($res) : mysqli_fetch_assoc($res);
+        if (isset($resrow[$col])){
+            return $resrow[$col];
+        }
+    }
+    return false;
+    }
+            </p>
+        <p class="command-print">SQL文　= "SELECT AVG(フィールド名)　FROM　テーブル名";<br>
+          <br>
+          結果ID　=　$mysqli->query(SQL文);<br>
+          <br>
+          PHPの変数　= mysqli_result(結果ID,0,0);</p>
+      
+<h4>5.12.2　一時変数</h4>
+<p>集約関数の結果はRDB内の一時変数に格納することができます．一時変数はフィールド名と同様に参照することができます．</p> 
+        <p class="command-print">SQL文= "SELECT AVG(フィールド名)　AS 一時変数名"<br>
+          　　　　　.　"　FROM　テーブル名";<br>
+          <br>
+          結果ID　=　$mysqli->query(SQL文);<br>
+          <br>
+          連想配列変数　= 結果ID->fetch_assoc();</p>
+      
+<h4>5.12.3　複数の集約関数の同時利用</h4>
+<p>集約関数は複数同時に使うことも可能です．集約関数名の間は「,」（カンマ）で区切ります．</p> 
+        <p class="command-print">SQL文= "SELECT 集約関数名1(フィールド名)　AS 一時変数名1,"<br>
+          　　　　　.　"　　　　　集約関数名2(フィールド名)　AS 一時変数名2,"<br>
+          　　　　　.　"　　　　　集約関数名3(フィールド名)　AS 一時変数名3"<br>
+          　　　　　.　"　FROM　テーブル名";<br>
+          <br>
+          結果ID　=　$mysqli->query(SQL文);<br>
+          <br>
+          連想配列変数　= 結果ID->fetch_assoc();</p>
+<p>以上のサンプルファイル「avg.php」を以下に示します．</p> 
+
+「avg.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;avg.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続・データベースの選択
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql); 
+ 
+ // 処理対象テーブル
+ $tbl_name = "tbl_shouhin_hyou3";
+ show_records($db_name,$tbl_name,$mysqli);
+ print "<br>\n";
+ 
+ // 集約関数
+ // 平均値の計算（AVG()関数）
+ $fld_name = 'tanka';
+ $str_sql = "SELECT AVG({$fld_name}) FROM {$tbl_name} ;";
+ $rs = $mysqli->query($str_sql);
+ print "\"{$str_sql}\";<br>\n";
+ 
+ // 計算結果の参照
+ $flt_average = mysqli_result($rs,0,0);
+ 
+ // 計算結果の表示
+ print "{$fld_name}の平均値<br>\n";
+ print "AVG({$fld_name}) = {$flt_average}<br><br>\n";
+ 
+ // 一時変数「average」の使用
+ $str_sql = "SELECT AVG({$fld_name}) AS average "
+      . " FROM {$tbl_name} ;";
+ $rs2 = $mysqli->query($str_sql);
+ print "\"{$str_sql}\";<br>\n";
+ 
+ // 計算結果の参照
+ $arr_results = array();
+ $arr_results = $rs2->fetch_assoc();
+ $flt_average = $arr_results['average'];
+ 
+ // 計算結果の表示
+ print "{$fld_name}の平均値<br>\n";
+ print "average = {$flt_average}<br><br>\n";
+ 
+ // レコード数と最大値，最小値の計算
+ $str_sql = "SELECT COUNT({$fld_name}) AS レコード数, "
+      . " MIN({$fld_name}) AS min_単価, "
+      . " MAX({$fld_name}) AS max_単価"
+      . " FROM {$tbl_name} ;";
+ $rs3 = $mysqli->query($str_sql);
+ print "\"{$str_sql}\";<br>\n";
+ 
+ // 計算結果の参照
+ $arr_results = array();
+ $arr_results = $rs3->fetch_assoc();
+ $num_records = $arr_results['レコード数'];
+ $min_price  = $arr_results['min_単価'];
+ $max_price  = $arr_results['max_単価'];
+ print "<table border=1 cellpadding=0 cellspacing=0>\n";
+ print "<tr>\n";
+ print "<td>レコード数</td>";
+ print "<td align=right>{$num_records}</td>\n";
+ print "</tr>\n";
+ print "<tr>\n";
+ print "<td>最小値</td>";
+ print "<td align=right>{$min_price}</td>\n";
+ print "</tr>\n";
+ print "<tr>\n";
+ print "<td>最大値</td>";
+ print "<td align=right>{$max_price}</td>\n";
+ print "</tr>\n";
+ print "</table>\n";
+ 
+ // 結果セット（結果ID）の開放
+ mysqli_free_result($rs1);
+ mysqli_free_result($rs2);
+ mysqli_free_result($rs3);
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+ 
+    
+function mysqli_result($res,$row=0,$col=0){ 
+    $numrows = mysqli_num_rows($res); 
+    if ($numrows && $row <= ($numrows-1) && $row >=0){
+        mysqli_data_seek($res,$row);
+        $resrow = (is_numeric($col)) ? mysqli_fetch_row($res) : mysqli_fetch_assoc($res);
+        if (isset($resrow[$col])){
+            return $resrow[$col];
+        }
+    }
+    return false;
+}
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/041103.png" width="500"></p>
+      
+<h3>5.13　グループ化</h3>
+<h4>5.13.1　GROUP　BY句</h4>
+<p>あるフィールド名に着目し，そのフィールド値が同じレコードを部分集合としてグループ化することができます．たとえば，アンケート結果で「賛成」と答えた人のグループと「反対」と答えた人」のグループに分けるような場合です．一般には，その部分集合ごとにある演算を行います．グループ化する場合は，「GROUP　BY」句を使います．たとえば，次のような構文とします．</p> 
+        <p class="command-print">SELECT　フィールド名,　集約関数,　FROM　テーブル名　<br>
+          　　GROUP　BY　フィールド名</p>
+<p>次の例では，フィールド名「hinmoku」に着目し，同じ「hinmoku」の値のレコードをグループ化し，各グループのレコード数を計数しています．<br>
+      </p>
+<p>テーブルは以下から作成してください<p/>
+<pre class="brush:php;">
+CREATE TABLE `tbl_shouhin` (
+  `shouhin_code` varchar(3) COLLATE utf8_unicode_ci NOT NULL,
+  `hinmoku` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `hinmei` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `tanka` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tbl_shouhin` (`shouhin_code`, `hinmoku`, `hinmei`, `tanka`) VALUES
+('110', 'せんべい', '塩せんべい', 200),
+('120', 'せんべい', 'えびせんべい', 300),
+('130', 'せんべい', 'のりせんべい', 350),
+('210', 'チョコレート', '板チョコレート', 200),
+('220', 'チョコレート', '棒チョコレート', 250),
+('310', 'つまみ', 'つまみ詰め合わせ', 500);
+
+ALTER TABLE `tbl_shouhin`
+  ADD PRIMARY KEY (`shouhin_code`);
+COMMIT;
+</pre>
+<pre class="brush:php;">
+$str_sql = "SELECT hinmoku,COUNT(*) FROM tbl_shouhin GROUP BY hinmoku;";
+$rs   = $mysqli->query($str_sql);
+</pre>
+
+<p>次の例は，グループごとの「tanka」の合計値を計算しています．</p> 
+<pre class="brush:php;">
+$str_sql = "SELECT hinmoku,SUM(tanka) FROM tbl_shouhin GROUP BY hinmoku;";
+$rs   = $mysqli->query($str_sql);
+</pre>
+
+<h4>5.13.2　HAVING句</h4>
+<p>また，グループごとの演算結果についてある条件にあったグループのみを参照（抽出）することができます．この場合はWHERE句でなくHAVING句を使います．</p> 
+        <p class="command-print">SELECT　フィールド名,　集約関数,　FROM　テーブル名　GROUP　BY　フィールド名<br>
+          　　HAVING　グループに対する条件式</p>
+<p>次の例では，「tanka」の合計値が800より大きいグループのみ参照しています．</p> 
+
+<pre class="brush:php;">
+$str_sql = "SELECT hinmoku,SUM(tanka) FROM tbl_shouhin GROUP BY hinmoku"
+      . "HAVING SUM(tanka) &gt; 800;";
+$rs   = $mysqli->query($str_sql);
+</pre>
+
+<p>サンプルファイル「group.php」を以下に示します．</p> 
+
+「group.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;group.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続・データベースの選択
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql); 
+ 
+ // 処理対象テーブル
+ $tbl_name = "tbl_shouhin";
+ show_records($db_name,$tbl_name,$mysqli);
+ print "<br>\n";
+ 
+ // グループ化
+ $str_sql1 = "SELECT hinmoku,COUNT(*) FROM tbl_shouhin"
+      . " GROUP BY hinmoku;";
+ $rs1 = $mysqli->query($str_sql1);
+ print "\"{$str_sql1}\";<br>\n";
+ 
+ // 結果セットの表示
+ show_rs($rs1);
+ print "<br>\n";
+ 
+ // グループ化
+ $str_sql2 = "SELECT hinmoku,SUM(tanka) FROM tbl_shouhin"
+      . " GROUP BY hinmoku;";
+ $rs2 = $mysqli->query($str_sql2);
+ print "\"{$str_sql2}\";<br>\n";
+ 
+ // 結果セットの表示
+ show_rs($rs2);
+ print "<br>\n";
+ 
+ // HAVING句
+ $str_sql3 = "SELECT hinmoku,SUM(tanka) FROM tbl_shouhin"
+      . " GROUP BY hinmoku"
+      . " HAVING SUM(tanka) > 800;";
+ $rs3 = $mysqli->query($str_sql3);
+ print "\"{$str_sql3}\";<br>\n";
+ 
+ // 結果セットの表示
+ show_rs($rs3);
+ print "<br>\n";
+ 
+ // 結果セット（結果ID）の開放
+ mysqli_free_result($rs1);
+ mysqli_free_result($rs2);
+ mysqli_free_result($rs3);
+ 
+ // データベースサーバの切断
+ $mysqli->close();
+ 
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p> 
+<p><img src="./files/041104.png" width="500"></p>
+        
+      
+      
+<h3>5.14　テーブル結合と相関名</h3>
+<h4>5.14.1　自然結合（NATURAL　JOIN）</h4>
+<p>データの正規化により作成されたテーブルは冗長性のない合理的な構造となりますが，逆に人間にはわかりにくいものとなっています．そこで，実際の利用では，正規化により分割されたテーブルを結合して，わかりやすく表示します．これを表結合といいます．次のテーブル「tbl_uriage_meisai」とテーブル「tbl_shouhin1」を例にとります．</p> 
+
+「tbl_uriage_meisai」
+<pre class="brush:php;">
++-------------+--------------+-------+
+| denpyo_code | shouhin_code | kosuu |
++-------------+--------------+-------+
+| 1101        | 100          |  100  |
+| 1101        | 110          |  150  |
+| 1120        | 120          |  80   |
+| 1128        | 130          |  100  |
++-------------+--------------+-------+
+4 rows in set (0.00 sec)
+
+CREATE TABLE `tbl_uriage_meisai` (
+  `denpyo_code` varchar(4) COLLATE utf8_unicode_ci NOT NULL,
+  `shouhin_code` varchar(3) COLLATE utf8_unicode_ci NOT NULL,
+  `kosuu` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tbl_uriage_meisai` (`denpyo_code`, `shouhin_code`, `kosuu`) VALUES
+('1101', '100', 100),
+('1101', '110', 150),
+('1120', '120', 80),
+('1128', '130', 100);
+
+ALTER TABLE `tbl_uriage_meisai`
+  ADD PRIMARY KEY (`shouhin_code`);
+COMMIT;
+</pre>
+
+「tbl_shouhin1」
+<pre class="brush:php;">
++--------------+--------------+-------+
+| shouhin_code | shouhin_mei  | tanka |
++--------------+--------------+-------+
+| 100          | チョコレート |  200  |
+| 110          | キャンディ   |  300  |
+| 120          | せんべい     |  250  |
+| 130          | ケーキ       |  400  |
+| 140          | ガム         |  100  |
++--------------+--------------+-------+
+4 rows in set (0.00 sec)
+
+CREATE TABLE `tbl_shouhin1` (
+  `shouhin_code` varchar(3) COLLATE utf8_unicode_ci NOT NULL,
+  `shouhin_mei` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `tanka` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tbl_shouhin1` (`shouhin_code`, `shouhin_mei`, `tanka`) VALUES
+('100', 'チョコレート', 200),
+('110', 'キャンディ', 300),
+('120', 'せんべい', 250),
+('130', 'ケーキ', 400),
+('140', 'ガム', 100);
+
+ALTER TABLE `tbl_shouhin1`
+  ADD PRIMARY KEY (`shouhin_code`);
+COMMIT;
+</pre>
+
+<p>テーブル「tbl_uriage_meisai」には「shouhin_code」はありますが，第２正規化を行っているので，商品名は別途テーブル「tbl_shouhin1」を参照しないとわかりません．たとえば，テーブル「tbl_uriage_meisai」の「shouhin_code」='100'の商品名は，「tbl_shouhin1」の「shouhin_code」='100'のレコードの「shouhin_mei」を参照して，「チョコレート」であることがわかります．テーブル「tbl_uriage_meisai」の「shouhin_code」フィールドのとなりに，「shouhin_mei」フィールドがあると，人間にとってわかりやすくなります．そこで，テーブル「tbl_uriage_meisai」とテーブル「tbl_shouhin1」を結合させることを考えます．テーブルを結合する第１の方法は，自然結合のための「NATURAL JOIN」句を使う方法です．</p> 
+        <p class="command-print">SELECT　*　FROM　テーブル1　NATURAL JOIN　テーブル２</p>
+<p>自然結合では，テーブル１とテーブル２両方のテーブルにおのおの同じフィールド名がある必要があります．上のテーブルの例ではフィールド名「商品コード」が両方のテーブルにあることがわかります．その同じフィールド名の同じフィールド値を持つレコードどうしを結合します．サンプルファイル「natural_join.php」を以の下に示します．</p> 
+
+「natural_join.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;natural_join.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続・データベースの選択
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql); 
+ 
+ // 処理対象テーブル
+ $tbl_name1 = "tbl_uriage_meisai";
+ print "「{$tbl_name1}」<br>\n";
+ show_records($db_name,$tbl_name1,$mysqli);
+ print "<br>\n";
+ 
+ $tbl_name2 = "tbl_shouhin1";
+ print "「{$tbl_name2}」<br>\n";
+ show_records($db_name,$tbl_name2,$mysqli);
+ print "<br>\n";
+ 
+ // 自然結合（NATURAL JOIN句）
+ $str_sql1 = "SELECT * FROM {$tbl_name1}"
+      . " NATURAL JOIN {$tbl_name2};";
+ $rs1 = $mysqli->query($str_sql1);
+ print "\"{$str_sql1}\"<br>\n";
+ 
+ // 結果セットの表示
+ show_rs($rs1);
+ print "<br>\n";
+ 
+ // 結果セット（結果ID）の開放
+ mysqli_free_result($rs1);
+  
+ // データベースサーバの切断
+ $mysqli->close();
+ 
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p>
+ 
+  <img src="./files/041401.png" width="500">
+
+
+<h4>5.14.2　内部結合（INNER　JOIN）</h4>
+<p>テーブルを結合する第２の方法は，内部結合のための「INNER　JOIN」句を使う方法です．</p> 
+<p>SELECT　*　FROM　テーブル1　INNER　JOIN　テーブル２<br>
+          　　　ON　結合条件式</p>
+<p>「INNER　JOIN」では，「ON」の後に２つのテーブルを結合するための結合条件式を記述する必要があります．一般にはテーブル1のフィールド名1とテーブル2のフィールド名2が等しいレコードを結合する場合には結合条件式は次のようになります．</p> 
+        <p class="command-print">ON　テーブル1.フィールド名1　=　テーブル2.フィールド名2</p>
+<p>サンプルファイル「inner_join.php」を以の下に示します．</p> 
+
+「inner_join.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;inner_join.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+ require_once('./Connections/localhost.php');
+ 
+ // データベースサーバへの接続・データベースの選択
+  $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql); 
+ 
+ // 処理対象テーブル
+ $tbl_name1 = "tbl_uriage_meisai";
+ $tbl_name2 = "tbl_shouhin1";
+  
+ // 内部結合（INNER JOIN句）
+ $str_sql1 = "SELECT * FROM {$tbl_name1}"
+      . " INNER JOIN {$tbl_name2}"
+      . " ON {$tbl_name1}.shouhin_code"
+      . "  = {$tbl_name2}.shouhin_code;";
+ $rs1 = $mysqli->query($str_sql1);
+ print "\"{$str_sql1}\"<br>\n";
+ 
+ // 結果セットの表示
+ show_rs($rs1);
+ print "<br>\n";
+ 
+ // 結果セット（結果ID）の開放
+ mysqli_free_result($rs1);
+  
+ 
+ // データベースサーバの切断
+ $mysqli->close($db);
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p>
+ 
+  <img src="./files/041402.png" width="500">
+
+<p>「INNER　JOIN」の場合は，結合条件を明示的に記述するので，両方のテーブルで比較するフィールド名が異なっていても結合することができます．たとえば，上の例で，「tbl_uriage_meisai」テーブルの「shouhin_code」フィールド名が「shouhinID」の場合は，次のような条件式を記述すればいいことになります．</p> 
+
+<pre class="brush:php;">
+$str_sql1 = "SELECT * FROM {$tbl_name1}"
+      . " INNER JOIN {$tbl_name2}"
+      . " ON {$tbl_name1}.shouhinID"
+      .   = {$tbl_name2}.shouhin_code;";
+</pre>
+      
+<h4>5.14.3　左外部結合（LEFT　OUTER　JOIN）</h4>
+<p>テーブルを結合する第３の方法は，左外部結合のための「LEFT　OUTER　JOIN」句を使う方法です．</p> 
+        <p class="command-print">SELECT　*　FROM　テーブル1　LEFT　OUTER　JOIN　テーブル２<br>
+          　　　ON　結合条件式</p>
+<p>内部結合では，結合条件式に合致するレコードのみが結合して参照されます．それに対して，外部結合では，どちらかのテーブルのレコードはすべて表示されます．<br>
+        　 FROM句の後に記述されているテーブル1のレコードをすべて参照する結合方法を左外部結合といいます．それに対して，JOIN句の後に記述されているテーブル２のレコードをすべて参照する結合方法を右外部結合といいます．<br>
+        　 つまりSQL文で先に（左側に）記述されているテーブルのすべてのレコードを参照する場合を左外部結合といっているのです．</p><p>SQL文のサンプルを下記に示します．サンプルファイル「inner_join.php」でSQL文のみを下記に置き換えたサンプルファイルを「left_join.php」とします．</p> 
+
+「left_join.php」のSQL文
+<pre class="brush:php;">
+// 左外部結合（LEFT OUTER JOIN句）
+$str_sql1 = "SELECT * FROM {$tbl_name1}"
+     . " LEFT OUTER JOIN {$tbl_name2}"
+     . " ON {$tbl_name1}.shouhin_code = {$tbl_name2}.shouhin_code;";
+$rs1 = $mysqli->query($str_sql1);
+</pre>
+
+ 
+  <img src="./files/041403.png" width="500">
+
+<h4>5.14.4　右外部結合（RIGHT　OUTER　JOIN）</h4>
+<p>テーブルを結合する第４の方法は，右外部結合のための「RIGHT　OUTER　JOIN」句を使う方法です．</p> 
+        <p class="command-print">SELECT　*　FROM　テーブル1　RIGHT　OUTER　JOIN　テーブル２<br>
+          　　　ON　結合条件式</p>
+<p>右外部結合では，SQL文で右側に記述されたテーブル2のレコードは，テーブル1の状態いかんにかかわらずすべて参照されます．</p><p>SQL文のサンプルを下記に示します．サンプルファイル「left_join.php」でSQL文のみを下記に置き換えたサンプルファイルを「right_join.php」とします．</p> 
+
+「right_join.php」のSQL文
+<pre class="brush:php;">
+// 左外部結合（LEFT OUTER JOIN句）
+$str_sql1 = "SELECT * FROM {$tbl_name1}"
+     . " RIGHT OUTER JOIN {$tbl_name2}"
+     . " ON {$tbl_name1}.shouhin_code = {$tbl_name2}.shouhin_code;";
+$rs1 = $mysqli->query($str_sql1);
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p>
+ 
+  <img src="./files/041404.png" width="500">
+
+<p>最後のレコードに対応するshouhin_code='140'のレコードは左のテーブル「tbl_uriage_meisai」にはありませんが，右のテーブル「tbl_shouhin1」にはあるので，右外部結合の結果セットには表示されているのがわかります．なお，対応する「tbl_uriage_meisai」の「denpy_code」と「kosuu」のフィールド値はNULL値が表示されます．</p>
+
+<h4>5.14.5　SELECT文によるテーブルの結合</h4>
+<p>テーブルを結合する第５の方法は，SELECT文を使う方法です．SELECT文で自然結合を行うには，以下の構文を使います．</p> 
+        <p class="command-print">SELECT　　　テーブル1.フィールド名1, テーブル1.フィールド名2, ・・・,テーブル1.フィールド名m,<br>
+          　　　　　　　　テーブル2.フィールド名1, テーブル2.フィールド名2, ・・・,テーブル2.フィールド名n,<br>
+          　　FROM　　テーブル1,　テーブル2<br>
+          　　WHERE　テーブル1.フィールド名x　=　テーブル2.フィールド名y</p>
+<p>複数のテーブルのフィールド名を混在して使用する場合は，どのテーブルのどのフィールド名かが分かるように，「テーブル名.フィールド名」のようにテーブル名とフィールド名を「.」（半角ピリオド）で結合した表記を使います．FROM句には結合する複数のテーブル名を「,」（カンマ）で区切って記述します．結合条件式は，WHERE句の中に記述します．SQL文のサンプルを下記に示します．サンプルファイル「right_join.php」でSQL文のみを下記に置き換えたサンプルファイルを「select_join.php」とします．</p> 
+
+「select_join.php」のSQL文
+<pre class="brush:php;">
+// SELECT文による自然結合
+$str_sql1 = "SELECT {$tbl_name1}.denpyo_code,"
+     .    "{$tbl_name1}.shouhin_code,"
+     .    "{$tbl_name1}.kosuu,"
+     .    "{$tbl_name2}.shouhin_mei,"
+     .    "{$tbl_name2}.tanka"
+     .  " FROM {$tbl_name1}, {$tbl_name2}"
+     .  " WHERE {$tbl_name1}.shouhin_code = {$tbl_name2}.shouhin_code;";
+$rs1 = $mysqli->query($str_sql1);
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p>
+ 
+  <img src="./files/041405.png" width="500">
+
+<h4>5.14.6　相関名</h4>
+<p>フィールド名を「テーブル名.フィールド名」と記述する方法では，表記が長くわかりづらくなるので，「相関名」を使ってより簡単に表記することができます．相関名とはたとえば，テーブル「tbl_uriage_meisai」を１文字のアルファベット「M」で表記するような方法です．相関名は，FROM句内で，テーブル名の後に半角スペース1個以上で区切って相関名となるアルファベットを挿入することで定義します．相関名を使ったSQL文のサンプルを下記に示します．サンプルファイル「select_join.php」でSQL文のみを下記に置き換えたサンプルファイルを「select_alias_join.php」とします．</p> 
+
+「select_alias_join.php」のSQL文
+<pre class="brush:php;">
+// SELECT文による自然結合(相関名の使用）
+$str_sql1 = "SELECT M.denpyo_code,"
+     .    "M.shouhin_code,"
+     .    "M.kosuu,"
+     .    "S.shouhin_mei,"
+     .    "S.tanka"
+     .  " FROM {$tbl_name1} M, {$tbl_name2} S"
+     .  " WHERE M.shouhin_code = S.shouhin_code;";
+$rs1 = $mysqli->query($str_sql1);
+</pre>
+
+<p>結果は，たとえば以下のように表示されます．</p>
+ 
+  <img src="./files/041406.png" width="500">
+
+
+<h3>5.15　ビュー</h3>
+<p>SELECT文によるSQL文をあらかじめビューとして定義しておくことができます．つまり，SQL文を実行した結果リソースであって，行と列からなる仮想的なテーブルです．ビューとしての具体的なデータの集合がデータベース内にある訳でなく，ビューを呼び出したときに，その場でビューで定義したSQL文が実行され一時的に結果リソースが生成されるに過ぎません．ビューの定義には，SQLコマンドのCREATE　VIEW文を使用します．</p> 
+        <p class="command-print">CREATE　VIEW　ビュー名　AS　SELECT文</p>
+<p>定義したビューをテーブルとみなして，SQL文を実行することが可能です．ビューのサンプルを下記に示します．</p> 
+
+「view.php」
+<pre class="brush:php;">
+&lt;?php
+// インクルードファイルの読み込み
+include "common_mysql.php";
+
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;select_alias_join.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+
+  require_once('./Connections/localhost.php');
+ 
+// データベースサーバへの接続・データベースの選択
+ $mysqli = new mysqli($db_host, $db_user, $db_passwd, $db_name);
+ 
+ //クライアント文字コードの通知（文字化け防止）
+ $str_sql = "set names utf8;";
+ $rs = $mysqli->query($str_sql); 
+ 
+// 処理対象テーブル
+$tbl_name1 = "tbl_uriage_meisai";
+ 
+$tbl_name2 = "tbl_shouhin1";
+ 
+// SELECT文による結合（相関名の使用）
+$str_sql1 = "SELECT M.denpyo_code,"
+. "M.shouhin_code,"
+. "M.kosuu,"
+. "S.shouhin_mei,"
+. "S.tanka"
+. " FROM {$tbl_name1} M, {$tbl_name2} S"
+. " WHERE M.shouhin_code = S.shouhin_code";
+ 
+// VIEWの定義用SQL文
+$str_sql2 = "CREATE VIEW viw_uriage_meisai AS $str_sql1;";
+ 
+// VIEWの定義用SQL文の実行
+$rs2 = $mysqli->query($str_sql2);
+print "\"{$str_sql2}\"<br><br>\n";
+ 
+// ビューを使ったSQL文（その１）
+$str_sql3 = "SELECT * FROM viw_uriage_meisai;";
+ 
+$rs3 = $mysqli->query($str_sql3);
+print "\"{$str_sql3}\"<br>\n";
+// 結果セットの表示
+show_rs($rs3);
+print "<br>\n";
+ 
+// ビューを使ったSQL文（その２）
+$str_sql4 = "SELECT * FROM viw_uriage_meisai WHERE tanka >= 300;";
+ 
+$rs4 = $mysqli->query($str_sql4);
+print "\"{$str_sql4}\"<br>\n";
+// 結果セットの表示
+show_rs($rs4);
+print "<br>\n";
+ 
+// 結果セット（結果ID）の開放
+mysqli_free_result($rs3);
+mysqli_free_result($rs4);
+ 
+// データベースサーバの切断
+$mysqli->close();
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果を以下に示します．</p>
+ 
+<img src="./files/041501.png" width="500">
+
+
+<!-- 文字サイズ変更用ボタンの表示 -->
+
+
+
+</body></html>

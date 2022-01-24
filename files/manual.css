@@ -1,0 +1,69 @@
+.al      { text-align: left;}
+.ac      { text-align: center;}
+.ar      { text-align: right;}
+.vtop    { vertical-align: top; }
+.vmiddle { vertical-align: middle; }
+.code-presen
+{
+   background-color: #DCDCDC;
+   font-size: 36pt; 
+   border: 1px #A9A9A9 solid;
+   font-family: "ÇlÇr ÉSÉVÉbÉN", "OsakaÅ|ìôïù"
+}
+.code-print
+{
+   background-color: #DCDCDC;
+   font-size: smaller; 
+   border: 1px #A9A9A9 solid;
+   font-family: "ÇlÇr ÉSÉVÉbÉN", "OsakaÅ|ìôïù"
+   
+}
+.command-presen 
+{  border: 1px #000000 solid;
+   font-size: 36pt
+   padding:4px;
+}
+.command-print
+{  border: 1px #000000 solid;
+   font-size: small;
+   padding:2px;
+}
+h2.presen 
+{
+   font-weight: bold;
+   font-size: x-large
+}
+h2.print  
+{  
+   font-weight: bold; 
+   font-size: large
+}
+h3.presen 
+{  
+   font-size: x-large;
+   font-weight: bold
+}
+h3.print 
+{  
+   font-size: medium;
+   font-weight: bold
+}
+p
+{  
+   font-size: smaller;
+}
+table.presen
+{
+   width: 100%
+}
+table.print
+{
+   width: 600px
+}
+
+.caution-print
+{  
+   background-color: #FFFF99;
+   padding:2px;
+
+}

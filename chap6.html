@@ -1,0 +1,621 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>2018実践II</title>
+<link rel="stylesheet" type="text/css" href="./files/manual.css">
+<script language="javascript" src="./files/css.js"></script>
+	
+	<script type="text/javascript" src="./js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushPhp.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushCss.js"></script>
+	<link type="text/css" rel="stylesheet" href="./syntaxhighlighter/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>  
+</head>
+
+<body>
+<h1>PHPとMySQLによるWebアプリケーションの基礎</h1>
+<form>
+  <div class="ar"> 
+		<input type="button" value="標準" onClick="css_print()">
+		<input type="button" value="拡大" onClick="css_presen()">
+  </div>
+</form>
+
+<h2>Chapter 6　PHPとMySQLによるフォームデータの処理</h2>
+<h3>6.1　フォームの作成</h3>
+<p>htmlとphpを使ってフォームを作成しましょう。
+ 
+  <p class="caution-print">（注）MySQL 4.1以上では，これらのデータベースの構造の記述にはUNICODEのutf-8コードのみが使われるようになりました．2006年9月時点では，例えばシフトJISコードで記述したフィールド名等はutf-8コードへ変換はされません．入力を拒否されます．詳細は， http://www.mysql.gr.jp/frame/modules/bwiki/index.php?cmd=read&amp;page=FAQ#content_1_40を参照してください．</p>
+
+
+<h4>6.1.1　フォームの作成</h4>
+<p>フォームの基礎となる部分を作成します。</p>
+
+<p>まずはフォームの入力画面「form.html」を作成します。formのactionにはデータを送るファイルの名前を書きましょう。</p>
+<p>フォームは以下のように作ります<p>
+    <pre class="brush:php;">
+    <form method="post" action="get_form.php">
+    //入力用htmlをここに書く
+    <input type="submit" value="送信" >//送信ボタン
+    </form>  
+    </pre>
+「form.html」
+      <pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+	<title>フォームサンプル</title>
+&lt;/head&gt;
+&lt;body&gt;
+<font size="5">
+<form method="post" action="get_form.php">
+	    <b>よくあるアンケートフォーム</b><br><br>
+	    氏名　<input type="text" name="name" size="20"><br><br>
+	    性別　<input type="radio" name="sex" value="男">男
+		  <input type="radio" name="sex" value="女">女
+	    <br><br>
+	    出身地 <select name="prefectures"> 
+			<option>広島県</option>
+			<option>山口県</option>
+			<option>岡山県</option>
+			<option>島根県</option>
+			<option>鳥取県</option>
+		   </select>
+	    <br><br>
+	    使用経験OS<br>
+<input type="checkbox" name="used_os[]" value="Windows">Windows
+		<input type="checkbox" name="used_os[]" value="MacOS">MacOS
+		<input type="checkbox" name="used_os[]" value="Linux">Linux
+	    <br><br>
+	    ご意見<br>
+<textarea name="opinion" cols="30" rows="5"></textarea><br><br>
+	    <input type="submit" value="送信" >
+	    </form>
+	</font>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+    <p>アクセスすると下のように表示されます</p>
+<img src="./files/fig0601.png" width="304" height="352">
+
+<p>次に送られたデータの表示をphpで作りましょう。methodを「post」にした場合、値は「$_POST["クラス名"]」で取得することができます。</p>
+「get_form.php」
+      <pre class="brush:php;">
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;html&gt;
+&lt;head&gt;
+	<title>フォームサンプル</title>
+&lt;/head&gt;
+&lt;body&gt;
+        &lt;?php
+            $name = $_POST["name"];         //氏名を取得
+            $sex  = $_POST["sex"];          //性別を取得
+            $major = $_POST["prefectures"]; //出身地を取得
+            //チェックボックスからデータを取得する       
+            for( $get_cbox = 0; $get_cbox < count( $_POST['used_os'] ); $get_cbox++ ) {
+                //チェックボックするのデータは$_post['os'][]という形で格納されている
+                $os[$get_cbox] = $_POST['used_os'][$get_cbox];
+            }
+            $opinion = $_POST["opinion"]; //意見を取得
+            //各データ出力
+            printf("氏名 = %s<br>",$name);
+            printf("性別 = %s<br>",$sex);
+            printf("出身地 = %s<br>",$major);
+            foreach ($os as $value) {
+                printf("使用経験OS = %s<br>",$value);
+            }
+            printf("意見 = %s<br>",$opinion);
+        ?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+<img src="./files/fig0602.png" width="404" height="252">
+
+
+
+<h4>6.1.2 　フォームによる情報の取得</h4>
+<p>フォーム送信によって取得できるのは入力された値だけでなくタグ&lt;form&gt;で囲まれたボディ部に含まれるものを取得できます。隠し状態のクラスから情報を取得します。</p>
+
+「form_post.html」
+      <pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+	<title>フォームサンプル</title>
+&lt;/head&gt;
+&lt;body&gt;
+<font size="5">
+<form method="post" action="form_post_val.php">
+	    <b>よくあるアンケートフォーム</b><br><br>
+	    氏名　<input type="text" name="name" size="20"><br><br>
+	    性別　<input type="radio" name="sex" value="男">男
+		  <input type="radio" name="sex" value="女">女
+	    <br><br>
+	    出身地 <select name="prefectures"> 
+			<option>広島県</option>
+			<option>山口県</option>
+			<option>岡山県</option>
+			<option>島根県</option>
+			<option>鳥取県</option>
+		   </select>
+	    <br><br>
+	    使用経験OS<br>
+<input type="checkbox" name="used_os[]" value="Windows">Windows
+		<input type="checkbox" name="used_os[]" value="MacOS">MacOS
+		<input type="checkbox" name="used_os[]" value="Linux">Linux
+        <input type="hidden" name="hoge" value="gegegenoge">
+	    <br><br>
+	    ご意見<br>
+<textarea name="opinion" cols="30" rows="5"></textarea><br><br>
+	    <input type="submit" value="送信" >
+	    </form>
+	</font>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+「form_post_val.php」
+      <pre class="brush:php;">
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;html&gt;
+&lt;head&gt;
+	<title>フォームサンプル</title>
+&lt;/head&gt;
+&lt;body&gt;
+        &lt;?php
+            $name = $_POST["name"];         //氏名を取得
+            $gender = $_POST["gender"];     //性別を取得
+            $major = $_POST["prefectures"]; //出身地を取得
+            //チェックボックスからデータを取得する
+            $num_of_check = count( $_POST['used_os'] ); //チェックされた数を取得
+            for( $get_cbox = 0; $get_cbox < $num_of_check; $get_cbox++ ) {
+                //チェックボックするのデータは$_post['os'][]という形で格納されている
+                $os[$get_cbox] = $_POST['used_os'][$get_cbox];
+            }
+            $opinion = $_POST["opinion"]; //意見を取得
+            //各データ出力
+            printf("氏名 = %s<br>",$name);
+            printf("性別 = %s<br>",$gender);
+            printf("出身地 = %s<br>",$major);
+            printf("隠しパラメータ = %s<br>",$_POST["hoge"]);
+            foreach ($os as $value) {
+                printf("使用経験OS = %s<br>",$value);
+            }
+            printf("意見 = %s<br>",$opinion);
+        ?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  <img src="./files/fig0603.png" width="504" height="352">
+
+<p>Getを使えばURLに情報を追加して取得を行うことができます。GETはなにかを取得するときに使い、POSTはなにかを新しく登録するときに使うものです。</p>
+ 
+「form_get.html」
+      <pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+	<title>フォームサンプル</title>
+&lt;/head&gt;
+&lt;body&gt;
+<font size="5">
+<form method="get" action=" form_get_val.php">
+	    <b>よくあるアンケートフォーム</b><br><br>
+	    氏名　<input type="text" name="name" size="20"><br><br>
+	    性別　<input type="radio" name="sex" value="男">男
+		  <input type="radio" name="sex" value="女">女
+	    <br><br>
+	    出身地 <select name="prefectures"> 
+			<option>広島県</option>
+			<option>山口県</option>
+			<option>岡山県</option>
+			<option>島根県</option>
+			<option>鳥取県</option>
+		   </select>
+	    <br><br>
+	    使用経験OS<br>
+<input type="checkbox" name="used_os[]" value="Windows">Windows
+		<input type="checkbox" name="used_os[]" value="MacOS">MacOS
+		<input type="checkbox" name="used_os[]" value="Linux">Linux
+        <input type="hidden" name="hoge" value="gegegenoge">
+	    <br><br>
+	    ご意見<br>
+<textarea name="opinion" cols="30" rows="5"></textarea><br><br>
+	    <input type="submit" value="送信" >
+	    </form>
+	</font>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+「form_get_val.php」
+      <pre class="brush:php;">
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;html&gt;
+&lt;head&gt;
+	<title>フォームサンプル</title>
+&lt;/head&gt;
+&lt;body&gt;
+        &lt;?php
+            $name = $_GET["name"];         //氏名を取得
+            $gender = $_GET["gender"];     //性別を取得
+            $major = $_GET["prefectures"]; //出身地を取得
+            //チェックボックスからデータを取得する
+            $num_of_check = count( $_GET['used_os'] ); //チェックされた数を取得
+            for( $get_cbox = 0; $get_cbox < $num_of_check; $get_cbox++ ) {
+                //チェックボックするのデータは$_post['os'][]という形で格納されている
+                $os[$get_cbox] = $_GET['used_os'][$get_cbox];
+            }
+            $opinion = $_GET["opinion"]; //意見を取得
+            //各データ出力
+            printf("氏名 = %s<br>",$name);
+            printf("性別 = %s<br>",$gender);
+            printf("出身地 = %s<br>",$major);
+            printf("隠しパラメータ = %s<br>",$_GET["hoge"]);
+            foreach ($os as $value) {
+                printf("使用経験OS = %s<br>",$value);
+            }
+            printf("意見 = %s<br>",$opinion);
+        ?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  <img src="./files/fig0604.png" width="704" height="252">
+
+<p>URLに注目してみてください。</p>
+
+<h3>6.2　フォームとデータベースの連携</h3>
+<p>htmlとphpを使ってフォームを作成しましょう。
+<p>phpMyAdminを使って今回使うデータベースとテーブルを作成します。</p>
+「student.sql」
+<pre>
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+CREATE DATABASE IF NOT EXISTS `student` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+USE `student`;
+
+CREATE TABLE `student` (
+  `id` int(3) NOT NULL,
+  `name` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `major` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `data` int(3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `student` (`id`, `name`, `major`, `data`) VALUES
+(1, '工大太郎', '情報学部', 78),
+(2, '工大花子', '情報学部', 61);
+
+ALTER TABLE `student`
+  ADD PRIMARY KEY (`id`);
+ALTER TABLE `student`
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;COMMIT;
+</pre>
+
+<p>接続用のphpも作成します。</p>
+「db_connect.php」
+      <pre class="brush:php;">
+&lt;?php
+		$DBSERVER = "localhost";
+$DBUSER = "root";
+$DBPASSWORD = "root";
+$DBNAME = "student";
+
+$mysqli = new mysqli($DBSERVER, $DBUSER, $DBPASSWORD, $DBNAME);
+
+if (mysqli_connect_errno()){
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+
+mysqli_set_charset($mysqli,"utf8");
+        ?&gt;
+</pre>
+
+<h4>6.2.1　フォームの保存</h4>
+ 
+ <p>フォームで保存したデータをデータベースに保存してみましょう。</p>
+
+「form_insert.html」
+      <pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+	<title>フォームサンプル</title>
+&lt;/head&gt;
+&lt;body&gt;
+<font size="5">
+<form method="post" action="form_post_insert.php">
+	    <b>データの挿入</b><br><br>
+	    name <input type="text" name="name" size="20"><br><br>
+	    major <input type="text" name="major" size="20"><br><br>
+	    data <input type="text" name="data" size="20"><br><br>
+	    <input type="submit" value="送信" >
+	    </form>
+	</font>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+「form_post_insert.php」
+<pre class="brush:php;">
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;html&gt;
+&lt;head&gt;
+	<title>get form</title>
+&lt;/head&gt;
+&lt;body&gt;
+        &lt;?php
+        require 'db_connect.php';
+
+            $name = $_POST["name"];
+            $major = $_POST["major"];
+            $data = $_POST["data"];
+		
+		$sql = "insert into student (name, major, data) value ('$name','$major','$data')";
+
+		//echo $sql;
+
+		$rst = $mysqli->query($sql);
+
+		//printf("name = %s<br>",$name);
+		//printf("major = %s<br>",$major);
+		//printf("data = %s<br>",$deta);
+		
+		 print "<h2>データ挿入しました</h2>";
+		//studentテーブルからデータをすべて抽出する
+		require 'select_db.php';
+        ?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+「select_db.php」
+<pre class="brush:php;">
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;html&gt;
+&lt;head&gt;
+	<title>データの閲覧</title>
+&lt;/head&gt;
+&lt;body&gt;
+        &lt;?php
+    //データベースからデータを抽出する
+    require 'db_connect.php';
+    //studentテーブルからデータをすべて抽出する
+    $sql = "SELECT * FROM student";
+    //SQL文を発行する
+    $rst = $mysqli->query($sql);
+    //出力結果をテーブルで表示する
+    printf("<table border='1'>");
+    printf("<tr><td>id</td><td>名前</td><td>学部</td><td>テストデータ</td><tr>");
+    //mysql_fetch_array関数を用いて発行したSQL文の結果レコードを一行ずつ取得する
+    //whileは結果レコードをすべて取得するまで繰り返す        
+    while($col = $rst->fetch_array(MYSQLI_ASSOC)){
+        printf("<tr><td>$col[id]</td><td>$col[name]</td>
+                    <td>$col[major]</td><td>$col[data]</td></tr>");
+    }
+    printf("</table>");
+        ?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<img src="./files/fig0605.png" width="504" height="352">
+
+<h4>6.2.2　フォームの検索</h4>
+
+<p>データベースからwhere文を使ってフォームで入力された情報を検索できるようにしましょう</p>
+
+「form_where.html」
+      <pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+	<title>フォームサンプル</title>
+&lt;/head&gt;
+&lt;body&gt;
+<font size="5">
+<form method="post" action="form_post_where.php">
+	    <b>データの検索</b><br><br>
+	    専攻で検索 <input type="text" name="major" size="20"><br><br>
+	    <input type="submit" value="送信" >
+	    </form>
+	</font>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+「form_post_where.php」
+<pre class="brush:php;">
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;html&gt;
+&lt;head&gt;
+	<title>get form</title>
+&lt;/head&gt;
+&lt;body&gt;
+        &lt;?php
+    //データベースからデータを抽出する
+    require 'db_connect.php';
+
+	$major = $_POST["major"];
+
+    //studentテーブルからmajorが情報学部のデータをすべて抽出する
+    $sql = "SELECT * FROM student where major like '%$major%'";
+    //SQL文を発行する
+    print "<p>検索結果</p>";    
+    $rst = $mysqli->query($sql);
+    //出力結果をテーブルで表示する
+    printf("<table border='1'>");
+    printf("<tr><td>id</td><td>名前</td><td>学部</td><td>テストデータ</td><tr>");
+    //mysql_fetch_array関数を用いて発行したSQL文の結果レコードを一行ずつ取得する
+    //whileは結果レコードをすべて取得するまで繰り返す        
+    while($col = $rst->fetch_array(MYSQLI_ASSOC)){
+        printf("<tr><td>$col[id]</td><td>$col[name]</td>
+                    <td>$col[major]</td><td>$col[data]</td></tr>");
+    }
+    printf("</table>");
+    print "<p><a href='select_db.php'>トップへ戻る</a></p>";
+        ?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+<img src="./files/fig0606.png" width="504" height="352">
+
+<p>入力した情報と一致するものをさがして画面に表示します。</p>
+
+<h4>6.2.3　フォームの削除</h4>
+
+<p>データベースからwhere文を使ってフォームで入力されたIDのデータを削除する機能を作成します。</p>
+
+「form_delete.html」
+      <pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+	<title>フォームサンプル</title>
+&lt;/head&gt;
+&lt;body&gt;
+<font size="5">
+<form method="get" action="form_delete.php">
+	    <b>消す場合</b><br><br>
+	    id <input type="text" name="id" size="20"><br><br>
+	    <input type="submit" value="送信" >
+	    </form>
+	</font>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+「form_delete.php」
+<pre class="brush:php;">
+&lt;?php
+    //データベースからデータを抽出する
+    require 'db_connect.php';
+
+	$id = $_GET["id"];
+	print "<h3>削除して良いのですか？</h3>";
+    //studentテーブルからmajorが情報学部のデータをすべて抽出する
+    $sql = "SELECT * FROM student where id = $id";
+    //SQL文を発行する
+    $rst = $mysqli->query($sql);
+    //出力結果をテーブルで表示する
+    printf("<table border='1'>");
+    printf("<tr><td>id</td><td>名前</td><td>学部</td><td>テストデータ</td><tr>");
+    //mysql_fetch_array関数を用いて発行したSQL文の結果レコードを一行ずつ取得する
+    //whileは結果レコードをすべて取得するまで繰り返す        
+    while($col = $rst->fetch_array(MYSQLI_ASSOC)){
+        printf("<tr><td>$col[id]</td><td>$col[name]</td>
+                    <td>$col[major]</td><td>$col[data]</td></tr>");
+    }
+    printf("</table>");
+?&gt;
+<form method="post" action="form_post_delete.php">
+	<input type="hidden" name="id" value="<?php print $id; ?>">
+	<input type="submit" value="送信" >
+</form>
+</pre>
+「form_post_delete.php」
+<pre class="brush:php;">
+&lt;?php
+    //データベースからデータを抽出する
+    require 'db_connect.php';
+    
+	$id = $_POST["id"];
+
+    //studentテーブルの指定の行を削除する
+    $sql = "DELETE FROM student WHERE id = $id";
+    //SQL文を発行する
+    $rst = $mysqli->query($sql);
+    
+	 print "<h2>データを削除しました</h2>";
+    //studentテーブルからデータをすべて抽出する
+    require 'select_db.php';
+    print "<p><a href='select_db3.php'>トップへ戻る</a></p>";
+?&gt;
+</pre>
+
+<img src="./files/fig0607.png" width="504" height="352">
+<img src="./files/fig0608.png" width="504" height="352">
+<img src="./files/fig0609.png" width="504" height="352">
+
+
+<h4>6.2.4　フォームの更新</h4>
+
+<p>フォームの削除と同じようにデータベースからwhere文を使ってフォームで入力されたIDのデータを表示し更新２する機能を作成します。</p>
+
+「form_update.html」
+      <pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+	<title>フォームサンプル</title>
+&lt;/head&gt;
+&lt;body&gt;
+<font size="5">
+<form method="get" action="form_update.php">
+	    <b>データの検索</b><br><br>
+	    idで検索 <input type="text" name="id" size="20"><br><br>
+	    <input type="submit" value="送信" >
+	    </form>
+	</font>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+「form_update.php」
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+	<title>フォームサンプル</title>
+&lt;/head&gt;
+&lt;?php
+    //データベースからデータを抽出する
+    require 'db_connect.php';
+    $id = $_GET["id"];
+    $sql = "SELECT * FROM student where id = '$id'";
+    $rst = $mysqli->query($sql);
+	$col = $rst->fetch_array(MYSQLI_ASSOC);
+?&gt;
+<font size="5">
+<form method="post" action="form_post_update.php">
+	    <b>データの更新</b><br><br>
+	    name <input type="text" name="name" value="<?php print $col["name"]; ?>" size="20"><br><br>
+	    major <input type="text" name="major" value="<?php print $col["major"]; ?>" size="20"><br><br>
+	    data <input type="text" name="data" value="<?php print $col["data"]; ?>" size="20"><br><br>
+		<input type="hidden" name="id" value="<?php print $id; ?>">
+	    <input type="submit" value="送信" >
+	    </form>
+	</font>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+「form_post_update.php」
+<pre class="brush:php;">
+&lt;?php
+    //データベースからデータを抽出する
+    require 'db_connect.php';
+    
+	$id = $_POST["id"];
+	$name = $_POST["name"];
+	$major = $_POST["major"];
+	$data = $_POST["data"];
+
+    //studentテーブルのデータを更新する
+    $sql = "UPDATE student SET name = '$name', major = '$major', data = $data WHERE id = $id";
+    //SQL文を発行する
+    $rst = $mysqli->query($sql);
+    
+	 print "<h2>データを更新しました</h2>";
+    //studentテーブルからデータをすべて抽出する
+    require 'select_db.php';
+    print "<p><a href='select_db2.php'>トップへ戻る</a></p>";
+?&gt;
+</pre>
+
+<img src="./files/fig0610.png" width="504" height="352">
+<img src="./files/fig0611.png" width="504" height="352">
+<img src="./files/fig0612.png" width="504" height="352">
+<!-- 文字サイズ変更用ボタンの表示 -->
+
+
+
+</body></html>

@@ -1,0 +1,143 @@
+<div class="login">
+<p>ログイン処理部(login.php)</p>
+<?php
+//現在閲覧されているページを取得する
+//$_SERVER["REQUEST_URI"]の値はincludeされているファイル(login.php)
+//ではなくincludeしている親ページ(page1.phpなど)になる
+$cur_page = $_SERVER["REQUEST_URI"];
+
+//ページ名とリンク名称の配列を作る
+//ページURL表記は先頭に/を付けておく
+//こうすることで$cur_pageと書式が同じになる
+$page_list = array( "/page1.php"=>"トップページ",
+                    "/page2.php"=>"公開ページ",
+                    "/page3.php"=>"会員専用ページ",
+                    "/page4.php"=>"新規会員登録ページ");
+
+//ログイン成功フラグに0（失敗）を設定する
+$success = 0;
+
+//ログイン処理
+//ログイン用フォームからデータが来ていたら
+//idとパスワードがファイルのデータと合致するかどうかを調べる
+if($_POST[l_id] || $_POST[l_pw]){
+    //ファイルを開いて
+    $handle = fopen("member.txt", "r");
+    if ($handle) {
+        //ファイル終端まで1行ずつ読み込む
+        while (!feof($handle)) {
+            $buffer = fgets($handle);
+            //ファイルはTSVなのでタブで分解する
+            list($tmp_id,$tmp_pw,$tmp_name) = split("\t",$buffer);
+            
+            //POSTで受信したIDと合致する行があれば
+            if($tmp_id==$_POST[l_id]){
+                //パスワードの合致を確認する
+                if($tmp_pw==$_POST[l_pw]){
+                    //認証成功のフラグを立てる
+                    $success = 1;
+                    //ユーザー名を設定する
+                    $user_name = $tmp_name;
+                    //whileループを抜ける
+                    break;
+                }else{  //IDは存在するがパスワードが違うので認証失敗
+                    $success = 0;
+                }
+            }else{  //合致するIDがないので認証失敗
+                    $success = 0;
+            }
+        }
+        //ファイルを閉じる
+        fclose($handle);
+    }
+    if($success){
+        //認証に成功していたら
+        //ログイン中のフラグを立てて
+        $flg_login = 1;
+        //セッション変数に記録する
+        $_SESSION[l_id] = $_POST[l_id];
+        $_SESSION[l_pw] = $_POST[l_pw];
+        $_SESSION[l_user] = $user_name;
+        $_SESSION[flg_login] = 1;
+        
+        //ユーザー名を表示する
+        echo "ようこそ".$user_name."さん！<br />";
+    }else{
+        //認証に失敗したら警告を出す
+        $flg_login = 0;
+        echo "IDまたはパスワードが違います";
+        //どちらが間違っているのかを明示すると
+        //クラッキングされやすくなるので注意
+    }
+}
+
+//ログアウト処理
+//ログアウト用ボタンからデータが来ていたら
+if($_POST[logout]){
+    //ログインフラグを0にして
+    $flg_login = 0;
+    //セッション変数を初期化してセッション変数をすべて解除する
+    $_SESSION = array();
+    //セッションそのものを破棄する
+    session_destroy();
+}
+
+//フォームから呼び出されたのでない場合は
+//セッション変数でログインフラグを確認する
+$flg_login = $_SESSION[flg_login];
+
+if(!$flg_login){
+    //ログイン前だったら
+    //ログイン用フォームを書き出す
+    //actionの送信先は自分自身($cur_page)
+echo<<<EO_FORM
+<form name="login" action="$cur_page" method="POST">
+ID:<input type="text" name="l_id">&nbsp;&nbsp;
+パスワード:<input type="password" name="l_pw">
+<input type="submit" value="ログイン">
+</form>
+EO_FORM;
+}else{
+    //ログインしていたら
+    //ログアウト用ボタンを書き出す
+    echo $_SESSION[l_user]."さんは現在ログイン中です";
+echo<<<EO_FORM
+<form name="logout" action="$cur_page" method="POST">
+<input type="hidden" name="logout" value="1">
+<input type="submit" value="ログアウト">
+</form>
+EO_FORM;
+}
+
+//------デバッグ用表示--------
+echo "<hr />デバッグ用表示<br />";
+echo "POST: ";
+print_r($_POST);
+echo "<br />";
+echo "SESSION: ";
+print_r($_SESSION);
+echo "<hr />";
+
+//リンク部分の表示
+echo "<h1>リンク</h1><ul>";
+
+foreach ($page_list as $key => $value){
+    //現在のページと配列の$keyが同じならば
+    //そこが今いるページなので自分へのリンクは生成しない
+    if($cur_page!=$key){
+        //ログインしておらず、会員専用ページを表示しようとしている
+        if(!$flg_login && $key=="/page3.php"){
+        echo "<li>".$value."(会員専用)</li>";
+        //ログインしていて、新規登録ページを表示しようとしている
+        }elseif($flg_login && $key=="/page4.php"){
+        echo "<li>".$value."(あなたは登録済です)</li>";
+        }else{
+        //そのほかのページ
+        echo "<li><a href=\"".$key."\">".$value."</a></li>";
+        }
+    }
+}
+
+echo "</ul>";
+?>
+</div>

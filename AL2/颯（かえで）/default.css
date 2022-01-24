@@ -1,0 +1,42 @@
+header
+{
+    background: #fff;
+    padding: 10px 10px;
+    position: fixed;
+    width: 100%;
+    display: flex;
+}
+.margin
+{
+    padding-top:240px;
+}
+.margin_post
+{
+    padding-top:60px;
+}
+.thread
+{
+    background: #70c34a29;
+    padding-top: 20px;
+    padding-right: 100px;
+    margin-top: 20px;
+}
+#nav {
+  list-style: none;
+  overflow: hidden;
+}
+
+#nav li {
+  width: 200px;
+  text-align: center;
+  float: left;
+  height: 50px;
+  line-height: 50px;
+  margin-right: 2px;
+}
+
+#nav li a {
+  text-decoration: none;
+  font-weight: bold;
+  padding: 20px;
+}

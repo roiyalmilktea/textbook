@@ -1,0 +1,16 @@
+<?php
+//セッションの開始
+session_start();
+?>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title><?php echo $title; ?></title>
+<!--CSSなどもここに書いておくか、
+あるいは外部CSSファイルを読み込んでおくと便利-->
+<style type="text/css">
+div{
+    border-style:solid;
+    border-width:1px;
+}
+</style>
+</head><body>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>入力フォーム</title>
+</head>
+<body>
+入力フォーム<br>
+<form method="post" action="add.php">
+料理名:<input type = "text" name="recipe_name" required><br>
+カテゴリ：
+<select name="category">
+	<option value="">選択してください</option>
+	<option value="1">和食</option>
+	<option value="2">中華</option>
+	<option value="3">洋食</option>
+</select>
+<br>
+難易度：
+<input type="radio" name="difficulty" value="1">簡単
+<input type="radio" name="difficulty" value="2" checked>普通
+<input type="radio" name="difficulty" value="3">難しい
+<br>
+予算：<input type="number" min="1" max="9999" name="budget">円
+<br>
+材料：
+<!--チェックが入ってない際に0を返すため、hiddenで初期値を0にする-->
+<input type="hidden" name="ing_sol" value="0">
+<input type="checkbox" name="ing_sol" value="1">塩
+
+<input type="hidden" name="ing_sug" value="0">
+<input type="checkbox" name="ing_sug" value="1">砂糖
+<input type="hidden" name="ing_soy" value="0">
+<input type="checkbox" name="ing_soy" value="1">しょうゆ
+<input type="hidden" name="ing_egg" value="0">
+<input type="checkbox" name="ing_egg" value="1">たまご
+<input type="hidden" name="ing_mil" value="0">
+<input type="checkbox" name="ing_mil" value="1">牛乳
+<br>
+その他材料：
+<br>
+<textarea name="ingredient" cols="40" rows="4" maxlength="150"></textarea>
+<br>
+作り方：
+<br>
+<textarea name="howto" cols="40" rows="4" maxlength="150"></textarea>
+<br>
+<input type="submit" value="送信">
+<input type="reset" value ="リセット">
+</form> 
+<a href='list.php'>トップページへ戻る</a>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html>
+<head>
+	<title>フォームサンプル</title>
+</head>
+<body>
+<font size="5">
+<form method="get" action=" form_get_val.php">
+	    <b>よくあるアンケートフォーム</b><br><br>
+	    氏名　<input type="text" name="name" size="20"><br><br>
+	    性別　<input type="radio" name="gender" value="男">男
+		  <input type="radio" name="gender" value="女">女
+	    <br><br>
+	    出身地 <select name="prefectures"> 
+			<option>広島県</option>
+			<option>山口県</option>
+			<option>岡山県</option>
+			<option>島根県</option>
+			<option>鳥取県</option>
+		   </select>
+	    <br><br>
+	    使用経験OS<br>
+<input type="checkbox" name="used_os[]" value="Windows">Windows
+		<input type="checkbox" name="used_os[]" value="MacOS">MacOS
+		<input type="checkbox" name="used_os[]" value="Linux">Linux
+		<input type="hidden" name="hoge" value="gegegenoge">
+	    <br><br>
+	    ご意見<br>
+<textarea name="opinion" cols="30" rows="5"></textarea><br><br>
+	    <input type="submit" value="送信">
+	    </form>
+	</font>
+</body>
+</html>

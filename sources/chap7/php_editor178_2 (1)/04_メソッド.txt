@@ -1,0 +1,43 @@
+    /**
+     * äTóv
+     *
+     * ê‡ñæ
+     *
+     * @param string    $arg   ê‡ñæ
+     * @param array     $arg   ê‡ñæ
+     * @param mixed     $arg   ê‡ñæ
+     * @param integer   $arg   ê‡ñæ
+     * @param boolean   $arg   ê‡ñæ
+     * @param resource  $arg   ê‡ñæ
+     * @param object    $arg   ê‡ñæ
+     *
+     * @return string          ê‡ñæ
+     * @return array           ê‡ñæ
+     * @return mixed           ê‡ñæ
+     * @return integer         ê‡ñæ
+     * @return boolean         ê‡ñæ
+     * @return resource        ê‡ñæ
+     * @return object          ê‡ñæ
+     * @return void
+     *
+     * @see funcName1,funcName2
+     * 
+     * @access public
+     * @access private
+     * @access protected
+     */
+     // ñΩñºãKë•) connect(),getData(),buildSomeWidget()
+     /**
+      * public function
+      */
+     function fooFunc()
+     {
+         
+     }
+     /**
+      * private function
+      */
+     function _fooFunc()
+     {
+         
+     }

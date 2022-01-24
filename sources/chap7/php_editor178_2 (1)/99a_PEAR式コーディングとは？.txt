@@ -1,0 +1,91 @@
+●まず、ご存知の方も多いかと思いますがPEARとはPHP言語で書かれたクラスライブラリのことです。
+    
+    URL:http://pear.php.net/
+    
+●PEARコーディング規約にのっとってコードを書くと何がお得？
+    
+    ・PEARコーディング規約自体、コードの可読性をあげるために作成されたものであり、
+    　自分や、PEARコーディング規約を知っている人もコードを読みやすくなる。
+    ・いつも違うコードを書くより、規約にのっとって書いた方が全体的に一貫性があって美しい(=読みやすい)。
+    ・コメントをきちんと書いておくことでphpDocumentorなどでドキュメント作成も容易。
+    
+●PEARコーディング規約とは？
+    
+    ・インデントにはタブ4個を使用する
+    ・制御構造 if などは関数コールと区別するために
+      if (1) {
+      のように半角スペースを入れる。
+      
+    ・関数コールは関数名と開き括弧、最初のパラメータの間に空白をおかず、カンマと書くパラメータの間には
+    　空白をおき、最後のパラメータと閉じ括弧、セミコロンの間には空白をおかずにコールする
+      例) $var = foo($bar, $baz, $quux);
+      
+    ・関数定義
+      例) function($arg1, $arg2 = '')
+          {
+    
+     }
+      "one true brace" 表記
+      デフォルト値を有する引数は引数リストの終わりに記述。
+      
+    ・コメント
+      コメントに # は使わない。// , /* */ 形式を使用する。
+      
+    ・コードの読み込み
+      require_once - クラスファイルを無条件で読み込む場合
+      include_once - クラスファイルを条件付で読み込む場合
+      
+    ・phpコードタグは <? ?> ではなく <?php ?> のように必ず行う
+    
+    ・ファイルのヘッダには
+      /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+      // +----------------------------------------------------------------------+
+      // | PHP version 4                                                        |
+      // +----------------------------------------------------------------------+
+      // | Copyright (c) 1997-2004 The PHP Group                                |
+      // +----------------------------------------------------------------------+
+      // | This source file is subject to version 3.0 of the PHP license,       |
+      // | that is bundled with this package in the file LICENSE, and is        |
+      // | available through the world-wide-web at the following url:           |
+      // | http://www.php.net/license/3_0.txt.                                  |
+      // | If you did not receive a copy of the PHP license and are unable to   |
+      // | obtain it through the world-wide-web, please send a note to          |
+      // | license@php.net so we can mail you a copy immediately.               |
+      // +----------------------------------------------------------------------+
+      // | Authors: Original Author <author@example.com>                        |
+      // |          Your Name <you@example.com>                                 |
+      // +----------------------------------------------------------------------+
+      //
+      // $Id:$
+      のように記述する必要がある。
+    
+    ・命名規約
+    
+      クラス）
+        クラス階層は _ によって区切られ、常に大文字で始まる必要がある。
+         - Log
+         - Net_Finger
+         - HTML_Upload_Error
+      
+      関数とメソッド）
+        名前の最初の文字は小文字で、 新しい単語を始める際の各先頭文字は大文字とします。
+         - connect()
+         - getData()
+         - buildSomeWidget()
+      
+        メソッドではないグローバルな関数はパッケージ間の名前の衝突を避けるためにパッケージ名を接頭辞として
+        加える必要があります。
+         - XML_RPC_serializeData()
+      
+      定数）
+        定数は、常にすべて大文字で記述し、単語を区切る際にはアンダースコアを使用します
+         - define("DB_CONST",1);
+        最初にパッケージ名をつける必要があります。
+        たとえば、DBパッケージの定数は常に DB_ を接頭辞として付与します。
+      
+      グローバル変数）
+        アンダースコアで始まり、その後にパッケージ名と別のアンダースコア が続くようにする必要があります。
+         - $_DB_value
+    
+    ※ 公式の説明は pear.php.net でご覧ください。
+

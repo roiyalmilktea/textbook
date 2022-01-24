@@ -1,0 +1,1 @@
+<html><head><title>hello5.php</title></head><body><?php print "今日は！<br>" . "山田です<br>";?></body></html>

@@ -1,0 +1,2465 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>2018実践II</title>
+<link rel="stylesheet" type="text/css" href="./files/manual.css">
+<script language="javascript" src="./files/css.js"></script>
+	
+	<script type="text/javascript" src="./js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushPhp.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushCss.js"></script>
+	<link type="text/css" rel="stylesheet" href="./syntaxhighlighter/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>  
+</head>
+
+<body>
+<h1>PHPとMySQLによるWebアプリケーションの基礎</h1>
+<form>
+  <div class="ar"> 
+		<input type="button" value="標準" onClick="css_print()">
+		<input type="button" value="拡大" onClick="css_presen()">
+  </div>
+</form>
+
+<h2>Chapter 3 インタラクティブなWebページ</h2>
+<h3 class="print">3.1　HTMLフォームによるデータの送信</h3>
+<h4>3.1.1　HTMLフォーム</h4>
+<p>クライアントのブラウザに表示されているWebページからデータを入力して，Webサーバにデータを送信することができます．このとき，HTMLの&lt;form&gt;タグを使います．&lt;form&gt;タグを使ったデータの入力様式をHTMLフォームといいます．HTMLフォームにはたとえば次のようなコントロールがあります．</font> 
+</p> 
+        <p class="command-print">・テキスト　　　　　　１行の文字列を入力します <br>
+          ・ラジオボタン　　　　複数の項目のうちの一つをオンにします <br>
+          ・チェックボックス　　複数の項目のなかの任意の項目をオンにします <br>
+          ・テキストエリア　　　複数行の文字列を入力します <br>
+          ・選択メニュー　　　複数の一覧メニューから一つを選択します <br>
+          ・隠し項目　　　　　Webページには表示しないで，値のみをWｅｂサーバに送信します， <br>
+          ・送信ボタン　　　　ＨＴＭＬフォームのデータをＷｅｂサーバに送信します </p>
+      
+<p>各コントロールにはフィールド名をつけて識別します．</font></p>
+
+<h4>3.1.2　メソッド</h4>
+<p>ＨＴＭＬフォームは&lt;form&gt;タグで始まり，&lt;/form&gt;タグで終わります．&lt;form&gt;タグでは，ＷｅｂページからＷｅｂサーバに向けてどのような方法でデータを送信するのか送信方法を指定する必要があります．これをメソッドといいます．メソッドにはＧＥＴメソッドとＰＯＳＴメソッドがあります．また，Ｗｅｂサーバに送信したデータをどのPHPファイルに引き継ぐのかも指定する必要があります．これにはＡＣＴＩＯＮ属性を使います．</font></p>
+
+<h4>3.1.3　GETメソッド</h4>
+<p>GETメソッドを使う場合，次のように記述します．</font></p>
+       
+        <p class="command-print">&lt;form　method="get"　action="file.php"&gt;</h4></p>
+      
+<p>つまり，これから記述するHTMLフォームのデータは送信ボタンがおされたときに，ＧＥＴメソッドを用いて”ｆｉｌｅ．phｐ”というPHＰファイルに引き継ぎなさいという意味になります．ＧＥＴメソッドの場合，引き継がれるデータはＵＲＬに付加された形でＷｅｂサーバに送信され，次のPHＰファイルに渡されます．たとえば，</font></p>
+       
+        <p class="command-print">ＵＲＬ　http://www.abc.com/apl/file2.php?menu=main&amp;id=12</p>
+      
+<p>の場合は，次に実行されるPHPファイルは"www.abc.com"というWebサーバの"/apl/file2.php"というPHPファイルで，引き継ぐデータはmenuという変数の値が"main"で，idという変数の値が12ということになります．</font></p>
+<p>GETメソッドで受信されたフォーム内のコントロールのデータをPHPで参照するには，次の書式とします．</font></p>
+       
+        <p class="command-print">$_GET["フィールド名"]</h4></p>
+        <p class="caution-print">【注意】$_GET( )でなく，$GET_[ ]です． </p>
+      
+
+<h4>3.1.4　POSTメソッド</h4>
+<p>POSTメソッドを使う場合，次のように記述します．</font></p>
+       
+        <p class="command-print">&lt;form　method="post"　action="file.php"&gt;</h4></p>
+      
+<p>つまり，これから記述するHTMLフォームのデータは送信ボタンがおされたときに，POSTメソッドを用いて”ｆｉｌｅ．php”というPHＰファイルに引き継ぎなさいという意味になります．POSTメソッドの場合，引き継がれるデータは標準入出力によりＷｅｂサーバに送信され，次のPHＰファイルに渡されます．</font></p>
+<p> POSTメソッドで受信されたフォーム内のコントロールのデータをPHPで参照するには，次の書式とします．</font></p>
+       
+        <p class="command-print">$_POST["フィールド名"]</p>
+        <p class="caution-print">【注意】$_POST( )でなく，$POST_[ ]です． </p>
+      
+
+<h4>3.1.5　テキスト</h4>
+<p>リスト3.1.1のPHPファイルform.phpは１行のテキストを入力するHTMLフォームをWebページに表示するためのPHPファイルです．</font></p>
+       
+<p><font size="-1" class="command-print">&lt;input name="data" 
+          size=20&gt;</font></p>
+      
+<p>これは，テキスト入力コントロールを表示するためのHTMLタグで，type="text"が省略されています．nameは入力されたデータを格納するフィールド名です．sizeはテキスト入力コントロールの長さを半角文字数で示します．</p>
+       
+<p><font size="-1" class="command-print">&lt;input type="submit" 
+          value=" OK "&gt;</font></p>
+      
+<p>これは，送信ボタンを表示するためのHTMLタグです．ボタンにはvalueの値が表示されます．</font></p>
+
+リスト3.1.1　form_text.php
+<pre class="brush:html;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text.php&lt;/title&gt;
+&lt;!-- form:テキスト --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_text2.php" method="post"&gt;
+  入力：&lt;input name="data" size=20&gt;
+  &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>リスト3.1.1のfrom_text.phpファイルにアクセスすると，次のWebページが表示されます．</font></p>
+       
+  <h3 class="print"><img src="./files/030101.png" width="450"></h3>
+      
+<p>リスト3.1.1のPHPファイルでは，「OK」ボタンがクリックされると，次にform_text2.phpファイルを起動するようになっています．リスト3.1.2はそのform_text2.phpファイルのリストです．</font></p>
+       
+リスト3.1.2　form_text2.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text2.php&lt;/title&gt;
+&lt;!-- form:テキストデータの受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ print "入力データは［";
+ print $_POST["data"];      // POSTメソッドでのフォームデータの受信
+ print "］です．&lt;br&gt;";
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>は，HTMLフォームの中のフィールド名「data」の値をPOSTメソッドで取得（受信）するための文です．ここでは，受信したデータをそのままWebページに表示するようにしています．</font></p>
+
+<p>テキスト入力コントロールに次図のように文字を記述します．</font></p>
+       
+<p><img src="./files/030102.png" width="450"></p>
+      
+<p>「OK」ボタンをクリックすると，リスト3.1.2のform_text2.phpファイルが起動され，form_text2.phpファイルは次図のWebページを生成します． 
+        </font></p>
+       
+<p><img src="./files/030103.png" width="450"></p>
+      
+<p>なお，form.text2.phpファイルは，リスト3.1..3のform.text2a.phpファイルのようにあるいはリスト3.1.4のform.text2b.phpファイルのように記述することもできます．</font></p>
+       
+リスト3.1.3　form_text2a.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text2a.php&lt;/title&gt;
+&lt;!-- form:テキストデータの受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+入力データは［&lt;?php print $_POST["data"];?&gt;］です．
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+リスト3.1.4　form_text2b.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text2b.php&lt;/title&gt;
+&lt;!-- form:テキストデータの受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+入力データは［&lt;?=$_POST["data"];?&gt;］です．
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+      
+      
+<h4>3.1.6　ラジオボタン</h4>
+<p>リスト3.1.5のform_radio.phpファイルは，ラジオボタンを表示するためのPHPファイルの例です．次に起動するファイルとしては，前と同じform_text2.phpファイルを使用しています．同じnameをもつinputタグで一つのグループを作り，その内の一つが排他的に選択されます．</font></p>
+       
+        <p class="command-print">&lt;input="radio" name="data" 
+          VALUE="男"&gt;１．男</p>
+      
+
+リスト3.1.5　form_radio1.php      
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_radio.php&lt;/title&gt;
+&lt;!-- form:ラジオボタン --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_text2.php" method="post"&gt;
+  入力：&lt;br&gt;
+  &lt;input type="radio" name="data" value="男"&gt;１，男
+  &lt;input type="radio" name="data" value="女"&gt;２，女
+  &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>リスト3.1.5のform_radio.phpファイルにアクセスすると，次図のWebページが表示されます．</font></p>
+       
+<p><img src="./files/030104.png" width="450"></p>
+      
+<p>たとえば，次図のように「１．男」のラジオボタンをオンにして，「OK」ボタンをクリックします．</font></p>
+       
+<p><img src="./files/030105.png" width="450"></p>
+      
+      
+<p>すると次図のWebページが表示され，フィールド名「data」には，「男」が代入されていることがわかります．</font></p>
+       
+<p><img src="./files/030106.png" width="450"></p>
+      
+<p>選択された項目の値を文字列でなく，数値にする場合は，リスト3.1.6のように記述します．</font></p>
+       
+リスト3.1.6　form_radio2.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_radio2.php&lt;/title&gt;
+&lt;!-- form:ラジオボタン --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_text2.php" method="post"&gt;
+  入力：&lt;br&gt;
+  &lt;input type="radio" name="data" value="1"&gt;１，男
+  &lt;input type="radio" name="data" value="2"&gt;２，女
+  &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>結果は次図のようになります．</font></p>
+       
+<p><img src="./files/030107.png" width="450"></p>
+      
+<h4>3.1.7　チェックボックス</h4>
+<p>リスト3.1.7のform_check.phpファイルは，チェックボックスを表示するためのPHPファイルの例です．次に起動するファイルとしては，form_check2.phpファイルを使用しています．チェックボックスのコントロールの書式は次のようにします．</font></p>
+       
+<p><font size="-1" class="command-print">&lt;input type="checkbox" 
+          name="arr_data[0]" value="1"&gt;１，Windows</font></p>
+      
+<p>typeは"checkbox"で，nameは"arr_data[0]"のように配列形式にします．</font></p>
+       
+リスト3.1.7　form_check.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_check.php&lt;/title&gt;
+&lt;!-- form:チェックボックス --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_check2.php" method="post"&gt;
+使用中のOSを選択してください（複数可能）．&lt;br&gt;
+&lt;input type="checkbox" name="arr_data[0]" value="1"&gt;１，Windows
+&lt;input type="checkbox" name="arr_data[1]" value="2"&gt;２，UNIX
+&lt;input type="checkbox" name="arr_data[2]" value="3"&gt;３，LINUX
+  &lt;br&gt;
+&lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+      
+<p>アクセスした結果，次のように表示されます．</p>
+       
+<p><img src="./files/030108.png" width="450"></p>
+      
+<p>PHPファイルで受信する場合は次のように記述します．受信して代入する変数も配列型となります．</font></p>
+       
+        <p class="command-print">$arr_data = $_POST["arr_data"];</p>
+      
+<p>具体的には，以下のように代入されます．</font></p>
+       
+        <p class="command-print">$arr_data[0] = $_POST["arr_data"][0];<br>
+          $arr_data[1] = $_POST["arr_data"][1];<br>
+          $arr_data[2] = $_POST["arr_data"][2]; </p>
+      
+<p>リスト3.1.8にform_check2.phpファイルを示します．</p>
+
+リスト3.1.8　form_check2.php       
+<pre class="brush:php;">
+html&gt;
+&lt;head&gt;
+&lt;title&gt;form_check2.php&lt;/title&gt;
+&lt;!-- form:チェックボックスデータの受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ $arr_data = $_POST["arr_data"];      /* POSTメソッドでの
+                       フォームデータの受信．
+                       配列型のデータとなる． */
+ print "入力データは以下です．&lt;br&gt;";
+ foreach ( $arr_data as $key =&gt; $val ) {
+   print "[$key]=$val&lt;br&gt;"; 
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>たとえば，次図のように，１番目と３番目のチェックボックスをチェックして「OK」ボタンをクリックします．</font></p>
+       
+<p><img src="./files/030109.png" width="450"></p>
+      
+<p>すると次図のようにWebページが表示され，配列$arr_data[]の１番目と３番目にデータが入っていることがわかります．</font></p>
+       
+<p><img src="./files/030110.png" width="450"></p>
+      
+<h4>3.1.8　テキストエリア</h4>
+<p>リスト3.1.9のform_textarea.phpファイルは，テキストエリアを表示するためのPHPファイルの例です．次に起動するファイルとしては，form_textarea2.phpファイルを使用しています．テキストエリアのコントロールを記述するHTMLタグの書式はたとえば次の通りです．</font></p>
+       
+        <p class="command-print">&lt;textarea name="data" rows="5" 
+          cols="40"&gt;&lt;/textarea&gt;</p>
+      
+<p>&lt;input&gt;タグでなく&lt;textarea&gt;タグを使用します．「rows」属性でテキストエリアの行数を「cols」属性で文字数（半角換算）を設定します．最後に&lt;/textarea&gt;タグが必要です．なお，下記のように</font></p>
+       
+        <p class="command-print">&lt;textarea name="data" rows="5" 
+          cols="40"&gt;文字列&lt;/textarea&gt;</p>
+      
+<p>&lt;textarea&gt;タグと&lt;/textarea&gt;タグの間に文字列を記述すると，テキストエリアに初期値として表示されます．</font></p>
+       
+リスト3.1.9　form_textarea.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_textarea.php&lt;/title&gt;
+&lt;!-- form:テキストエリア --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_textarea2.php" method="post"&gt;
+入力：&lt;br&gt;
+&lt;textarea name="data" rows="5" cols="40"&gt;&lt;/textarea&gt;
+&lt;br&gt;
+&lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>テキストエリアに受信データを表示するために，次のように記述します．</font></p>
+       
+        <p class="command-print">&lt;textarea name="data" rows="5" 
+          cols="40"&gt;&lt;?=$_POST["data"]?&gt;&lt;/textarea&gt;</p>
+      
+<p>&lt;?=$_POST["data"]?&gt;の部分はPHPのスクリプトで，&lt;?php print $_POST["data"]; ?&gt;と同義です．つまりブラウザにPOSTメソッドで受信したデータを折り返し出力しています．この出力された文字列は，テキストエリア内に表示されます．リスト3.1.10にサンプルファイルを示します．</p>
+       
+リスト3.1.10　form_textarea2.php         
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_textarea2.php&lt;/title&gt;
+&lt;!-- form:テキストエリアデータの受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_textarea2.php" method="post"&gt;
+入力データは以下です．&lt;br&gt;
+&lt;textarea name="data" rows="5" cols="40"&gt;&lt;?=$_POST["data"]?&gt;&lt;/textarea&gt;
+&lt;br&gt;
+&lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>リスト3.1.10のform_textarea.phpにアクセスすると，次図のWebページが表示されます．</font></p>
+       
+<p><img src="./files/030111.png" width="450"></p>
+      
+<p>たとえば，次図のように記入して，「OK」ボタンをクリックします．</font></p>
+       
+<p><img src="./files/030112.png" width="450"></p>
+      
+<p>サーバ側では，form_textarea2.phpファイルが起動され，入力したテキストエリア</font>内の文字列がテキストエリア</font>に表示されます．</p>
+       
+<p><img src="./files/030113.png" width="450"></p>
+      
+
+<h4>3.1.9　選択メニュー</h4>
+<p>リスト3.1.11のform_menu.phpファイルは，選択メニューを表示するためのPHPファイルの例です．次に起動するファイルとして，form2.phpファイルを使用しています．選択メニューのコントロールの書式は，たとえば以下のようにします．</font></p>
+       
+        <p class="command-print">　　&lt;select name="data"&gt;<br>
+          　　　　&lt;option value="1"&gt;PHP&lt;/option&gt;<br>
+          　　　　&lt;option value="2"&gt;Perl&lt;/option&gt;<br>
+          　　　　&lt;option value="3"&gt;C++&lt;/option&gt;<br>
+          　　&lt;/select&gt;</p>
+      
+<p>まず，&lt;select&gt;タグでフィールド名を定義します．次に&lt;option&gt;タグで選択肢を順次定義します．最後は&lt;/select&gt;タグで閉じます．</font></p>
+       
+リスト3.1.11　form_menu.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_menu.php&lt;/title&gt;
+&lt;!-- form:選択メニュー --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_text2.php" method="post"&gt;
+  選択してください：&lt;br&gt;
+  &lt;select name="data"&gt;
+    &lt;option value="1"&gt;PHP&lt;/option&gt;
+    &lt;option value="2"&gt;Perl&lt;/option&gt;
+    &lt;option value="3"&gt;C++&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>リスト3.1.11のform_menu.phpファイルにアクセスします．下向き矢印をクリックすると，プルダウン形式で選択肢（メニュー）が表示されます．</font></p>
+       
+<p><img src="./files/030114.png" width="450"></p>
+      
+<p>選択肢の中のいずれかを選択し，OKボタンをクリックします．</font></p>
+       
+<p><img src="./files/030115.png" width="450"></p>
+      
+<p>すると，サーバ側では，form_text.phpが起動され，次図のWebページが表示されます．つまり「１」番目の選択肢が選択されたことが確認されます．</font></p>
+       
+<p><img src="./files/030116.png" width="450"></p>
+      
+
+<h4>3.1.10　選択メニュー（複数選択可能）</h4>
+<p>選択メニューは，同時に複数選択可能な形式もあります．リスト3.1.12のform_menu2.phpファイルは，複数選択型の選択メニューを表示するためのPHPファイルの例です．次に起動するファイルはform_menu2a.phpです．複数選択型の選択メニューコントロールの記述例を次に示します．</p>
+       
+        <p class="command-print">&lt;select name="data[]" multiple size="3"&gt;</p>
+      
+<p>受信するデータは配列型とするので，&lt;select&gt;タグ内のname属性に設定するフィールド名は"data[]"のように，変数名の後に「[]」をつけます．また，multiple属性を記入します．複数選択型メニューの場合，メニューはドロップダウン形式ではなくリスト表示となります．リストの行数をsize属性で指定します．</font></p>
+
+リスト3.1.12　form_menu2.php       
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_menu2.php&lt;/title&gt;
+&lt;!-- form:複数選択型選択メニュー --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_menu2a.php" method="post"&gt;
+  選択してください（複数可能）：&lt;br&gt;
+  &lt;select name="data[]" multiple size="3"&gt; &lt;!-- multipleを記述 --&gt;
+    &lt;option value="1"&gt;PHP&lt;/option&gt;
+    &lt;option value="2"&gt;Perl&lt;/option&gt;
+    &lt;option value="3"&gt;C++&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+      
+<p>リスト3.1.12では，OKボタンをクリックすると，form_menu2a.phpファイルが起動します．リスト3.1.13はform_menu2a.phpファイルです．</font></p>
+       
+リスト3.1.13　form_menu2a.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_menu2a.php&lt;/title&gt;
+&lt;!-- form:複数選択メニューの受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+  $arr_data = $_POST["data"];   /* POSTメソッドでの
+                    フォームデータの受信．
+                    配列型のデータとなる． */
+  print "入力データは以下です．&lt;br&gt;";
+  foreach ( $arr_data as $key =&gt; $val ) 
+  {
+    print "[$key]=$val&lt;br&gt;"; 
+  }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>リスト3.1.12のform_menu2.phpにアクセスすると，次図のWebページが表示されます．</font></p>
+       
+<p><img src="./files/030117.png" width="450"></p>
+      
+<p>Ctrlキーを押しながらたとえば１番目と３番目のメニューを選択し，「OK」ボタンをクリックします．</font></p>
+       
+<p><img src="./files/030118.png" width="450"></p>
+      
+<p>次図のWebページが表示され，配列に選択した「１」と「３」が格納されたことがわかります．</font></p>
+       
+<p><img src="./files/030119.png" width="450"></p>
+      
+<h4>3.1.11　パスワード</h4>
+<p>リスト3.1.14のform_password.phpファイルは，パスワードコントロールをWebページに表示するためのPHPファイルの例です．次に起動するファイルをform_password2.phpとしています．パスワードコントロールの書式を次に示します．</p>
+       
+        <p class="command-print">&lt;input type="password" name="user_passwd" 
+          size=20&gt;</p>
+      
+<p>type属性に"password"と記述します．あとは，テキストコントロールと同じです．</font></p>
+       
+リスト3.1.14　form_password.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_password.php&lt;/title&gt;
+&lt;!-- form:パスワード --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ &lt;form action="form_password2.php" method="post"&gt;
+   ユーザ名 ：
+   &lt;input type="text" name="user_name" size=20&gt;&lt;br&gt;
+   パスワード：
+   &lt;input type="password" name="user_passwd" size=20&gt;&lt;br&gt;
+   &lt;input type="submit" value=" OK "&gt;
+ &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+      
+<p>リスト3.1.15はform_password2.phpファイルです．</font></p>
+       
+リスト3.1.15　form_password2.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_password2.php&lt;/title&gt;
+&lt;!-- form:パスワードデータの受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  ユーザ名 は［&lt;?=$_POST["user_name"];?&gt;］です&lt;br&gt;
+  パスワードは［&lt;?=$_POST["user_passwd"];?&gt;］です．
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+      
+<p>リスト3.1.14のform_password.phpファイルにアクセスすると，次図のようなWebページが表示されます．</font></p>
+       
+<p><img src="./files/030120.png" width="450"></p>
+      
+<p>たとえば，ユーザ名欄に"yamada"と入力し，パスワード欄に"password"とパスワードを入力すると，次図のようにパスワード欄に入力した文字のかわりに「*」が表示され，パスワードが表示されないようになります．</font></p>
+       
+<p><img src="./files/030121.png" width="450"></p>
+      
+<p>「OK」ボタンをクリックすると，次図が表示され，リスト3.1.14のform_password2.phpファイルにパスワード等が送信されたことがわかります．</font></p>
+       
+<p><img src="./files/030122.png" width="450"></p>
+      
+<h4>3.1.12　ボタン</h4>
+<p>ボタンはクリックしたときに，特定の処理を行うようにするコントロールです．主なものに送信ボタンとリセットボタンがあります．送信ボタンは，フォームに入力されたデータを送信するためのコントロールです．送信ボタンの書式は次のいずれかです．</font></p>
+       
+        <p class="command-print">&lt;button type="submit"&gt;OK&lt;/button&gt;<br>
+          あるいは<br>
+          &lt;input type="submit" value="OK"&gt;</p>
+      
+<p>リセットボタンはフォームの内容を初期値に戻すためのコントロールです．リセットボタンの書式は次のいずれかです．</font></p>
+       
+        <p class="command-print">&lt;button type="reset"&gt;リセット&lt;/button&gt;<br>
+          あるいは<br>
+          &lt;input type="reset" value="リセット"&gt;</p>
+      
+<p>サンプルをリスト3.1.16に示します．</p>
+
+リスト3.1.16　form_button.php       
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_button.php&lt;/title&gt;
+&lt;!-- form:ボタン --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ &lt;form action="form_text2.php" method="post"&gt;
+   入力：&lt;br&gt;
+   &lt;input type="text" name="data" size=20&gt;
+   &lt;input type="reset" value="reset"&gt;&lt;br&gt;  &lt;!-- リセットボタン --&gt;
+   &lt;input type="submit" value=" OK "&gt;     &lt;!-- 送信ボタン --&gt;
+ &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>リスト3.1.16のform_button.phpファイルにアクセスすると，次図のようなWebページが表示されます．</font></p>
+       
+<p><img src="./files/030123.png" width="450"></p>
+      
+<p>次図のように間違えて記入したような場合に，「reset」ボタンをクリックすると，上図の初期状態に戻ります．</font></p>
+       
+<p><img src="./files/030124.png" width="450"></p>
+      
+<h4>3.1.13　隠しコントロール</h4>
+<p>「送信ボタン」によってフォームに入力したデータが，action属性で指定されたPHPファイルに送信されますが，フォームに入力したデータ以外のデータも送信することができます．その場合には隠しコントロールを使います．リスト3.1.17は隠しコントロールを使用したPHPファイルの例です．次に起動されるファイルはform_hidden2.phpファイルとしています．隠しコントロールの書式を次に示します．</p>
+       
+        <p class="command-print">&lt;input type="hidden" name="access_date" 
+          value="&lt;?=$str_date?&gt;"&gt;</p>
+      
+<p>&lt;input&gt;タグでtype属性を"hidden"にします．そして，value属性を値か変数に設定します．ここではPHPスクリプトでの変数$str_dateを設定しています．</font></p>
+
+リスト3.1.17　form_hidden.php       
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_hidden.php&lt;/title&gt;
+&lt;!-- form:隠しコントロール --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ &lt;form action="form_hidden2.php" method="post"&gt;
+   入力：&lt;br&gt;
+   &lt;input type="text" name="data" size="20"&gt;
+   &lt;?php $str_date = date("Y-m-d"); ?&gt;   &lt;!-- date関数の呼び出し --&gt;
+   &lt;input type="hidden" name="access_date" value="&lt;?=$str_date?&gt;"&gt;
+                       &lt;!-- 隠しコントロール --&gt;
+   &lt;input type="submit" value=" OK "&gt; 
+ &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+      
+<p>リスト3.1.18にform_hidden2.phpファイルを示します．</p>
+
+リスト3.1.18　form_hidden2.php       
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_hidden2.php&lt;/title&gt;
+&lt;!-- form:隠しコントロールの受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ 入力は［&lt;?=$_POST["data"]?&gt;］です&lt;br&gt;
+ 隠しコントロールは［&lt;?=$_POST["access_date"]?&gt;］です．
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+      
+<p>リスト3.118のform_hidden.phpファイルにアクセスすると，次図ののWebページが表示されます．隠れコントロールのデータはWebページ上には表示されませ</font>ん．</font></p>
+       
+<p><img src="./files/030125.png" width="450"></p>
+      
+<p>文字を入力し，「OK」ボタンをクリックします．</font></p>
+       
+<p><img src="./files/030126.png" width="450"></p>
+      
+<p>次図のように入力データが表示されます．また，隠しコントロールでサーバに送信したデータも正常に受信され，表示されていることが確認できます．</font></p>
+       
+<p><img src="./files/030127.png" width="450"></p>
+      
+      
+<h3>3.2　URLによるデータの送受信</h3>
+<h4>3.2.1　GETメソッド</h4>
+<p>３．１項では，HTMLフォームに入力されたデータをWebサーバのPHPファイルに送信する方法としてPOSTメソッドを使いました．別の方法としてGETメソッドがあることは先に述べました．ここでは，GETメソッドによるデータの送受信方法について述べます．次のリストのform_text_get.phpは，リスト3.1.1のform_txt.phpファイルのmethod="post"をmethod="get"に置き換えたものです．次に起動するファイルはform_text_get2.phpとしています．</font> 
+</p>
+
+リスト3.2.1　form_text_get.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text_get.php&lt;/title&gt;
+&lt;!-- form:テキスト（GETメソッド） --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ &lt;form action="form_text_get2.php" method="get"&gt; &lt;!-- GETメソッド --&gt;
+   入力：&lt;input name="data" size=20&gt;
+   &lt;input type="submit" value=" OK "&gt;
+ &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>以下にリスト　form_text_get2.phpを示します．</p>
+
+リスト3.2.2　form_text_get2.php       
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text_get2.php&lt;/title&gt;
+&lt;!-- form:テキストデータの受信（GETメソッド） --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ print "入力データは［";
+ print $_GET["data"];      // GETメソッドでのフォームデータの受信
+ print "］です．&lt;br&gt;";
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>form_text_get.phpファイルにアクセスし，入力コントロールに「hello」と入力し，「OK」ボタンをクリックします．</font></p>
+       
+<p><img src="./files/030201.png" width="450"></p>
+      
+<p>下図のようにform_text_get2.phpファイルが起動されます．</font></p>
+       
+<p><img src="./files/030202.png" width="450"></p>
+      
+<p>このとき，URLで以下のようにGETメソッドによるコントロールデータの送信がおこなわれているのが確認できます．</font></p>
+       
+        <p class="command-print">http://----/form_text_get2.php?data=hello</p>
+      
+<p>「?」が後続の文字列がGETメソッドによる送信データであることを示しています．「data」は最初の変数名です．「=」はその直後がその変数の値であることを示してます．「hello」は値です．つまり，変数「data」の値は「hello」であることをform_text_get.phpファイルからform_text_get2.phpファイルに向けて送信しています．</font></p>
+<h4>3.2.2　GETメソッドでの送信データが２バイト文字の場合</h4>
+<p>別の例として，送信データが２バイト文字の例を示します．form_text_get.phpファイルにアクセスし，入力コントロールに「今日は」と入力し，「OK」ボタンをクリックします．</font></p>
+<img src="./files/030203.png" width="450">
+<p>下図のようにform_text_get2.phpファイルが起動されます．</font></p>
+<img src="./files/030204.png" width="450">
+<p>URLで以下のようにGETメソッドによるコントロールデータの送信がおこなわれているのが確認できます．ただし，この場合は値の文字列は自動的にURLエンコードされています．つまり，２バイト文字は「%XX」形式に置き換えられています．</font></p>
+       
+        <p class="command-print">http://----/form_text_get2.php?data=%8D%A1%93%FA%82%CD</p>
+      
+<h4>3.2.3　GETメソッドで送信するデータが２個の場合</h4>
+<p>送信するデータが２個の場合の例を次のリストform_text_get_b.phpに示します．</p>
+
+リスト3.2.3　form_text_get_b.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text_get_b.php&lt;/title&gt;
+&lt;!-- form:テキスト（GETメソッド，２個のデータ） --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_text_get2_b.php" method="get"&gt;&lt;!-- GETメソッド --&gt;
+  入力１：&lt;input name="data1" size=20&gt;     &lt;!-- 第１のデータ --&gt;
+  &lt;br&gt;
+  入力２：&lt;input name="data2" size=20&gt;     &lt;!-- 第２のデータ --&gt;
+  &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>起動されるファイルは次のリストform_text_get2_b.phpです．</font></p>
+       
+リスト3.2.4　form_text_get2_b.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text_get2_b.php&lt;/title&gt;
+&lt;!-- form:テキストデータの受信（GETメソッド，２個のデータ） --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ print "入力データ１は［";
+ print $_GET["data1"];           // 第１のデータの受信
+ print "］です．&lt;br&gt;";
+ print "入力データ２は［";
+ print $_GET["data2"];           // 第２のデータの受信
+ print "］です．&lt;br&gt;";?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>form_text_get_b.phpファイルにアクセスし，入力１コントロールに「hello」と入力し，入力２コントロールに「Yamada」と入力し「OK」ボタンをクリックします．</font></p>
+<img src="./files/030205.png" width="450">
+<p>下図のようにform_text_get2_b.phpファイルが起動されます．</p>
+<img src="./files/030206.png" width="450">
+<p>URLのGETメソッドによる送信データ部分は以下のようになっています．</font></p>
+       
+        <p class="command-print">http://----/form_text_get2_b.php?data1=hello&amp;data2=Yamada</p>
+      
+<p>ここで，「&amp;」は，データが複数ある場合のデータ間の区切りの記号です．</font></p>
+<h4>3.2.4　リンクによるデータの送受信</h4>
+<p>ハイパーリンクによりデータを送信することもできます．リスト　url_get.phpに例を示します．その場合の&lt;a&gt;タグの書式は次のようになります．</font></p>
+       
+        <p class="command-print">&lt;a href="form_text_get2.php?data=hello"&gt;リンク&lt;/a&gt;</p>
+
+リスト3.2.5　url_get.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;url_get.php&lt;/title&gt;
+&lt;!-- リンクによるデータの送受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ &lt;a href="form_text_get2.php?data=hello"&gt;リンク&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>url_get.phpファイルにアクセスしハイパーリンクとなっている「リンク」の文字列をクリックします．</font></p>
+<img src="./files/030207.png" width="450">
+<p>次の図のようにURLに送信データを付加したGETメソッドによりデータが送信されていることがわかります．</font></p>
+<img src="./files/030208.png" width="450">
+<p>なお，送信する変数名や値に２バイト文字等が含まれる可能性がある場合は，強制的にurlencode関数でURLエンコードしておく必要があります．</font></p>
+<p>サンプルをリスト　url_get_encode_encode.phpに示します．</p>
+       
+リスト3.2.6　url_get_encode.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;url_get_encode.php&lt;/title&gt;
+&lt;!-- リンクによるデータの送受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ $url = "form_text_get2.php?data=" . urlencode("今日は");
+                   // urlencode関数の呼び出し
+?&gt;
+&lt;a href="&lt;?= $url ?&gt;"&gt;リンク&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>url_get_encode.phpファイルにアクセスし，ハイパーリンクをクリックすると，</font></p>
+<img src="./files/030209.png" width="450">
+<p>次図のWebページが表示され，送信データの２バイト文字が正しく表示されています．</font></p>
+<img src="./files/030210.png" width="450">
+      
+<h3>3.3　HTMLフォームを使ったデータの再表示</h3>
+<p>HTMLフォームの入力データに誤りなどがあった場合は，前に入力した値を確認のため再表示し，再入力を求める場合があります．その場合は，各コントロールに前に入力した値を初期値として設定します．以下のサンプルでは，「OK」ボタンをクリックすると，再度自分自身のWebページ（PHPファイル）を表示することとします．その場合は，action=""とします．</font></p>
+
+<h4>3.3.1　テキスト</h4>
+<p>テキストコントロールの場合の初期値の設定例をリストform_text_r.phpに示します．次の書式でvalue属性に初期値を設定します．POSTメソッドで受信した値をそのまま初期値としています．</font> 
+</p> 
+        <p class="command-print">&lt;input name="data" size=20 value="&lt;?= 
+          $_POST['data'] ?&gt;"&gt;</p>
+
+リスト3.3.1　form_text_r.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text_r.php&lt;/title&gt;
+&lt;!-- form:テキスト --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ if ( !isset($_POST['data']) ) 
+ {
+   print "データが入力されていません<br>";
+ } 
+ else
+ {
+   print "以下のデータが入力されました<br>";
+ }
+?&gt;
+&lt;form action="" method="post"&gt;
+  入力：&lt;input name="data" size=20 value="&lt;?php if(isset($_POST['data']))echo $_POST['data']; ?&gt;"&gt;
+                       &lt;!-- 初期値の設定 --&gt;
+  &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>form_text_r.phpに初めてアクセスすると次図のようなWebページが表示されます．</font></p>
+<img src="./files/030301.png" width="500">
+<p>次図のように文字列を入力し，「OK」ボタンをクリックします．</font></p>
+<img src="./files/030302.png" width="500">
+<p>次図のように再表示されます．前に入力した値が，初期値として表示されます．</font></p>
+<img src="./files/030303.png" width="500">
+
+<h4>3.3.2　ラジオボタン</h4>
+<p>ラジオボタンコントロールの場合の初期値の設定例をリスト3.3.2　form_radio_r.phpに示します．次の書式でchecked属性を設定します．</font></p>
+       
+        <p class="command-print">&lt;input type="radio" name="data" 
+          value="男" &lt;?= $val?&gt;&gt;１，男</p>
+      
+<p>オンになっていれば，$val="checked"で，ブラウザには次のように送信されます．</font></p>
+       
+        <p class="command-print">&lt;input type="radio" name="data" 
+          value="男" checked&gt;１，男</p>
+      
+<p>オフになっていなければ，$val=""で，ブラウザには次のように送信されます．</font></p>
+       
+        <p class="command-print">&lt;input type="radio" name="data" 
+          value="男" &gt;１，男</p>
+
+リスト3.3.2　form_radio_r.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_radio_r.php&lt;/title&gt;
+&lt;!-- form:ラジオボタン --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ if ( !isset($_POST['data']) ) 
+ {
+   print "データが入力されていません<br>";
+ } 
+ else
+ {
+   print "以下のデータが入力されました<br>";
+ }
+?&gt;
+&lt;form action="" method="post"&gt;
+  &lt;?php ( isset($_POST['data'])&&$_POST["data"] == "男" ) ? $val = "checked" : $val = "" ; ?&gt;
+              &lt;!-- ３項演算子による初期値の設定 --&gt;
+  &lt;input type="radio" name="data" value="男" &lt;?= $val?&gt;&gt;１，男
+  &lt;br&gt;
+  &lt;?php ( isset($_POST['data'])&&$_POST["data"] == "女" ) ? $val = "checked" : $val = "" ; ?&gt;
+  &lt;input type="radio" name="data" value="女" &lt;?= $val?&gt;&gt;２，女
+  &lt;br&gt;
+  &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+      
+<p>form_radio_r.phpに初めてアクセスすると次図のようなWebページが表示されます．</font></p>
+<img src="./files/030304.png" width="500">
+<p>次図のようにオンにし，「OK」ボタンをクリックします．</p>
+<img src="./files/030305.png" width="500">
+<p>次図のように再表示されます．前に入力した値が，初期値として表示されます．</p>
+<img src="./files/030306.png" width="500">
+<h4>3.3.3　チェックボックス</h4>
+<p>チェックボックスコントロールの場合の初期値の設定例をリスト3.3.3　form_check_r.phpに示します．次の書式でchecked属性を設定します．</font></p>
+       
+        <p class="command-print">&lt;input type="checkbox" name="data[0]" 
+          value="1" &lt;?= $val?&gt;&gt;１，Windows</p>
+      
+<p>チェックされていれば，$val="checked"で，ブラウザには次のように送信されます．</font></p>
+       
+        <p class="command-print">&lt;input type="checkbox" name="data[0]" 
+          value="1" checked&gt;１，Windows</p>
+      
+<p>チェックされていなければ，$val=""で，ブラウザには次のように送信されます．</font></p>
+       
+        <p class="command-print">&lt;input type="checkbox" name="data[0]" 
+          value="1" &gt;１，Windows</p>
+
+リスト3.3.3　form_check_r.php
+<pre class="brush:php;">
+&lt;head&gt;
+&lt;title&gt;form_check_r.php&lt;/title&gt;
+&lt;!-- form:チェックボックスの再表示 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ if ( !isset($_POST['data']) ) 
+ {
+   print "データが入力されていません<br>";
+ } 
+ else
+ {
+   print "以下のデータが入力されました<br>";
+ }
+?&gt;
+&lt;form action="" method="post"&gt;
+ 使用中のOSを選択してください（複数可能）．&lt;br&gt;
+ &lt;?php ( isset($_POST["data"][0])&&$_POST["data"][0] == "1" ) ? $val = "checked" : $val = "" ; ?&gt;
+                 &lt;!-- ３項演算子による初期値の設定 --&gt;
+ &lt;input type="checkbox" name="data[0]" value="1" &lt;?= $val?&gt;&gt;１，Windows
+ &lt;?php ( isset($_POST["data"][1])&&$_POST["data"][1] == "2" ) ? $val = "checked" : $val = "" ; ?&gt;
+ &lt;input type="checkbox" name="data[1]" value="2" &lt;?= $val?&gt;&gt;２，UNIX
+ &lt;?php ( isset($_POST["data"][2])&&$_POST["data"][2] == "3" ) ? $val = "checked" : $val = "" ; ?&gt;
+ &lt;input type="checkbox" name="data[2]" value="3" &lt;?= $val?&gt;&gt;３，LINUX
+ &lt;br&gt;
+ &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>form_check_r.phpに初めてアクセスすると次図のようなWebページが表示されます．</font></p>
+<img src="./files/030307.png" width="500">
+<p>次図のようにチェックし，「OK」ボタンをクリックします．</font></p>
+<img src="./files/030308.png" width="500">
+<p>次図のように再表示されます．前に入力した値が，初期値として表示されます．</font></p>
+<img src="./files/030309.png" width="500">
+
+<h4>3.3.4　テキストエリア</h4>
+<p>テキストエリアコントロールの場合の初期値の設定例をリスト3.3.4　form_textarea_r.phpに示します．次の書式で初期値を設定します．</font></p>
+       
+        <p class="command-print">&lt;textarea name="data" rows="5" 
+          cols="40"&gt;&lt;?= $_POST['data'] ?&gt;&lt;/textarea&gt;</p>
+      
+<p>&lt;?= $_POST['data'] ?&gt;の部分で初期値を設定しています．</p>
+       
+リスト3.3.4　form_textarea_r.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_textarea_r.php&lt;/title&gt;
+&lt;!-- form:テキストエリアの再表示 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ if ( !isset($_POST['data']) ) 
+ {
+   print "データが入力されていません<br>";
+ } 
+ else
+ {
+   print "以下のデータが入力されました<br>";
+ }
+?&gt;
+&lt;form action="form_textarea2.php" method="post"&gt;
+ 入力：&lt;input name="data" size=20 value="&lt;?php if(isset($_POST['data']))echo $_POST['data']; ?&gt;"&gt;
+                     &lt;!-- 初期値の表示 --&gt;
+ &lt;br&gt;
+ &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>form_textarea_r.phpに初めてアクセスすると次図のようなWebページが表示されます．</font></p>
+<img src="./files/030310.png" width="500">
+<p>次図のように入力し，「OK」ボタンをクリックします．</font></p>
+<img src="./files/030311.png" width="500">
+<p>次図のように再表示されます．前に入力した値が，初期値として表示されます．</font></p>
+<img src="./files/030312.png" width="500">
+
+<h4>3.3.5　選択メニュー</h4>
+<p>選択メニューコントロールの場合の初期値の設定例をリスト3.3.5　form_menu_r.phpに示します．次の書式で初期値を設定します．</font></p>
+       
+        <p class="command-print">&lt;option value="1" &lt;?= $val?&gt;&gt;PHP&lt;/option&gt;</p>
+      
+<p>選択されていれば，$val="selected"で，ブラウザには次のように送信されます．</font></p>
+       
+        <p class="command-print">&lt;option value="1" selected&gt;PHP&lt;/option&gt;</p>
+      
+<p>選択されていなければ，$val=""で，ブラウザには次のように送信されます．</font></p>
+       
+        <p class="command-print">&lt;option value="1" &gt;PHP&lt;/option&gt;</p>
+
+リスト3.3.5　form_menu_r.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_menu_r.php&lt;/title&gt;
+&lt;!-- form:選択メニューの再表示 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ if ( !isset($_POST['data']) ) 
+ {
+   print "データが入力されていません<br>";
+ } 
+ else
+ {
+   print "以下のデータが入力されました<br>";
+ }
+?&gt;
+&lt;form action="" method="post"&gt;
+ 選択してください：&lt;br&gt;
+ &lt;select name="data"&gt;
+  &lt;?php ( isset($_POST["data"])&&$_POST["data"] == "1" ) ? $val = "selected" : $val = "" ; ?&gt;
+                   &lt;!-- ３項演算子による初期値の設定 --&gt;
+  &lt;option value="1" &lt;?= $val?&gt;&gt;PHP&lt;/option&gt;
+  &lt;?php ( isset($_POST["data"])&&$_POST["data"] == "2" ) ? $val = "selected" : $val = "" ; ?&gt;
+  &lt;option value="2" &lt;?= $val?&gt;&gt;Perl&lt;/option&gt;
+  &lt;?php ( isset($_POST["data"])&&$_POST["data"] == "3" ) ? $val = "selected" : $val = "" ; ?&gt;
+  &lt;option value="3" &lt;?= $val?&gt;&gt;C++&lt;/option&gt;
+ &lt;/select&gt;
+ &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>form_menu_r.phpに初めてアクセスすると次図のようなWebページが表示されます．</font></p>
+<img src="./files/030313.png" width="500">
+<p>次図のように選択し，「OK」ボタンをクリックします．</font></p>
+<img src="./files/030314.png" width="500">
+<p>次図のように再表示されます．前に選択した値が，初期値として表示されます．</font></p>
+<img src="./files/030315.png" width="500">
+      
+<h3>3.4　セキュリティ対策のための入力データ変換</h3>
+<h4>3.4.1　エスケープ文字を元に戻す</h4></p>
+<p>HTMLのテキスト入力コントロール（テキストボックスあるいはテキストフィールドとも呼ぶ）に，文字列を記入できますが，「\」（円マーク．日本語ではバックスラッシュの代わり）や「"」（ダブルクオーテーション）など特殊な記号も記入できます．リスト3.1.1でテキスト入力コントロールの幅を80文字と広くしたリスト3.1.4に示すform_text3.phpファイルにアクセスします．テキストボックスに</font></p>
+       
+        <p class="command-print">円マーク記号は"\"です．</p>
+      
+<p>次のようにと入力してみましょう．</font></p>
+<img src="./files/030403.gif" width="500">
+<p>結果は，次のように表示されます．</font></p>
+<img src="./files/030404.gif" width="500">
+
+<p><font color="red">※phpのバージョンが7.0以上の場合自動的にエスケープしてくれるため画像のような結果にはなりません。再現するには関数ddslashes()を使ってください。</font></p>
+
+<h4>3.4.2　エスケープ</h4>
+<p>これは，特殊記号「\」や「"」の前に，「\」が強制的に挿入されているからです．このような文字列処理を特殊文字のエスケープ処理といいます．エスケープ処理のために挿入される特殊文字（記号）をエスケープ文字といいます．ここでは「\」がエスケープ文字として挿入されていることになります．</p>
+<h5>magic_quotes_gpc</h5><p>
+このようなエスケープ処理は，GETメソッドやPOSTメソッドを使う時に行われます．エスケープ処理を自動的に行うかどうかは，PHPの環境設定ファイルである「php.ini」ファイルの中で設定されています．「php.ini」ファイルの中で  
+           magic_quotes_gpc = On </font>
+となっていれば，GETメソッドやPOSTメソッドでブラウザからサーバに送られる文字列の中の「\」，「"」，「'」（シングルクォーテーション），「NULL」（ヌル，\0）の４文字に対してエスケープ処理され，おのおの「\\」，「\"」，「\'」などに変換されます． 
+</p>
+<h5>SQLインジェクション</h5>
+<p>
+このようなエスケープ処理は，PHPファイルで，データベースのSQL文を使用しているときに，不正攻撃を防止するために必須となります．SQL文を偽造する不正攻撃は一般にSQLインジェクションと呼ばれます．SQLインジェクションの詳細はたとえば，以下のWebサイトを参照してください． </p>
+           
+      <a href="http://www.atmarkit.co.jp/fsecurity/rensai/webhole02/webhole01.html">http://www.atmarkit.co.jp/fsecurity/rensai/webhole02/webhole01.html</a>
+
+<h5>stripslashes()関数</h5>
+       
+リスト3.4.1　form_text2d.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text2d.php&lt;/title&gt;
+&lt;!-- form:テキストデータの受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ $str = $_POST["data"];   // POSTメソッドでのフォームデータの受信
+ $str = stripslashes($str); // エスケープ文字を元に戻す
+ $str = "入力データは［". $str . "］です．&lt;br&gt;";
+ print $str;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>テキスト入力コントロールの幅を80文字と広くし，POSTメソッドで起動するファイルをform_text2d.phpファイルとしたファイルをfrom_text4.phpとします．そのリストをリスト3.4.2に示します．</p>
+
+リスト3.4.2　from_text4.php       
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text4.php&lt;/title&gt;
+&lt;!-- form:テキスト --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_text2d.php" method="post"&gt;
+入力：&lt;input name="data" size=80&gt;
+&lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>form_text4.phpファイルにアクセスし，テキストボックスに以下を入力してみましょう．</p>
+       
+<p class="command-print">円マーク記号は"\"です．</p>
+      
+<p>結果は，エスケープ文字「\」が取り除かれ，以下のように入力文字列と同じ文字列が表示されます．</font></p>
+<img src="./files/030405.gif" width="500">
+
+<p><font color="red">※phpのバージョンが7.0以上の場合、「\」が取り除かれるのみになります。</font></p>
+<h4>3.4.2　HTMLタグの入力の危険性</h4>
+<p>form_text4.phpファイルにアクセスし，テキストボックスに以下を入力してみましょう．</p>
+ 
+<p class="command-print">今日は，&lt;b&gt;山田&lt;/b&gt;です．</p>
+
+<img src="./files/030406.png" width="500">
+<p>結果は，次のように表示されます．つまり，"山田"の文字列が太文字で表示されます．</font></p>
+<img src="./files/030407.png" width="500">
+<p>このように，テキストボックスからは，HTMLタグで修飾した文字列も入力でき，一見便利にみえますが，タグを使えるということは，Javascriptのようなスクリプトも入力し，動作できることになります．　テキストボックスに，たとえば以下を入力してみましょう．</p>
+       
+<p class="command-print">&lt;SCRIPT&gt;alert("DANGER");&lt;/SCRIPT&gt;</p>
+      
+     <img src="./files/030408.png" width="500">
+<p>すると，Javascriptが起動し，alert()関数によりダイアログボックスが表示されます．</font></p>
+<img src="./files/030409.png" width="500">
+
+<p>このことは，テキストボックスに任意のJavascriptのスクリプトを記述し，クライアントPC上で起動させることができることを示しています．たとえば，クライアントPCのCookieの情報を盗み見たり，ファイルを削除したりもできます．ただ，テキストボックスを表示するクライアントPCが自分のPCで，Javascriptのスクリプトが起動されるクライアントPCも自分のPCであれば，被害を受けるのは自分自身ですから，そんないたずらはしないのですが，同じような処理を「GET」メソッドでもできることに注意する必要があります．たとえば，リスト3.4.2のform_text4.phpファイルで「POST」メソッドの代わりに「GET」メソッドを使用するようにしたファイルをfrom_text5.phpとし，起動するファイルもリスト3.4.1のform_text2dファイルの「POST」メソッドでの受信をを「GET」メソッドでの受信に書きかえたファイルをform2e.phpとし，同じように，以下を入力しましょう．</p>
+       
+<p class="command-print">&lt;SCRIPT&gt;alert("DANGER");&lt;/SCRIPT&gt;</p>
+      
+<p>今度は，「GET」メソッドを使用しているので，URLに入力データが付加された形でform_text2dファイルにデータが渡されます．</font></p>
+<img src="./files/030410.png" width="500">
+
+<br>
+        <div class="caution-print"> 
+<p><font color="red">※ブラウザGoogle Chromeで上記テキストを入力すると以下の画面が表示され、スクリプトは実行されません。これはブラウザの仕様ですので、上記のテストをしたい場合、「Internet Edge」を使用してください。</font></p>
+<img src="./files/030410ex.png" width="500">
+</div>
+<h4>3.4.3　クロスサイトスクリプティング</h4>
+<p>このことは，次のようにハイパーリンクのURLに任意のJavascriptのスクリプトを記述しておき，たまたまそのハイパーリンクをクリックしたユーザのクライアントPC上でそのJavascriptのスクリプトを起動させることができることを示しています．これは非常によく知られた不正攻撃の一つで，クロスサイトスクリプティングとして知られています．</font></p>
+       
+        <p class="command-print">http://（信頼できるサーバ）/form_text2e.php?data=%3CSCRIPT%3Ealert%28%22DANGER%22%29%3B%3C%2FSCRIPT%3E</font></p>
+        <div class="caution-print"> 
+<p>クロスサイトスクリプティングの詳細については，以下を参照してください．</font></p>
+           
+<p>・広瀬ほか：「PHP４徹底攻略　実践編」，ソフトバンクパブリッシング，pp.25-27</font></p>
+<p>・<a href="http://www.ipa.go.jp/security/awareness/vendor/programming/a01_02.html">http://www.ipa.go.jp/security/awareness/vendor/programming/a01_02.html</a></font></p>
+          
+          
+        </div>
+      
+      
+<h4>3.4.4　HTMLタグの入力制限</h4>
+<p>このようなクロスサイトスクリプティングによる不正攻撃を防止するためには，テキストボックスなどのフォームからのHTMLタグの入力を制限する必要があります．HTMLタグの入力を制限する方法として，HTMLタグが入力された場合に削除してしまう方法と，HTMLタグをHTMLにおける表示のための特殊文字コード（これをHTMLエンティティと呼ぶ）に変換する方法があります．HTMLのソースコードなどを掲示板で表示したい場合には，後者の方法を採用することになります．</font></p>
+<h5>htmlspecialchars()関数</h5>
+<p>
+&lt;，&gt;，&amp;，"）を，HTMLエンティティ（&amp;lt;，&amp;gt;，&amp;amp;，&amp;quot;）に変換する組み込み関数として，htmlspecialchars()関数があります．エンティティのことを実体参照ともいいます．リスト3.4.1のform_text2d.phpファイルに，htmlspecialchars()関数により，入力データの中のHTMLタグ等をHTMLエンティティに変換するスクリプトを挿入したファイルをform_text2f.phpファイルとし，リスト3.4.3に示します</font>．</p>
+       
+リスト3.4.3　form_text2f.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text2f.php&lt;/title&gt;
+&lt;!-- form:テキストデータの受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ $str = $_POST["data"];       // POSTメソッドでのフォームデータの受信
+ $str = stripslashes($str);     // エスケープ文字を元に戻す
+ $str = htmlspecialchars($str);   // HTMLタグ等のHTMLエンティティへの変換
+ $str = "入力データは［". $str . "］です．&lt;br&gt;";
+ print $str;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>リスト3.4.2のfrom_text4.phpファイルで，「POST」メソッドによる起動ファイルを，リスト3.4.3のform_text2f.phpファイルにしたファイルをfrom_text6.phpファイルとしリスト3.4.4に示します．</p>
+       
+リスト3.4.4　from_text6.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text6.php&lt;/title&gt;
+&lt;!-- form:テキスト --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_text2f.php" method="post"&gt;
+入力：&lt;input name="data" size=80&gt;
+&lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>from_text6.phpファイルにアクセスし，以下を入力してみます．</p>
+       
+<p>&lt;SCRIPT&gt;alert("DANGER");&lt;/SCRIPT&gt;</p>
+      
+<p>結果は，以下のように，Javascriptは起動せず，タグがそのまま文字としていわゆる実態参照として表示されます．</p>
+<img src="./files/030411.png" width="500">
+       
+        <p class="caution-print">実験用のWebアプリケーション用PHPファイルであっても，インターネットに公開しているサーバにアップロードする場合は，ハッカーによる不正攻撃を防止するために必ず，上記<font color="#000000">htmlspecialchars（）関数によるHTMLタグ等のHTMLエンティティへの変換処理を実行するようにしてください．</font></font></p>
+      
+
+<h4>3.4.5　改行コード</h4>
+<p>HTMLフォームの中に，複数行の文字列を入力できるテキストエリアというコントロールがあることは，先にリスト3.1.9のサンプルで示しました．このときは，POSTメソッドで，リスト3.1.10に示したform_textarea2.phpファイルを起動し，入力データを再度テキストエリアに表示しました．入力データの編集の必要性がなく表示するだけであれば，HTMLフォームを使わなくてもWebページにprint文で表示すれば十分です．そこで，リスト3.1.9を書き換えて，POSTメソッドでリスト3.4.1に示したform_text2d.phpファイルを起動するようにしてみます．これをリスト3.4.5に示します．form_text2.phpファイルでは，POSTメソッドで受信したデータを単にprint文で表示するだけです．</p>
+       
+リスト3.4.5　form_textarea3.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_textarea.php&lt;/title&gt;
+&lt;!-- form:テキストエリア --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="form_text2d.php" method="post"&gt;
+入力：&lt;br&gt;
+&lt;textarea name="data" rows="5" cols="40"&gt;&lt;/textarea&gt;
+&lt;br&gt;
+&lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  
+      
+<p>このform_textarea3.phpファイルにアクセスし，以下の４行の文字列を入力し，「OK」ボタンをクリックします．</p>
+<img src="./files/030412.png" width="500">
+<p>結果は，以下のように表示されます．つまり改行が行われず，１行で表示されてしまいます．</p>
+<img src="./files/030413.png" width="500">
+<p>つまり，テキストエリア内に表示した場合は自動的に改行されたのに，print文で表示した場合は改行されません．これはなぜでしょうか？これを理解するためには，改行コードと改行タグについて理解する必要があります．</p>
+<h5>改行コード</h5>
+<p>&nbsp;
+</p>
+       
+        <p class="caution-print">改行コードの実際は，OSによって異なります．<br>
+          Windows系OSでは，「\r\n」です．<br>
+          UNIX系OSでは，「\n」です．<br>
+          Mac系OSでは，「\r」です．</p>
+      
+<h5>改行タグ</h5>
+<p>
+実はHTMLフォームのテキストエリア 内では，この改行コードが有効に機能します．ただし，HTMLのテキストエリア以外のWebページ内では，この改行コードはすべて無視されます．そのかわり，Webページ内で改行を行うには，HTMLタグの一つである改行タグ「&lt;br&gt;」を使います．以上のことから，HTMLフォームから入力された文字列の中の改行コードは，Webページ内にprint文で表示する前に，あらかじめ改行タグに変換しておく必要があることがわかります．</p>
+<h5>nl2br()関数</h5>
+<p>
+&lt;br&gt;」を挿入する組み込み関数nl2br()関数が準備されています．nl2brは「Newline　to　BR」の略です．ただ，nl2br()関数は，改行コードを削除してくれないので，ここでは，改行コードを改行タグに置き換えるユーザ定義関数nl_rep_br()関数を作成することとします．リスト3.4.1のform_text2d.phpファイルに，nl_rep_br()関数により，入力データの中の改行コードに改行タグに変換するスクリプトを挿入したファイルをform_text2h.phpファイルとし，リスト3.4.6に示します．</p>
+
+リスト3.4.6　form_text2h.php       
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_text26.php&lt;/title&gt;
+&lt;!-- form:テキストデータの受信 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ $str = $_POST["data"];   // POSTメソッドでのフォームデータの受信
+ $str = stripslashes($str); // エスケープ文字を元に戻す
+ $str = nl_rep_br($str);  // 改行コードを改行タグに変換
+ $str = "入力データは［". $str . "］です．&lt;br&gt;";
+ print $str;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;?php
+function nl_rep_br($str)
+{
+ // 改行コードを改行タグに変換
+ $str = preg_replace( "/(\r\n|\r|\n)/", "&lt;br /&gt;", $str);
+ return $str;
+}
+?&gt;
+</pre>
+      
+<p>nl_rep_br()関数では，各OSに対応した改行コードを，HTMLの改行タグ「&lt;br&gt;」でなく，XHTMLの改行タグである「&lt;br 
+/&gt;」に変換（置換）しています． preg_replace()関数は，文字列の置換処理を行う組み込み関数で，Perl互換の正規表現を使用できます．最初の引数，「"/(\r\n|\r|\n)/"」は，第３の引数の文字列に，「\r\n」あるいは「\r」あるいは「\n」の文字列があればその文字列を第２の引数の文字列に置換しなさいという意味です．リスト3.4.5のform_textarea3.phpファイルを書き換えて，POSTメソッドで，リスト3.4.6のform_text2h.phpファイルを起動するようにしたファイルをform_textarea4.phpファイルとします．form_textarea4.phpファイルにアクセスし，同じ４行の文字列を入力してみます．今度は，以下のように改行されているのがわかります．</p>
+<img src="./files/030414.png" width="500">
+
+<h4>3.4.6　入出力データ変換用ユーザ定義関数の作成</h4>
+<p>HTMLフォームから入力した入力データの変換や，HTMLフォームに表示するための出力データの変換は，上に述べたように複雑です．そこで，これらの入出力データの変換をユーザ定義関数でまとめて実行するようにしておきます．HTMLタグ等の扱いについては，①HTML実体参照（エンティティ）に変換する，②HTMLタグ等の入力を許容する，③HTMLタグは自動的に削除する．④HTMLタグが入力されたら警告するようにする，などの方法が考えられますが，ここでは，①に限定したデータ変換を行うこととします．</p>
+<p>HTMLタグ等をHTML実体参照に変換するタイミングとして，WebサーバがクライアントPCからデータを受信した時点とする場合と，WebサーバからクライアントPCにデータを送信する時点のいずれかが考えられます．HTMLタグ等は，クライアントPCからHTMLフォームに入力する形でWebサーバに送信される場合のほかに，電子メール等でWebサーバに送信される場合も想定されることから，一般には，WebサーバからクライアントPCにデータを送信する時点でHTMLタグ等をHTML実体参照に変換することが推奨されています．ただ，この場合，改行コードは改行タグに変換せずにそのままにしておく必要があります．nl2br()関数は必ずhtmlspecialchars()関数より後に記述しないと論理矛盾に陥るからです．そうすると，文字列データをCSVファイル等に保存する場合，改行コードの扱いが面倒になります．改行コードが改行タグに変換されていればCSVファイルに保存する場合に問題になりません．</p>
+<p>そこで，ここでは，WebサーバがクライアントPCからデータを受信した時点でHTMLタグ等をHTML実体参照に変換することとします．この場合，Webサーバ上では，文字列の中にHTMLタグが含まれる場合は，HTML実体参照に変換されて，保存されることになります．以上のような前提の場合，WebサーバがHTMLフォーム等からGETメソッドやPOSTメソッドで文字列データを受信した場合，受信後に以下の処理を行うことになります．</p>
+       
+<p>①stripslashes()関数により，「'」，「"」，「\」のエスケープ処理された文字を元にもどす．<br>
+          ②htmlspecialchars()に関数により，「&lt;」，「&gt;」，「&amp;」，「"」をHTML実体参照に変換する．<br>
+          ③nl2br()関数により，改行コードを改行タグ「&lt;br&gt;」に変換する．</p>
+      
+<p>このユーザ定義関数名を「tag_entity_input()」とすることとします．次に，入力データをHTMLフォームのテキストエリアに表示する場合は，改行タグを改行コードにもどしておく必要があります．このユーザ定義関数名を「tag_entity_form()」とすることとします．なお，入力データをprint文でWebページに表示する場合，表示前に特に変換処理は必要ありません．tag_entity_form()関数とtag_entity_input()関数をリスト3.4.7に示します．なお，一般的なユーザ定義関数はインクルードファイルcommon.phpファイルにまとめて記述しておくこととします．</p>
+
+リスト3.4.7　common.php       
+<pre class="brush:php;">
+&lt;?php
+// include file(common.php)
+
+// -------------------------------------
+// ユーザ定義関数
+/*
+tag_entity_input
+tag_entity_form
+*/
+
+// -------------------------------------
+// 改行コードを改行タグ「&lt;br /&gt;」に変換
+function nl_rep_br($str)
+{
+/*
+ $string = 入力文字列
+ 戻り値 = 変換後文字列
+*/
+ // 改行コードを改行タグに変換
+ $str = preg_replace( "/(\r\n|\r|\n)/", "&lt;br /&gt;", $str);
+ return $str;
+}
+
+// -------------------------------------
+// GETメソッド，POSTメソッドによる入力データ変換処理
+// (HTMLタグ等をHTML実体参照に変換するモードの場合)
+function tag_entity_input($string)
+{
+/*
+ $string = 入力文字列
+ 戻り値 = 変換後文字列
+*/
+ if(empty($string)) {return "";}
+ 
+ // 「'」,「"」,「\」のエスケープ処理された文字を元にもどす
+ $string = stripslashes($string);
+ 
+ // 「&lt;」,「&gt;」,「&」,「"」をHTML実体参照に変換する
+ $string = htmlspecialchars($string);
+ 
+ // 改行コードを改行タグ「&lt;br /&gt;」に変換する．
+ $string = nl_rep_br($string);
+ return $string;
+}
+
+// -------------------------------------
+// HTMLフォームのテキストエリアにデータを表示する直前の
+// データ変換処理
+// (HTMLタグ等をHTML実体参照に変換するモードの場合)
+function tag_entity_form($string)
+{
+/*
+ $string = 入力文字列
+ 戻り値 = 変換後文字列
+*/
+ if(empty($string)) {return "";}
+ 
+ // 改行タグを改行コードに変換
+ $string = preg_replace( "/(&lt;br&gt;|&lt;br \/&gt;)/", "\n", $string);
+ return $string;
+} 
+</pre>
+      
+<p>フォームのテキストボックスとテキストエリアで入力したデータを再度，フォームに表示するとともに，print文でも表示するスクリプトをform_script.phpとし，サンプル3.4.8に示します．</p>
+
+サンプル3.4.8　form_script.php       
+<pre class="brush:php;">
+&lt;?php
+ // インクルードファイルの読み込み
+ include "common.php";
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_script.php&lt;/title&gt;
+&lt;!-- form:スクリプト --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+if(isset($_POST['title'])){
+ // 入力データの変換
+ $title = tag_entity_input($_POST['title']);
+}
+else{
+ $title = "";
+}
+if(isset($_POST['script'])){
+ // 入力データの変換    
+ $script = tag_entity_input($_POST['script']);
+ // テキストエリア用出力データの変換
+ $script2 = tag_entity_form($script);
+}
+else{
+ $script = "";
+ $script2 = "";
+}
+?&gt;
+フォームでの入出力
+&lt;form action="form_script.php" method="post"&gt;
+タイトル：&lt;br&gt;
+&lt;input name="title" size="60"value="&lt;?=$title?&gt;"&gt;&lt;br&gt;
+スクリプト：&lt;br&gt;
+&lt;textarea name="script" rows="5" cols="60"&gt;&lt;?=$script2?&gt;&lt;/textarea&gt;
+&lt;br&gt;
+&lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+print文での表示&lt;br&gt;
+&lt;?php
+ print '$title=[' . $title . "]&lt;br&gt;\n";
+ print '$script=' . "&lt;br&gt;\n";
+ print $script;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p> form_script.phpにアクセスし，以下の文字列を入力します．</p>
+<img src="./files/030415.png" width="500">
+<p>結果は，次のように表示されます．</p>
+<img src="./files/030416.png" width="500">
+      
+<h3>3.5　デバッグツール</h3>
+<p>デバッグ時には，変数や配列の値が，ある時点で期待した値になっているか確認できた方が効率的な場合があります．そこで，以下のデバグ用ツール（ユーザ定義関数）を作成し，インクルードファイル「common.php」に保存して，活用することとします．</p>
+       
+<p>disp_arr() 　　　// 配列のダンプ表示（デバグ用）<br>
+          disp_func()　　 // 関数名の表示（デバグ用）<br>
+          disp_mes()　　 // メッセージの表示（デバグ用）<br>
+          disp_var() 　　　// 変数の表示（デバグ用）<br>
+          disp_var_hex() // 変数の16進数表示（デバグ用)</p>
+      
+<p>これらのソースリストをリスト3.5.1に示します．
+</p>
+       
+リスト3.5.1　common.php（追加部分のみ）
+<pre class="brush:php;">
+// ----------------------------------------------
+// 配列のダンプ表示
+function disp_arr($disp,&$arr,$arr_name)
+{
+/*
+$disp = 表示モード
+(=0:非表示，=1:黒文字で表示，=2:赤文字で表示，=3:青文字で表示
+=4:ライム色で表示，=5:アクア色で表示)
+$arr = 配列の値
+$arr_name = 配列名
+DEBUG = デバグモード指定定数（インクルードファイルuser.php内で定義）
+(=0:非デバグモード，=1:デバグモード)
+*/
+ if(DEBUG == 0){return;}
+ if($disp == 0) {return;}
+ if($disp == 1)
+ {
+ $color = "black";
+ }
+ elseif($disp == 2)
+ {
+  $color = "red";
+ }
+ elseif($disp == 3)
+ {
+  $color = "blue";
+ }
+ elseif($disp == 4)
+ {
+  $color = "lime";
+ }
+ elseif($disp == 5)
+ {
+  $color = "aqua";
+ }
+ print "&lt;span style='color:" .$color . "'&gt;";
+
+ // 配列でない場合
+ if(!is_array($arr))
+ {
+  print $arr_name . "= [" . $arr . "] is not array&lt;br&gt;\n";
+  return;
+ }
+ if(count($arr) &lt; 1 )
+ {
+  print $arr_name . "[] is empty&lt;br&gt;\n";
+  return;
+ }
+ print "&lt;br&gt;\n";
+ foreach($arr as $key =&gt; $value) 
+ {
+  if(is_array($value)) 
+  {
+   foreach($value as $key2 =&gt; $value2) 
+   {
+    if(is_array($value2)) 
+    {
+     foreach($value2 as $key3 =&gt; $value3)
+     {
+      if(is_array($value3)) 
+      {
+       foreach($value3 as $key4 =&gt; $value4)
+       {
+        print $arr_name . "[" . $key . "][". $key2 . "][" . 
+           $key3 . "][". $key4 . "]=" . $value4 . "&lt;br&gt;\n";
+       }
+      } 
+      else 
+      {
+       print $arr_name . "[" . $key . "][". $key2 . "][" . 
+          $key3 . "]=" . $value3 . "&lt;br&gt;\n";
+      }
+     }
+    } 
+    else 
+    {
+     print $arr_name . "[" . $key . "][". $key2 . "]=" . 
+        $value2 . "&lt;br&gt;\n";
+    }
+   }
+   print "&lt;br&gt;\n";
+  }
+  else
+  {
+   print $arr_name . "[" . $key . "]=" . $value . "&lt;br&gt;\n";
+  }
+ }
+ print "&lt;/span&gt;\n";
+}
+
+// ----------------------------------------------
+// 関数名の表示
+function disp_func($on,$f_name,$mess) 
+{
+/*
+$on = 表示モード
+(=0:非表示，=1:黒文字で表示，=2:赤文字で表示，=3:青文字で表示
+=4:ライム色で表示，=5:アクア色で表示)
+$f_name = 関数名
+$mess = 表示メッセージ（入口："Hi"，出口："Bye"）
+DEBUG = デバグモード指定定数（インクルードファイルuser.php内で定義）
+(=0:非デバグモード，=1:デバグモード)
+*/
+ if(DEBUG == 0){return;}
+ if($on == 1)
+ {
+  $color = "black";
+ }
+ elseif($on == 2)
+ {
+  $color = "red";
+ }
+ elseif($on == 3)
+ {
+  $color = "blue";
+ }
+ elseif($on == 4)
+ {
+  $color = "lime";
+ }
+ elseif($on == 5)
+ {
+  $color = "aqua";
+ }
+ if($on != 0) 
+ {
+  print "&lt;span style='color:" .$color . "'&gt;";print "&lt;br&gt;【" . $mess . " ! " .       $f_name . "】&lt;br&gt;\n";print "&lt;/span&gt;\n";
+ }
+}
+
+// ----------------------------------------------
+// メッセージの表示
+function disp_mes($disp,$str_mes)
+{
+/*
+$disp = 表示モード
+(=0:非表示，=1:黒文字で表示，=2:赤文字で表示，=3:青文字で表示
+=4:ライム色で表示，=5:アクア色で表示)
+$str_mes = メッセージ
+DEBUG = デバグモード指定定数（インクルードファイルuser.php内で定義）
+(=0:非デバグモード，=1:デバグモード)
+*/
+$on = 1;
+disp_func($on,'disp_mes','Hi');
+ if(DEBUG == 0){return;}
+ if($disp == 0) {return;}
+ if($disp == 1)
+ {
+  $color = "black";
+ }
+ elseif($disp == 2)
+ {
+  $color = "red";
+ }
+ elseif($disp == 3)
+ {
+  $color = "blue";
+ }
+ elseif($disp == 4)
+ {
+  $color = "lime";
+ }
+ elseif($disp == 5)
+ {
+  $color = "aqua";
+ }
+ print "&lt;span style='color:" .$color . "'&gt;" 
+    . $str_mes . "&lt;/span&gt;&lt;br&gt;\n";
+disp_func($on,'disp_mes','Bye');
+}
+
+// ----------------------------------------------
+// 変数の表示
+function disp_var($disp,$var,$var_name){
+/*
+$disp = 表示モード
+(=0:非表示，=1:黒文字で表示，=2:赤文字で表示，=3:青文字で表示
+=4:ライム色で表示，=5:アクア色で表示)
+$var = 変数の値
+$var_name = 変数名
+DEBUG = デバグモード指定定数（インクルードファイルuser.php内で定義）
+(=0:非デバグモード，=1:デバグモード)
+*/
+ if(DEBUG == 0){return;}
+ if($disp == 0){return;}
+ if($disp == 1)
+ {
+  $color = "black";
+ }
+ elseif($disp == 2)
+ {
+  $color = "red";
+ }
+ elseif($disp == 3)
+ {
+  $color = "blue";
+ }
+ elseif($disp == 4)
+ {
+  $color = "lime";
+ }
+ elseif($disp == 5)
+ {
+  $color = "aqua";
+ }
+ elseif(is_null($var))
+ {
+  $var = "NULL";
+ }
+ elseif($var === FALSE)
+ {
+  $var = "FALSE";
+ }
+ elseif($var === TRUE)
+ {
+  $var = "TRUE";
+ }
+ print "&lt;span style='color:" .$color . "'&gt;" 
+    . $var_name . "=" . $var . "&lt;/span&gt;&lt;br&gt;\n";
+}
+
+// ----------------------------------------------
+// 変数の16進数表示
+function disp_var_hex($disp,$var,$var_name)
+{
+/*
+$disp = 表示モード
+(=0:非表示，=1:黒文字で表示，=2:赤文字で表示，=3:青文字で表示
+=4:ライム色で表示，=5:アクア色で表示)
+$var = 変数の値
+$var_name = 変数名
+DEBUG = デバグモード指定定数（インクルードファイルuser.php内で定義）
+(=0:非デバグモード，=1:デバグモード)
+*/
+ if(DEBUG == 0){return;}
+ if($disp == 0){return;}
+ if($disp == 1)
+ {
+  $color = "black";
+ }
+ elseif($disp == 2)
+ {
+  $color = "red";
+ }
+ elseif($disp == 3)
+ {
+  $color = "blue";
+ }
+ elseif($disp == 4)
+ {
+  $color = "lime";
+ }
+ elseif($disp == 5)
+ {
+  $color = "aqua";
+ }
+ $var = "【" . bin2hex($var). "】";
+ print "&lt;span style='color:" .$color . "'&gt;" 
+    . $var_name . "=" . $var . "&lt;/span&gt;&lt;br&gt;\n";
+}
+</pre>
+  
+      
+<p>これらのデバグツールを使う場合は，リスト3.5.2のuser.phpファイルを作成し，定数DEBUGを１に設定します．</p>
+
+リスト3.5.2　user.php       
+<pre class="brush:php;">
+&lt;?php
+// include file(user.php)
+const DEBUG = 1;    // 0:非デバッグモード，1:デバッグモード
+?&gt;
+</pre>
+      
+<p>このuser.phpファイルは，インクルードファイルcommon.phpの中で，インクルードファイルとして読み込みます．<br>
+</p>
+
+リスト3.5.3　common.php       
+<pre class="brush:php;">
+&lt;?php
+// include file(common.php)
+// インクルードファイルの読み込み
+include "user.php";
+</pre>
+      
+<p>これらのデバグツールを活用したサンプルをリスト3.5.4に示します．ファイル名はform_password_debug.phpです．</p>
+
+リスト3.5.4　form_password_debug.php       
+<pre class="brush:php;">
+&lt;?php
+include "common.php";
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;form_password_debug.php&lt;/title&gt;
+&lt;!-- form:パスワード --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+disp_mes(1,"GETメソッド，POSTメソッドの値の確認");
+disp_arr(2,$_GET,'$_GET');
+disp_arr(2,$_POST,'$_POST');
+$name = "";
+$password = ""; 
+ if(isset($_POST['user_name'])){
+  $name = $_POST['user_name'];
+ }
+ if(isset($_POST['user_passwd'])){
+  $password = $_POST['user_passwd'];
+ }
+disp_var(3,$name,'$name');
+disp_var(4,$password,'$password');
+disp_var_hex(5,$password,'$password');
+?&gt;
+&lt;form action="form_password_debug.php" method="post"&gt;
+   ユーザ名 ：
+   &lt;input type="text" name="user_name" size=20 value='&lt;?=$name?&gt;'&gt;&lt;br&gt;
+   パスワード：
+   &lt;input type="password" name="user_passwd" size=20                     value='&lt;?=$password?&gt;'&gt;&lt;br&gt;
+   &lt;input type="submit" value=" OK "&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>form_password_debug.phpにアクセスし，以下のように記入します</p>
+      <img src="./files/030501.png" width="450">
+<p>結果は，次のように表示されます．</p>
+      <img src="./files/030502.png" width="450">
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>2011実践II</title>
+<link rel="stylesheet" type="text/css" href="./files/manual.css">
+<script language="javascript" src="./files/css.js"></script>
+	
+	<script type="text/javascript" src="./js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushPhp.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<link type="text/css" rel="stylesheet" href="./syntaxhighlighter/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>  
+</head>
+
+<body>
+
+<body bgcolor="#FFFFFF">
+
+
+<h3>3.6　セッション管理</strong></div>
+     
+<h4>3.6.1　セッションの開始</h4>
+
+<p>
+ユーザ専用の画面をPHPで作成する際に，セッションの概念は重要となります．たとえばログイン画面で認証を行うシステムを想像してみてください．認証を行った後，認証後のURLに移動します．このとき，セッションを利用しなければ，認証後のURLをメモした場合(例えば，http://www.hoge.jp/login.phpが認証ページ，http://www.hoge.jp/success.phpが認証後のページ)，そのURL(success.php)を直接入力すれば，誰でも見えてしまいます．URLを直接入力されたとき，認証されていなければそのページを表示できなくする仕組みがセッションにあります．セッションの仕組みは次の通りです．</p>
+
+<ul>
+	<li>アクセスがあったユーザーに対してサーバ側からセッションIDを割り振る</li>
+	<li>割り振ったセッションIDに対する情報をサーバに保存する</li>
+	<li>ユーザーがそれぞれ個別のセッションIDをサーバーに送る</li>
+	<li>セッションIDにマッチする情報をサーバから読み込む</li>
+	<li>サーバから読み込んだ情報を$_SESSION変数に格納する</li>
+</ul>
+
+<p>”個別のセッションID”は，普通クッキーと呼ばれるもので保存します．なお，iモードではクッキーが使えません．クッキーが使えない場合のSESSIONの扱いについても以降で解説します．</p>
+
+<p>URLのパラメータとしてGETメソッドでセッションIDを渡す際，PHPの設定パラメータ「session.use_trans_sid」が１に指定されている場合，ハイパーリンクの相対URLに、URL Rewriting機能により自動的にセッションIDが追加され、次のファイルに引き渡されます。PHPの設定パラメータ「session.use_trans_sid」を１に指定する方法には次の二つがあります。1)PHPのコンパイル時にオプションとして「--enable-trans-sid」を指定する。2)php.iniファイルで設定オプション「session.use_trans_sid」を1にし、Apacheをrestartする。なお、php.iniファイルの既定のディレクトリは/usr/local/lib/php.iniです。</p>
+
+<p>PHPの設定パラメータ「session.use_trans_sid」が0に指定されている場合は，ハイパーリンクのURLに、定数SIDを記述し、セッションIDを次のファイルに引き渡します。Cookieが使用できない場合、定数SIDには、セッション名=セッションIDが代入されます。HTMLフォームのhiddenコントロールとしてセッションIDを引き渡します．つまりクッキーが使えない場合は、GETとかPOSTでsession_idを送ればよいn</p>
+
+<h4>3.6.2 セッション</h4>
+<p>Webサーバは、あるWebページから別のWebページへのアクセスは独立の状態として扱います。同じページへ再度アクセスしても独立の状態として扱います。ところがWebアプリケーションでは、一つのサービスを構成するWebページへのアクセスは同一の状態として扱いたい場合があります。このような状態を「セッション」といいます。PHPにはセッション管理機能がありこのような状態を管理することが可能となります。 
+</p>
+
+<h4>3.6.3 セッションの開始と管理</h4>
+<p>あるページにアクセスした時点からセッションの管理を始めるには、そのページの冒頭でsession_start()関数を呼び出します。引数は不要です。session_start()関数が呼び出されると、Webサーバ内でセッションIDが生成され、Webサーバ内に保存されます。セッション名はsession_name()関数で確認できます。セッションIDはsession_id()関数で確認できます。保存先のディレクトリはsession_save_path()関数で確認できます。</p>
+<p>サンプルをリストsession_start1.phpに示します。</p>
+	   
+	  
+リスト session_start1.php
+<pre class="brush: php;">
+&lt;?php
+// セッションの開始
+session_start();
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;session_start1.php&lt;/title&gt;
+&lt;!-- セッションの開始：セッションIDの確認 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ print "session_id = " . session_id() . "&lt;br&gt;"; // セッションIDの確認
+ print "session_name = " . session_name() . "&lt;br&gt;";    // セッション名の確認
+ print "session_save_path = " . session_save_path() . "&lt;br&gt;";
+     // セッション情報格納ディレクトリの確認
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+<p>session_start1.phpファイルにアクセスすると、次図のようにセッションID等が表示されセッションが開始していることが確認できます。</p>
+ 
+<p><img src="./files/fig080102.png" width="454" height="86"></p>
+
+<p>セッション情報はWebサーバの/tmp/ディレクトリに格納されています。このディレクトリ内のファイルのリストを下記に示します。ファイル名が「sess_セッションID」のファイル名が確認できます。このファイルの中にはユーザが定義したセッション変数が格納されます。現時点ではセッション変数が定義されｔれいないので空です。</p>
+ 
+<pre class="brush: shell;">
+[root@igux /tmp]# ls
+orbit-root/ sess_f14895297cc2e1b47d484d3aa9aceb2f 
+[root@igux /tmp]#
+</pre>
+
+<h4>3.6.4 セッション変数の登録</h4>
+<p>セッション内で共有できるセッション変数は、以下の書式で登録します。$_SESSIONは配列型のグローバル変数です。</p>
+ 
+<pre class="brush: php;">
+$_SESSION["s_name"]=$name;
+</pre>
+
+<p>サンプルをリスト　session_start2.phpに示します。</p>
+ 
+	  
+リスト session_start2.php
+<pre class="brush: php;">
+&lt;?php
+// セッションの開始
+session_start();
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;session_start2.php&lt;/title&gt;
+&lt;!-- セッションの開始:セッション変数の登録 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ print "session_id = " . session_id() . "&lt;br&gt;"; // セッション変数の出力
+ if (isset($_POST["name"])) {
+   $name = $_POST["name"];
+   $_SESSION["s_name"]=$name; // セッション変数の登録
+   print "ようこそ！" . $_SESSION["s_name"] . "さん。&lt;br&gt;";
+   print_r($_SESSION); 
+ } else {
+?&gt;
+   &lt;form method="post"&gt;
+     氏名を記入してください。&lt;br&gt;
+     氏名：&lt;input size="30" type="text" name="name"&gt;&lt;br&gt;
+   &lt;input type="submit" value="登録"&gt;
+   &lt;/form&gt;
+&lt;?php
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+<p>session_start2.phpファイルにアクセスすると、下図のようなWebページが表示されます。セッションが開始され、セッションIDは図に表示された値です。氏名を記入して「登録」ボタンをクリックします。</p>
+ 
+<p><img src="./files/fig080103.png" width="503" height="132"></p>
+
+<p>session_start2.phpファイルで&lt;form&gt;タグでaction属性が省略されているので、「登録」ボタンをクリックすると、自分自身のファイルに再度アクセスします。その結果、下図のようなWebページが表示されます。セッション変数に値が代入されているのがわかります。</p>
+ 
+<p><img src="./files/fig080104.png" width="503" height="89"></p>
+
+<p> 　Webサーバ内の/ｔｍｐディレクトリには、２個のセッションファイルができています。</p>
+<pre class="brush: shell;">
+[root@igux /tmp]# 
+ls -l
+total 2
+drwx------ 2 root 　root 1024 Jun 19 15:47 orbit-root/
+-rw------- 1 nobody nobody 20 Jun 20 13:25 sess_5fb6b70b37b53114518ce19ac215e8ea
+-rw------- 1 nobody nobody　0 Jun 20 13:25 sess_6f50f7a6dbf62daa44e8e97fe11d6765
+-rw-r--r-- 1 root 　root 　 0 Jun 20 13:25 typescript
+[root@igux /tmp]# cat sess_5f*
+s_name|s:6:"yamada";[root@igux /tmp]# 
+</pre>
+<p>2度目のセッションファイル　sess_5fb6b70b37b53114518ce19ac215e8eaの内容は「s_name|s:6:"yamada" 
+;」となっています。つまり、以下の書式で、セッション変数に関するデータが格納されています。</p>
+ 
+<p class="command-print">変数名｜型識別：値；</p>
+
+<p>ところで、session_start2.phpファイルへの１回目のアクセスのときのセッションIDと２回目のアクセスのときのセッションIDが異なるのが分かります。つまり、１回目のアクセスと２回目のアクセスでは別のセッションとして管理されていたことになります。これは、session_start2.phpファイルに１回目にアクセスしたときに生成されたセッションIDが、２回目のアクセスのときにsession_start2.phpファイルに引き渡されなかったためです。</p>
+     
+<p>８．２　セッションの継続</p>
+<p>セッションはセッションIDで管理されます。したがって、複数のPHPファイル間を同一セッションとみなして処理するためには、セッションIDをPHPファイル間で引き渡す必要があります。</p>
+
+<h4>3.6.5 セッションIDの引渡し方法</h4>
+<p>PHPファイル間でセッションIDを引き渡す方法はいくつかあります。</p>
+<p>（１）Cookieが使用できない場合</p>
+ 
+<p>a)URLのパラメータとしてGETメソッドでセッションIDを渡す。</p>
+ 
+  <p>１）PHPの設定パラメータ「session.use_trans_sid」が１に指定されている場合</p>
+   
+    <p>ハイパーリンクの相対URLに、URL Rewriting機能により自動的にセッションIDが追加され、次のファイルに引き渡されます。</p>
+    <p>PHPの設定パラメータ「session.use_trans_sid」を１に指定する方法には次の二つがあります。</p>
+    <p>・PHPのコンパイル時にオプションとして「--enable-trans-sid」を指定する。</p>
+    <p>・php.iniファイルで設定オプション「session.use_trans_sid」を1にし、Apacheをrestartする。<br>
+　なお、php.iniファイルの既定のディレクトリは/usr/local/lib/php.iniです。</p>
+  
+  <p>２）PHPの設定パラメータ「session.use_trans_sid」が0に指定されている場合</p>
+   
+    <p>ハイパーリンクのURLに、定数SIDを記述し、セッションIDを次のファイルに引き渡します。たとえば、以下のように記述します。</p>
+    <pre class="brush: html;">
+&lt;a href="next.php?&lt;?=SID?&gt;"&gt;次ページ&lt;/a&gt;
+</pre>
+    <p>Cookieが使用できない場合、定数SIDには、セッション名=セッションIDが代入されます。たとえば、次のように置換されます。</p>
+    <pre class="brush: html;">
+&lt;a href="next.php?PHPSESSID=5fb6b70b37b53114518ce19ac215e8ea"&gt;次ページ&lt;/a&gt;
+</pre>
+
+<p>b)HTMLフォームのhiddenコントロールとしてセッションIDを引き渡す。</p>
+ 
+  <p>たとえば、以下のように記述します。</p>
+  <pre class="brush: html;">
+&lt;input type="hidden" name="&lt;?=session_name()?&gt;" 
+    value="&lt;?=session_id()?&gt;"&gt;
+</pre>
+  <p>具体的には、例えば、以下のように代入されます。</p>
+  <pre class="brush: html;">
+&lt;input type="hidden" name="PHPSESSID" 
+value="5fb6b70b37b53114518ce19ac215e8ea"&gt;
+</pre>
+
+<p>（２）Cookieが使用できる場合</p>
+<p>Cookieを使用してセッションIDが引き渡されます。</p>
+
+<h4>3.6.6 URL Rewriting機能によるセッションIDの引渡し</h4>
+<p>Cookieが使用できない場合は、URLのパラメータとしてGETメソッドでセッションIDを引き渡す方法があります。PHPの設定パラメータ「session.use_trans_sid」が１に指定されている場合は、ハイパーリンクの相対URLに、URL 
+Rewriting機能により自動的にセッションIDが追加され、次のファイルにセッションIDが引き渡されます。</p>
+<p>PHPの設定パラメータ「session.use_trans_sid」を１に設定するには、（１）PHPのコンパイル時にオプションとして「--enable-trans-sid」を指定する方法と（２）php.iniファイルで設定オプション「session.use_trans_sid」を1にし、Apacheをrestartする方法があります。ここでは、後者の方法で実行してみます。なお、php.iniファイルの既定のディレクトリは/usr/local/lib/php.iniです。</p>
+<p>次のリストのように/usr.local/lib/php.iniファイルで、「session.use_trans_sid 
+= 1」とし、Apacheをrestartします。</p>
+    
+    <p>Chromeを使用するときは追加でcookieの使用も0にして停止しておきましょう</p>
+
+<p>リスト　php.iniファイルの一部</p>
+<pre class="brush: php;">
+  ; trans sid support is disabled by default.
+  ; Use of trans sid may risk your users security.
+  ; Use this option with caution.
+  ; - User may send URL contains active session ID
+  ; to other person via. email/irc/etc.
+  ; - URL that contains active session ID may be stored
+  ; in publically accessible computer.
+  ; - User may access your site with the same session ID
+  ; always using URL stored in browser's history or bookmarks.
+  session.use_trans_sid = 1
+  
+  
+  session.use_cookies = 0
+  
+  session.use_only_cookies = 0
+</pre>
+
+<p>この時点で、http://igux.mc.yc.musashi-tech.ac.jp/phpinfo.phpにアクセスし、PHPの環境設定パラメータを確認すると下図のように「session.use_trans_sid = 1」となっています。</p>
+<p><img src="./files/fig080105.png" width="633" height="659"></p>
+<p>以下にサンプルをリストsession_start3.phpを示します。</p>
+ 
+リスト session_start3.php
+<pre class="brush: php;">
+&lt;?php
+// セッションの開始
+session_start();
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;session_start3.php&lt;/title&gt;
+&lt;!-- セッションの開始:セッション変数の登録 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ print "session_id = " . session_id() . "&lt;br&gt;";    // セッションIDの出力
+ print '&lt;br&gt;$_POST[] の内容の確認；&lt;br&gt;';
+ print_r($_POST);
+ print "&lt;br&gt;";
+ if (isset($_POST["name"])) {
+   $name = $_POST["name"];
+   $_SESSION["s_name"]=$name;  // セッション変数の登録
+   print "ようこそ！" . $_SESSION["s_name"] . "さん。&lt;br&gt;";
+   print '$_SESSION[]の内容の確認；&lt;br&gt;';
+   print_r($_SESSION); // セッション変数の出力
+   print "&lt;br&gt;"; 
+?&gt;
+   &lt;a href="session_start3a.php"&gt;次ページへ&lt;/a&gt;&lt;br&gt;
+&lt;?php
+ } else {
+?&gt;
+   &lt;form method="post"&gt;
+     氏名を記入してください。&lt;br&gt;
+     氏名：&lt;input size="30" type="text" name="name"&gt;&lt;br&gt;
+     &lt;input type="submit" value="登録"&gt;
+   &lt;/form&gt;
+&lt;?php
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+<p>以上のような環境で、session_start3.phpファイルにアクセスし、下図のように「氏名」欄に氏名を記入し、「登録」ボタンをクリックします。</p>
+<p><img src="./files/fig080106.png" width="633" height="285"></p>
+<p>下図のWebページが表示されます。</p>
+<p><img src="./files/fig080107.png" width="633" height="285"></p>
+<p>セッションIDが、最初にsession_start3.phpファイルにアクセスした時と同じ値であることがわかります。これは、Cookieが使えず、かつ「session.use_trans_sid 
+= 1」の場合は、HTMLフォームがある場合は、hiddenコントロールでセッションIDが次ページ（この例では、自分自身のページ）に自動的に引き渡されるためです。</p>
+<p>上図で。「次ページへ」のハイパーリンクをクリックします。以下のリストに示すsession_start3a.phpファイルが起動されます。</p>
+	   
+	  
+リスト session_start3a.php
+<pre class="brush: php;">
+&lt;?php
+// セッションの継続
+session_start();
+$name = $_SESSION["s_name"];
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;session_start3a.php&lt;/title&gt;
+&lt;!-- セッションの継続 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+次のページです。&lt;br&gt;
+&lt;?php
+ print "session_id = " . session_id() . "&lt;br&gt;";
+ print '$_GET[] の内容の確認；&lt;br&gt;';
+ print_r($_GET);
+ print '&lt;br&gt;$_POST[] の内容の確認；&lt;br&gt;';
+ print_r($_POST);
+ print '&lt;br&gt;$_SESSION[]の内容の確認；&lt;br&gt;';
+ print_r($_SESSION);
+ print "&lt;br&gt;";
+?&gt;
+氏名は[&lt;?=$name?&gt;]ですね。&lt;br&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>表示されるWebページは次のようになります。URLの最後に自動的に「PHPSESSID=セッションID」の形式でセッションIDが付加されています。</p>
+ 
+<p>http://igux.mc.yc.musashi-tech.ac.jp/php/8/session_start3a.php?PHPSESSID=1e805a09e3f363d87424be78800c0408</p>
+
+<p><img src="./files/fig080108.png" width="633" height="299"></p>
+<p>セッション変数$_session["s_name"]の値が正しく参照できているのも確認できます。</p>
+<p>【補足】</p>
+<p>なお、Cookieが使えず、「session.use_trans_sid = 0」の環境で、上記のsession_start3.phpにアクセスし、下図のように氏名を記入し「登録」ボタンをクリックしますと、</p>
+<p><img src="./files/fig080110.png" width="633" height="285"></p>
+<p>下図のように、２回目のsession_start3.phpファイルにアクセスした場合は、別のセッションIDの値に設定されて、セッションが継続していません。これは、HTMLフォームのhiddenコントロールで自動的にセッションIDが引き渡されないためです。</p>
+<p><img src="./files/fig080111.png" width="633" height="285"></p>
+<p>上図で、「次ページへ」のハイパーリンクをクリックすると、session_start3a.phpファイルが起動され次図のようにWebページが表示されます。</p>
+<p><img src="./files/fig080112.png" width="633" height="302"></p>
+<p>この場合も、セッションIDは新しい別の値で、直前のセッションが引き継がれていません。これは、URL Rewritingが実行されず、session_start3.phpファイルからsession_start3a.phpファイルにセッションIDが引き渡されなかったためです。したがって、session_start3a.phpファイルで生成されたセッションではセッション変数$_SESSIONは空で,直前のセッションのセッション変数$_SESSION["s_name"]を参照することができなかったことがわかります。</p>
+
+<h4>3.6.7 URLに定数SIDを追加記述してセッションIDを引き渡す方法</h4>
+<p>Cookieが使用できない場合は、URLのパラメータとしてGETメソッドでセッションIDを引き渡す方法があります。PHPの設定パラメータ「session.use_trans_sid」が0に指定されている場合は、ハイパーリンクのURLに、定数SIDを追加記述し、次のファイルにセッションIDを引き渡すことができます。</p>
+<p>Cookieが使用できない場合、定数SIDには、セッション名=セッションIDが代入されます。</p>
+<p>サンプルをリストsession_start4.phpに示します。</p>
+ 
+リスト session_start4.php
+<pre class="brush: php;">
+&lt;?php
+// セッションの開始
+session_start();
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;session_start4.php&lt;/title&gt;
+&lt;!-- セッションの開始:セッション変数の登録 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ print "session_id = " . session_id() . "&lt;br&gt;";   // セッションIDの出力
+ print '&lt;br&gt;$_POST[] の内容の確認；&lt;br&gt;';
+ print_r($_POST);
+ print "&lt;br&gt;";
+ if (isset($_POST["name"])) {
+   $name = $_POST["name"];
+   $_SESSION["s_name"]=$name; // セッション変数の登録
+   print "ようこそ！" . $_SESSION["s_name"] . "さん。&lt;br&gt;";
+   print '$_SESSION[]の内容の確認；&lt;br&gt;';
+   print_r($_SESSION);// セッション変数の出力
+   print "&lt;br&gt;"; 
+?&gt;
+   &lt;a href="session_start3a.php?&lt;?=SID?&gt;"&gt;次ページへ&lt;/a&gt;&lt;br&gt;  &lt;!-- 定数SIDの記述 --&gt;
+&lt;?php
+ } else {
+?&gt;
+   &lt;form method="post"&gt;
+     氏名を記入してください。&lt;br&gt;
+     氏名：&lt;input size="30" type="text" name="name"&gt;&lt;br&gt;
+     &lt;input type="submit" value="登録"&gt;
+   &lt;/form&gt;
+&lt;?php
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>session_start4.phpファイルにアクセスし、下図のように「氏名」欄に氏名を記入し、「登録」ボタンをクリックします。</p>
+<p><img src="./files/fig080113.bmp" width="633" height="302"></p>
+<p>下図のWebページが表示されます。セッションIDが直前の値と異なることがわかります。これはsession_start4.phpファイルに２回目にアクセスするときにセッションIDが引き渡されなかったために、新たなセッションが生成されたためです。</p>
+<p><img src="./files/fig080114.png" width="633" height="302"></p>
+<p>「次ページへ」のハイパーリンクをクリックすると、次図のようなWebページが表示されます。</p>
+<p><img src="./files/fig080115.png" width="633" height="302"></p>
+<p>今度は、直前のセッションIDが引き継がれているのがわかります。これは、　「次ページへ」のハイパーリンクのURLに定数SIDを以下のように記述したことにより、定数SIDが「PHPSESSID=セッションID」のように展開され、GETメソッドで次のsession_start3aファイルにセッションIDが引き渡されたことによります。</p>
+ 
+<p>&lt;a href="session_start3a.php?&lt;?=SID?&gt;"&gt;次ページへ&lt;/a&gt;&lt;br&gt;</p>
+
+<p>ブラウザのURLは、以下のようになって、「PHPSESSID=df086c6291ecebe4eac6112b38de0416」の部分が追加されていることがわかります。</p>
+ 
+<p>http://igux.mc.yc.musashi-tech.ac.jp/php/8/session_start3a.php?PHPSESSID=df086c6291ecebe4eac6112b38de0416</p>
+
+<p>【補足】</p>
+<p>なお、下図のように、Cookieが使える場合は、状況が異なります。</p>
+ 
+<p>リスト　php.iniファイルの一部</p>
+<pre class="brush: php;">
+  session.use_cookies = 1 
+  session.use_only_cookies = 1
+</pre>
+<p>session_start4.phpファイルにアクセスし、氏名を記入し「登録」ボタンをクリックすると次図のWebページが表示されます。</p>
+<p><img src="./files/fig080117.png" width="633" height="302"></p>
+<p>さらに、「次ページへ」のハイパーリンクをクリックすると、次図のWebページが表示されます。URLにはセッションIDが付加されていないのですが、セッションIDは直前のsession_start4.phpファイルからsession_start3a.phpファイルに引き渡されていることが分かります。これはCookieによりセッションIDが引き渡されたことによります。</p>
+<p><img src="./files/fig080118.png" width="633" height="302"></p>
+
+<h4>3.6.8 HTMLフォームのhiddenコントロールでセッションIDを引き渡す方法</h4>
+<p>Cookieが使用できない場合は、HTMLフォームのhiddenコントロールでセッションIDを引き渡すことができます。</p>
+<p>サンプルをリストsession_start6.phpに示します。つまり、以下のように記述します。</p>
+
+<p>&lt;input type="hidden" name="&lt;?=session_name()?&gt;" value="&lt;?=session_id()?&gt;"&gt;</p>
+リスト session_start6.php
+<pre class="brush: php;">
+&lt;?php
+// セッションの開始
+session_start();
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;session_start6.php&lt;/title&gt;
+&lt;!-- セッションの開始:セッション変数の登録 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+	print "session_id = " . session_id() . "&lt;br&gt;"; // セッションIDの出力
+	print '&lt;br&gt;$_POST[] の内容の確認；&lt;br&gt;';
+	print_r($_POST);
+	print "&lt;br&gt;";
+	print '&lt;br&gt;$_COOKIE[] の内容の確認；&lt;br&gt;';
+	print_r($_COOKIE);
+	print "&lt;br&gt;";
+	if (isset($_POST["name"])) {
+		$name = $_POST["name"];
+		$_SESSION["s_name"]=$name; // セッション変数の登録
+		print "ようこそ！" . $_SESSION["s_name"] . "さん。&lt;br&gt;";
+		print '$_SESSION[]の内容の確認；&lt;br&gt;';
+		print_r($_SESSION); // セッション変数の出力
+		print "&lt;br&gt;"; 
+?&gt;
+&lt;!-- hiddenコントロールによるセッションIDの引渡し --&gt;
+&lt;form action="session_start6a.php" method="post"&gt;
+&lt;input type="hidden" name="&lt;?=session_name()?&gt;" 
+value="&lt;?=session_id()?&gt;"&gt;
+&lt;input type="submit" value="次ページ"&gt;
+&lt;/form&gt;
+&lt;?php
+	} else {
+?&gt;
+&lt;form method="post"&gt;
+氏名を記入してください。&lt;br&gt;
+氏名：&lt;input size="30" type="text" name="name"&gt;&lt;br&gt;
+&lt;input type="submit" value="登録"&gt;
+&lt;/form&gt;
+&lt;?php
+	}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>サンプルのリストsession_start6a.phpを以下に示します。</p>
+ 
+リスト session_start6a.php
+<pre class="brush: php;">
+&lt;?php
+// セッションの継続
+session_start();
+$name = $_SESSION["s_name"];
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;session_start6a.php&lt;/title&gt;
+&lt;!-- セッションの継続 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+次のページです。&lt;br&gt;
+&lt;?php
+ print "session_id = " . session_id() . "&lt;br&gt;";
+ print '$_GET[] の内容の確認；&lt;br&gt;';
+ print_r($_GET);
+ print '&lt;br&gt;$_POST[] の内容の確認；&lt;br&gt;';
+ print_r($_POST);
+ print '&lt;br&gt;$_SESSION[]の内容の確認；&lt;br&gt;';
+ print_r($_SESSION);
+ print "&lt;br&gt;";
+ print '&lt;br&gt;$_COOKIE[]の内容の確認；&lt;br&gt;';
+ print_r($_COOKIE);
+ print "&lt;br&gt;";
+?&gt;
+氏名は[&lt;?=$name?&gt;]ですね。&lt;br&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>session_start6.phpファイルにアクセスし、氏名を記述し、「登録」ボタンをクリックします。</p>
+<p><img src="./files/fig080119.png" width="633" height="351"></p>
+<p>次図のWebページが表示されます。次に「次ページ」ボタンをクリックします。</p>
+<p><img src="./files/fig080120.png" width="633" height="351"></p>
+<p>session_start6a.phpファイルが起動され、次図のWebページが表示されます。セッションIDがPOSTメソッドにより引き渡されているのがわかります。</p>
+<p><img src="./files/fig080121.png" width="633" height="351"></p>
+
+<h4>3.6.9 CookieによるセッションIDの引渡し方法</h4>
+<p>phpが下記のようにCookieの利用を許容している場合は、CookieによりセッションIDをphpファイル間で引き渡すことが可能になります。</p>
+ 
+<p>リスト　php.iniファイルの一部</p>
+<pre class="brush: php;">
+  session.use_cookies = 1 
+  session.use_only_cookies = 1
+</pre>
+<p>サンプルをリストsession_start5.phpに示します。</p>
+ 
+リスト session_start5.php
+<pre class="brush: php;">
+&lt;?php
+// セッションの開始
+session_start();
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;session_start5.php&lt;/title&gt;
+&lt;!-- セッションの開始:セッション変数の登録 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ print "session_id = " . session_id() . "&lt;br&gt;";// セッションIDの出力
+ print '&lt;br&gt;$_POST[] の内容の確認；&lt;br&gt;';
+ print_r($_POST);
+ print "&lt;br&gt;";
+ print '&lt;br&gt;$_COOKIE[] の内容の確認；&lt;br&gt;';// クッキー変数の出力
+ print_r($_COOKIE);
+ print "&lt;br&gt;";
+ if (isset($_POST["name"])) {
+   $name = $_POST["name"];
+   $_SESSION["s_name"]=$name;// セッション変数の登録
+   print "ようこそ！" . $_SESSION["s_name"] . "さん。&lt;br&gt;";
+   print '$_SESSION[]の内容の確認；&lt;br&gt;';
+   print_r($_SESSION); // セッション変数の出力
+   print "&lt;br&gt;"; 
+?&gt;
+   &lt;a href="session_start5a.php?&lt;?=SID?&gt;"&gt;次ページへ&lt;/a&gt;&lt;br&gt;
+  &lt;!-- 定数SIDの記述 --&gt;
+&lt;?php
+ } else {
+?&gt;
+   &lt;form method="post"&gt;
+     氏名を記入してください。&lt;br&gt;
+     氏名：&lt;input size="30" type="text" name="name"&gt;&lt;br&gt;
+     &lt;input type="submit" value="登録"&gt;
+   &lt;/form&gt;
+&lt;?php
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>サンプルのリストsession_start5a.phpを以下に示します。</p>
+ 
+リスト session_start5a.php
+<pre class="brush: php;">
+&lt;?php
+// セッションの継続
+session_start();
+$name = $_SESSION["s_name"];
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;session_start5a.php&lt;/title&gt;
+&lt;!-- セッションの継続 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+次のページです。&lt;br&gt;
+&lt;?php
+ print "session_id = " . session_id() . "&lt;br&gt;";
+ print '$_GET[] の内容の確認；&lt;br&gt;';
+ print_r($_GET);
+ print '&lt;br&gt;$_POST[] の内容の確認；&lt;br&gt;';
+ print_r($_POST);
+ print '&lt;br&gt;$_SESSION[]の内容の確認；&lt;br&gt;';
+ print_r($_SESSION);
+ print "&lt;br&gt;";
+ print '&lt;br&gt;$_COOKIE[]の内容の確認；&lt;br&gt;';
+ print_r($_COOKIE);
+ print "&lt;br&gt;";
+?&gt;
+氏名は[&lt;?=$name?&gt;]ですね。&lt;br&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>session_start5.phpファイルにアクセスし、氏名を記入し、「登録」ボタンをクリックします。</p>
+<p><img src="./files/fig080122.png" width="624" height="344"></p>
+<p>以下のWebページが表示されます。セッションIDが前のページと同じですこれはCookie変数によりセッションIDが引き渡されているからです。</p>
+<p><img src="./files/fig080123.png" width="624" height="344"></p>
+<p>「次ページへ」のハイパーリンクをクリックします。次図のWebページが表示されます。セッションIDがCookie変数により引き渡されているのが分かります。なお、URLにはセッションIDが付記されていません。これは、Cookieが有効な場合は、URLに記述された定数SIDは無視されるためです。</p>
+<p><img src="./files/fig080124.png" width="624" height="350"></p>
+     
+<p>８．３　セッションの入り口ページへのジャンプ</p>
+
+<h4>3.6.10 セッションの入り口ページ</h4>
+<p>複数のPHPファイルで一つのセッションを構成する場合に、セッションの入り口になるPHPファイルをある特定のファイルにしたい場合があります。たとえば、ログオンのチェックを行うとか、氏名を記入してもらってはじめて、その他のPHPファイルにアクセスできるようにしたい場合などです。
+</p><p>このような場合は、ユーザがセッションの入り口となるPHPファイル以外のファイルにいきなりアクセスしてきた場合は、自動的にセッションの入り口のページにジャンプするようにします。
+</p><p>サンプルをリストsession_ent.phpとにリストsession_ent_a.php示します。リストsession_ent.phpはセッションの入り口となるファイルの例です。リストsession_ent_a.phpはセッションの入り口でないその他のファイルの例です。
+</p> 
+リスト session_ent.php
+<pre class="brush: php;">
+&lt;?php
+// セッションの開始
+session_start();
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;session_ent.php&lt;/title&gt;
+&lt;!-- セッションの入り口ページ --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ print "session_id = " . session_id() . "&lt;br&gt;"; // セッションIDの出力
+ print '&lt;br&gt;$_POST[] の内容の確認；&lt;br&gt;';
+ print_r($_POST);
+ print "&lt;br&gt;";
+ print '&lt;br&gt;$_COOKIE[] の内容の確認；&lt;br&gt;';
+ print_r($_COOKIE);
+ print "&lt;br&gt;";
+ if (isset($_POST["name"])) {
+   $name = $_POST["name"];
+   $_SESSION["s_name"]=$name; // セッション変数の登録
+   print "ようこそ！" . $_SESSION["s_name"] . "さん。&lt;br&gt;";
+   print '$_SESSION[]の内容の確認；&lt;br&gt;';
+   print_r($_SESSION); // セッション変数の出力
+   print "&lt;br&gt;"; 
+?&gt;
+&lt;!-- hiddenコントロールによるセッションIDの引渡し --&gt;
+   &lt;form action="session_ent_a.php" method="post"&gt;
+     &lt;input type="hidden" name="&lt;?=session_name()?&gt;" 
+     value="&lt;?=session_id()?&gt;"&gt;
+     &lt;input type="submit" value="次ページ"&gt;
+   &lt;/form&gt;
+&lt;?php
+ } else {
+?&gt;
+   &lt;form method="post"&gt;
+     氏名を記入してください。&lt;br&gt;
+     氏名：&lt;input size="30" type="text" name="name"&gt;&lt;br&gt;
+     &lt;input type="submit" value="登録"&gt;
+   &lt;/form&gt;
+&lt;?php
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+リスト session_ent_a.php
+<pre class="brush: php;">
+&lt;?php
+// セッションの継続
+if(!isset($_SESSION)){     
+ session_start();
+}
+// セッション変数に値がない場合は、セッションの入り口ページにジャンプ
+if (! isset($_SESSION["s_name"])) {
+  $_SESSION = array();// すべてのセッション変数のクリア
+  session_destroy();  // セッション情報を破棄
+  $url= "session_ent.php";
+  header("Location: " . $url);
+}
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;session_ent_a.php&lt;/title&gt;
+&lt;!-- セッションの継続 --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+次のページです。&lt;br&gt;
+&lt;?php
+ print "session_id = " . session_id() . "&lt;br&gt;";
+ print '$_GET[] の内容の確認；&lt;br&gt;';
+ print_r($_GET);
+ print '&lt;br&gt;$_POST[] の内容の確認；&lt;br&gt;';
+ print_r($_POST);
+ print '&lt;br&gt;$_SESSION[]の内容の確認；&lt;br&gt;';
+ print_r($_SESSION);
+ print "&lt;br&gt;";
+ print '&lt;br&gt;$_COOKIE[]の内容の確認；&lt;br&gt;';
+ print_r($_COOKIE);
+ print "&lt;br&gt;";
+?&gt;
+氏名は[&lt;?=$_SESSION["s_name"]?&gt;]ですね。&lt;br&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>いきなりsession_ent_a.phpファイルにアクセスしても次図のsession_ent.phpファイルに自動的にジャンプします。</p>
+<p><img src="./files/fig080301.png" width="631" height="349"></p>
+<p>氏名を記入して「登録」ボタンをクリックすると、次図のページが表示されます。「次ページ」ボタンをクリックします。</p>
+<p><img src="./files/fig080302.png" width="631" height="349"></p>
+<p>今度は、氏名が登録されセッション変数に格納されているので、session_ent_a.phpファイルへのアクセスが可能となります。</p>
+<p><img src="./files/fig080303.png" width="631" height="349"></p>
+      
+</body></html>

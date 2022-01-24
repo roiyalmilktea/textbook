@@ -1,0 +1,2464 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>2018実践II</title>
+<link rel="stylesheet" type="text/css" href="./files/manual.css">
+<script language="javascript" src="./files/css.js"></script>
+	
+	<script type="text/javascript" src="./js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushPhp.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushCss.js"></script>
+	<link type="text/css" rel="stylesheet" href="./syntaxhighlighter/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>  
+</head>
+
+<body>
+<h1>PHPとMySQLによるWebアプリケーションの基礎</h1>
+<form>
+  <div class="ar"> 
+		<input type="button" value="標準" onClick="css_print()">
+		<input type="button" value="拡大" onClick="css_presen()">
+  </div>
+</form>
+
+<h2>Chapter 2 PHPの基本構文</h2>
+
+<h3>2.1　変数</h3>
+<h4>2.1.1　変数名</h4>
+<p>変数とは，文字や数値などの値を保存しておく場所のことです．変数には名前をつけて利用しやすくしています．変数に保存される値は，スクリプトの中で自由に入れ替えられます．</font> 
+</p><p>PHPでは，変数をあらかじめ定義することなく使用します．変数に名前をつける際は以下のルールを守る必要があります．</font> 
+</p> 
+  <p class="command-print">・変数名は＄ではじめる． <br>
+    ・変数名に使用する文字は，半角の英文字，数字，[_」（アンダーバー）にする． <br>
+    ・$に続く変数名の１文字目は半角の英文字か[_」（アンダーバー）にする．<span class="code"> <br>
+    　 数字は使えない．</span> </p>
+
+ 
+  <p class="caution-print">【注意】PHPでは変数名の大文字と小文字は区別します．$varと$VARは別の変数となります．</p>
+
+<h4>2.1.2　代入文</h4>
+<p>変数は，値を入れる器のようなものともいえます．変数を使う場合は，具体的な値を入れる必要があります．これを変数に値を代入するといいます．このような処理を行うスクリプトを代入文といい，以下ののように記述します．</font></p>
+ 
+  <p class="command-print">変数名 ＝ 式;</p>
+
+<p>ここで，式とは，値あるいは後に述べる演算子や関数などの組み合わせです．</font></p>
+<p>例を，リスト2.1.1に示します．</p>
+
+リスト2.1.1 var1.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;var1.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ $x = 10;                    // 数値の代入
+ $str_name = &quot;山田&quot;;            // 文字列の代入
+ print &#039;$x = &#039; . $x .&#039;&lt;br&gt;&#039;;
+ print &#039;$str_name = &#039; . $str_name .&#039;&lt;br&gt;&#039;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>このファイルをドキュメントルートディレクトリのサブディレクトリ/phpにアップロードすることとします．フルパスは次のようになります．</p>
+<p class="command-print">/var/www/var1.php</p>
+
+<p> URLは次のようになります．</font></p>
+<p class="command-print">http://localhost/php/var1.php</p>
+
+<p> アクセスした結果は次のようになります．つまり，「=」の左側の文字列が変数名で，右側がの値が，変数に代入されている値を表示しています．</font></p>
+ 
+<p><img src="./files/020101.png" width="450"></p>
+
+<p>リスト2.1.1では，変数$xには，数値の10を保存しています．変数$str_nameには，文字列の"山田"を保存しています．文字列であることを示すために，文字列の両端を「"」（ダブルクォーテーション）で囲む必要があります．「print '$x = ' . $x .'&lt;br&gt;';」の文は，文字列「 '$x = ' 」と変数$xの値と文字列「'&lt;br&gt;'」を連結した結果を，クライアントPCに送信しなさいという意味になります．ここでは，文字列であることを示すために，「'」（シングルクォーテーション）を使っています．「"」（ダブルクォーテーション）と「'」（シングルクォーテーション）はともに，文字列であることを示すために使う記号ですが，文字列の中に変数名が入っていると，その取り扱いが違ってきますので，注意が必要です．つまり，上記のように「'」（シングルクォーテーション）で囲んだ文字列の中に，「$x」のように変数名があっても，その変数名が文字列として，送信されるだけです．しかし．「"」（ダブルクォーテーション）で囲んだ文字列の中に，「$x」のように変数名があると，そこの部分は変数の値に置き換えた文字列として処理されます．たとえば，上の例で「print 
+  "$x = " . $x ."&lt;br&gt;";」は，「print "10 = " 
+. $x ."&lt;br&gt;";」となってしまいます．ためしに，リスト2.1.1のprint文の「'」を「"」に置き換えたスクリプトをリスト2.1.2に示します．</p>
+
+リスト2.1.2 var2.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;var2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ $x = 10;                 // 数値の代入
+ $str_name = &quot;山田&quot;;            // 文字列の代入
+ print &quot;$x = &quot; . $x .&quot;&lt;br&gt;&quot;;
+ print &quot;$str_name = &quot; . $str_name .&quot;&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>この実施結果は，次のようになってしまいます． </p>
+ 
+<p><img src="./files/020102.png" width="450"></p>
+
+<h4>2.1.3　可変変数</h4>
+
+<p>変数の名前を代入できる変数を可変変数といいます。リスト4.2では、２つの変数$varと$$varが使用されています。$varは通常の変数ですが、$$varは$varの値を変数名とする可変変数です。つまり、$$varは具体的には$str_nameという変数になります。可変変数を参照する場合は、あいまいさを避けるために${$var}のように記述します。</p>
+
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;var3.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 可変変数
+$var = "str_name";
+$$var = "yamada"; // 可変変数への代入
+print $var . "&lt;br&gt;";
+print ${$var} . "&lt;br&gt;";// 可変変数の出力
+$str_name = "tanaka" . "&lt;br&gt;";
+print ${$var} . "&lt;br&gt;";
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>アクセス結果を示します．</p>
+<img src="./files/020103.png" width="450">
+
+<h4>2.1.3　変数アドレスの参照</h4>
+
+<p>変数の値はメモリ上のある位置に格納されます。格納される位置はアドレスで管理されます。変数名はアドレスをわかりやすく表したものと言えます。複数の変数がある場合は、おのおのは独立で、一方の値を変更しても他方に影響をおよぼすことはありません。この変数のアドレスを参照することができます。変数２が別の変数１のアドレスを参照する場合、以下の参照による代入を行います．</p>
+
+<p class="command-print">変数2 = &変数１</p>
+
+<p>変数２は変数１のエイリアスのように機能するだけで、変数２のための新たなメモリは確保されません。サンプルをリスト4.3に示します．</p>
+
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;var3.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 変数アドレスの参照による代入
+$var1 = 10;
+$copy = $var1;
+$var1 = 20;
+print $var1 . "&lt;br&gt;"; // $var1の出力（値は20）
+print $copy . "&lt;br&gt;"; // $copyの出力（値は10のまま）
+print "&lt;br&gt;";
+// 
+$copy = &$var1; // 変数の参照による代入
+print $copy . "&lt;br&gt;"; // $copyの出力（値は20）
+$var1 = 30;
+print $copy . "&lt;br&gt;";// $copyの出力（値は30に変更）
+print "&lt;br&gt;";
+//
+$copy = 40;// 実際は$var1に40が代入される
+print $var1. "&lt;br&gt;"; // $var1の出力（値は40に変更）
+print "&lt;br&gt;";
+//
+$var2 = 50;
+$copy = &$var2; // 変数の参照による代入
+print $copy . "&lt;br&gt;";// $copyの出力（値は50に変更）
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を示します．</p>
+<img src="./files/020104.png" width="450">
+
+<h4>2.1.3　Apacheの定義済み変数</h4>
+
+<p>WebサーバにApacheを使いスクリプトにPHPを使用してWebアプリケーションを構築する際に、あらかじめ定義されている変数を活用することができます。詳細は、phpinfo()関数で確認できます。ここでは、以下のURLにアクセスするとApache定義済み変数の一覧を図4.4のように確認できます。</p>
+
+<p class="command-print">http://igux.mc.yc.musashi-tech.ac.jp/phpinfo.php</p>
+
+<img src="./files/020105.bmp" width="450">
+
+<h4>2.1.3　PHPの定義済み変数</h4>
+
+<p>POSTメッソッドなどによりHTMLページからPHPファイルに渡されるデータや、実行環境の環境変数はPHPの定義済み変数に格納されています。詳細は、phpinfo()関数で確認できます。ここでは、PHPの定義済み変数の一覧を図4.5に示します。</p>
+
+<img src="./files/020106.png" width="450">
+
+<h4>2.1.3　変数の有効範囲</h4>
+<h5>2.1.3.1　スコープ</h5>
+<p>変数は，定義されたスクリプトの範囲内だけで有効です．スクリプトの範囲のことをスコープといいます．一般に記述するPHPのスクリプトの範囲をグローバルスコープと呼びます．後に述べるようにユーザ定義関数を定義した場合，関数の中のスクリプトの範囲は関数スコープあるいはローカルスコープと呼びます．</p>
+<h5>2.1.3.2　グローバル変数</h5>
+<p>グローバルスコープで定義した変数をグローバル変数と呼びます．グローバル変数は，関数スコープでは直接使用することはできません．関数スコープで，グローバル変数を使用するためには，関数内でその変数がグローバル変数であることをあらかじめl宣言をして使用する必要があります．</p>
+
+<h3>2.2　定数</h3>
+<h4>2.2.1　定数の定義</h4>
+<p>スクリプトを実行するにあたって，最初に値を設定すれば以降変わらない値は定数として定義します．定数名をつける際は以下のルールを守る必要があります． 
+  </font> 
+</p> 
+  <p class="command-print">・変数名に使用する文字は，半角の英文字，数字，[_」（アンダーバー）にする．<br>
+    ・変数名の１文字目は半角の英文字か[_」（アンダーバー）にする． </p>
+  <p class="caution-print">【注意】定数名では，規定で大文字と小文字は区別します．一般に大文字を使います． </p>
+
+<p>定数は次の書式で定義します．</font></p>
+ 
+  <p class="command-print">define( 定数名,　値 );</p>
+
+<p>定数は，スコープを意識せず，任意のスコープで定義し，特別の宣言をすることなく任意のスコープで使用できます．サンプルをリスト2.2.1に示します．</p>
+
+リスト2.2.1　const.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;const.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ define( &quot;DB_NAME&quot;, &quot;db_test&quot;);       // 定数の定義
+ print DB_NAME;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<p><img src="./files/020107.png" width="450"></p>
+
+<p>この例では，定数「DB_NAME」に文字列の値「db_test」を定義しています．変数と違い，この値は，後でスクリプトで書き換えたり消去したりはできません．一方で，この定数「DB_NAME」は関数の中でも自由に宣言なしで参照できます．</p>
+
+<h4>2.2.2　定義済み定義</h4>
+
+<p>PHPには定義済みの定数があります。E_で始まる定数は、PHPが報告するエラー関係で使用されます。詳細は下記Webサイトを参照してください。
+<a href="http://de3.php.net/manual/ja/reserved.constants.core.php">PHPマニュアル：第９章定数（http://de3.php.net/manual/ja/reserved.constants.core.php)</a></p>
+
+リスト2.2.1　const2.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;const2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+//定義済み定数
+print __FILE__ ; // スクリプトファイル名
+print "&lt;br&gt;";
+print PHP_OS; // OSの名称
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<p><img src="./files/fig040202.png" width="450"></p>
+
+<h3>2.3　リテラルとデータ型</h3>
+<p>リテラルとは，スクリプトの中で記述する具体的な値あるいはその表現法のことです．数値の具体的な値あるいは表現法を数値リテラル，文字の具体的な値あるいは表現法を文字リテラルといいます．</p>
+<h4>2.3.1　数値リテラル</h4>
+<p>10進数の数値リテラルの例を以下に示します． 
+</p> 
+  <p class="command-print">1234　-1234　+1234　1234.5</p>
+
+<p>8進数の数値リテラルの例を以下に示します．８進数は数値の前に「0」をつけます．</font></p>
+ 
+  <p class="command-print">0123　（10進数の83と同じ）<br>
+    -0123　（10進数の-83と同じ）</p>
+
+<p>16進数の数値リテラルの例を以下に示します．１６進数は数値の前に「0x」をつけます．</font></p>
+ 
+  <p class="command-print">0x12　（１０進数の18と同じ）<br>
+    0x1A　（１０進数の26と同じ）</p>
+
+<p>サンプルをリスト2.3.1に示します．</p>
+
+リスト2.3.1　literal1.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;literal1.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 数値リテラル
+ $int_dec = 1234;    // 10進数
+ $int_oct = 0123;    // 8進数（10進数の83）
+ $int_hex = 0x1A;    // 16進数（10進数の26）
+ print $int_dec;
+ print &quot;&lt;br&gt;&quot;;
+ print $int_oct;
+ print &quot;&lt;br&gt;&quot;;
+ print $int_hex;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/fig020301.png" width="450">
+
+<h4>2.3.2　文字列リテラル</h4>
+<p>文字列は，「'」（シングルクォート）あるいは「"」（ダブルクォート）で囲みます．</font></p>
+ 
+<pre class="brush:php;">
+'Hello'
+'123'
+"Hello" 
+"山田　太郎"
+"&lt;br&gt;"
+</pre>
+
+<p>「"」（ダブルクォート）で囲まれた文字列の中に変数があると，その変数の値に置き換えられます．これを変数置換といいます．サンプルをリスト2.3.2に示します．</p>
+
+リスト2.3.2 literal2.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;literal2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 文字列リテラルと変数置換
+ $str = &quot;Mr. Yamada&quot;;
+ print &#039;Hello $str &lt;br&gt;&#039;;     // &#039;で囲まれた文字列
+ print &quot;Hello $str &lt;br&gt;&quot;;    // &quot;で囲まれた文字列（変数置換が実行される）
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<p><img src="./files/020302.png" width="450"></p>
+
+<h4>2.3.3　エスケープ記号</h4>
+<p>「"」（ダブルクォート）で囲まれた文字列ではエスケープシーケンス処理も実行されます．エスケープ記号には「\」を使用します．</font>エスケープシーケンス処理とは特殊な記号処理のことです．タブや改行などは，普通の英数字では表現できないので，エスケープ記号を特別に定義して，これらの特殊な制御符号等をスクリプトの中で記述できるようにしています．PHPではエスケープ記号として「\」を使用します．タブや改行は以下のように記述します．</font></p>
+ 
+  <p class="command-print">\t　　　タブのエスケープシーケンス<br>
+  \n　　　改行のエスケープシーケンス</p>
+
+<p>サンプルをリスト2.3.3に示します．</p>
+
+リスト2.3.3 literal3.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;literal3.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// エスケープシーケンス
+ $str = &quot;Hello\tMr. Yamada\n\n&quot;;
+ print &quot;$str &lt;br&gt;&quot;;        /* &quot;で囲まれた文字列
+                  （エスケープシーケンスが実行される） */
+ print &#039;$str &lt;br&gt;&#039;;       // &#039;で囲まれた文字列
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．
+</p>
+ 
+<p><img src="./files/020303.png" width="450"></p>
+
+<p>ブラウザでは，エスケープシークエンスのタブや改行の効果は表示されませんが，次図のようにブラウザに送られたソースコードを見ると，「Yamada」の後，2回改行されていることがわかります．ちなみに，ブラウザ上での改行は，「\n」でなく，「&lt;br&gt;」の改行タグで実行されます．</p>
+ 
+<p><img src="./files/020304.gif" width="450"></p>
+
+<h4>2.3.4　データ型</font></h4>
+<p>スクリプトで扱えるデータは，いくつかの種類に分類されます．それをデータ型といいます．PHPでは，基本として以下の４種類の型を扱うことができます．</font></p>
+ 
+  <p class="command-print">整数(integer)<br>
+    浮動小数点(float, double, real)<br>
+    文字列(string)<br>
+    論理値(boolean)</p>
+
+<p>異なるデータ型の値を用いた演算は，PHPが可能な範囲で自動的に相互変換を行い実行します．サンプルをリスト2.3.4に示します．</p>
+
+リスト2.3.4　literal4.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;literal4.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 異なる型の演算
+ $var_int = 123;          // 整数
+ $var_str = &quot;456&quot;;        // 文字列
+ print $var_int + $var_str;    // 整数と文字列の加算 
+ print &quot;&lt;br&gt;&quot;; 
+ print $var_int . $var_str;    // 整数と文字列の連結
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>結果を以下に示します．</p>
+
+<img src="./files/020305.png" width="450">
+
+<h4>2.3.5　文字列は算術演算子で数値に自動変換</h4>
+<p>文字列は算術演算子があると，自動的に数値に変換され演算処理されます．「print $var_int + $var_str;」では算術演算子の「＋」があるので，直後の変数$var_str内の文字列データ「"456"」は数値の「456」に自動変換され，「123」との間で加算処理され，結果は数値の「579」として表示されます．</p>
+<h4>2.3.6　数値は文字列連結演算子で文字列に自動変換</h4>
+<p>逆に，数値は文字列連結演算子があると，文字列に自動変換され処理されます．「print $var_int . $var_str;」では，文字列連結演算子「.」があるので，直前の変数$var_int内の数値データ「123」は文字列の「"123"」に自動変換され，「"456"」との間で文字列連結処理され，結果は文字列の「"123456"」として表示されます．</p>
+
+<h3>2.4　演算子</h3>
+<p>演算子とは，たとえば四則演算のための「＋，竏秩C*，/」などの計算のための記号のことです．</p>
+<h4>2.4.1　式</h4>
+<p>PHPにおけるもっとも基本的な構成要素です．値をもつものはすべて式といえます．値や変数，配列，関数単体やそれを演算子で関連つけたスクリプトなどです．以下は式の例です．</font></p>
+ 
+<pre class="brush:php;">
+5+5
+$a
+$a[1]
+$a==5
+sqrt(3)
+</pre>
+
+<h4>2.4.2　算術演算子</h4>
+<p>主に二つの式を使って，計算しその結果の値を返します．サンプルをリスト2.4.1に示します． 
+</p> 
+
+リスト2.4.1　operand1.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;operand1.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 演算子
+ $a = 20;
+ $b = 3;
+ $add = $a + $b;   // 加算
+ $sub = $a - $b;   // 減算
+ $mul = $a * $b;  // 乗算
+ $div = $a / $b;   // 割算
+ $rem = $a % $b;  // 剰余
+ print &quot;$add&lt;br&gt;&quot;;
+ print &quot;$sub&lt;br&gt;&quot;;
+ print &quot;$mul&lt;br&gt;&quot;;
+ print &quot;$div&lt;br&gt;&quot;;
+ print &quot;$rem&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．
+</p>
+ 
+<p><img src="./files/020401.gif" width="450"> </p>
+
+<h4>2.4.3　加算子「++」と減算子「--」</h4>
+<p>なお，特殊な演算子に加算子（インクリメント）「++」と減算子（デクリメント）「--」があります．加算子は変数の値を１増やし，減算子は変数の値を１減らします．ただし，これらの演算子は変数の前に記述した場合と後ろに記述した場合で動作が異なるので注意が必要です．たとえば，++$aと記述した場合は，$aの値を１増やした後，$aの値が評価されます．逆に$a--と記述した場合は，$aの値を評価した後，$aの値を１増やします．サンプルをリスト2.4.2に示します．</p>
+
+リスト2.4.2　operand2.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;operand2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 加算子と減算子
+ $a = 5;
+ print ++$a . &quot; &quot;;         // 1を加算した後，出力する
+ print &quot;$a&lt;br&gt;&quot;;
+ $a = 5;
+ print $a++ . &quot; &quot;;         // 出力した後，１を加算する
+ print &quot;$a&lt;br&gt;&quot;;
+ $a = 5;
+ print --$a . &quot; &quot;;         // 1を減算した後，出力する
+ print &quot;$a&lt;br&gt;&quot;;
+ $a = 5;
+ print $a-- . &quot; &quot;;         // 出力した後，１を減算する
+ print &quot;$a&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p> アクセス結果を以下に示します．</p>
+ 
+<p><img src="./files/020402.gif" width="450"></p>
+
+<h4>2.4.4　代入演算子</h4>
+<p>代入演算子「=」は，変数に値を代入します．代入演算子の左側の項（左オペランドという）は，値を格納できる要素でなくてはいけません．代入演算子の右側の項（右オペランドという）は，式でなくてはいけません．サンプルをリスト2.4.3に示します．</p>
+
+リスト2.4.3　operand3.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;operand3.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 代入演算子
+ $val = 10;         // 値の代入
+ $var = $val;        // 変数の値を代入
+ $ope = $var + 20;    // 演算結果を代入
+ $str = &quot;abcde&quot;;     // 文字列を代入
+ $ret = strlen( $str );  // 関数の戻り値を代入
+ print &quot;$val&lt;br&gt;&quot;;
+ print &quot;$var&lt;br&gt;&quot;;
+ print &quot;$ope&lt;br&gt;&quot;;
+ print &quot;$str&lt;br&gt;&quot;;
+ print &quot;$ret&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<p><img src="./files/020403.gif" width="450"> </p>
+
+<p>「$ret = strlen( $str );」で，「strlen()は引数の文字列の長さを計算する組み込み関数です．計算結果は，関数名自身に代入されています．これを戻り値といいます．この場合，引数の文字列は「"abcde"」で，その長さは5文字ですから，戻り値は「5」となります．</p>
+
+<h4>2.4.5　比較演算子</h4>
+<p>比較演算子は二つのオペランドの大小関係などの比較を行います．条件が満たされる（真）場合論理値のtrueを返し，満たされない（偽）場合論理値のfaluseを返します．サンプルをリスト2.4.4に示します．</p>
+
+リスト2.4.4　comparison.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;comparison.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 比較演算子
+ $name = &quot;yamada&quot;;
+ if ( $name == &quot;yamada&quot; ) // $name と&quot;yamada&quot;が等しければtrue
+ {            
+   print &quot;等しい&quot;;
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<p> <img src="./files/020404.gif" width="450"></font></p>
+
+<p>「$name == "yamada"」の「==」は比較演算子の一つの「等しい」かどうかを比較する演算子です．この場合，変数$nameの値も「 
+  "yamada"」なので，比較演算子「==」の両側のオペランドの値が等しく，演算した結果はtrueとなります．その結果if文の条件が成立し，if文の中の文が実行され，「"等しい"」の文字列が表示されます．</p>
+
+<h4>2.4.6　論理演算子</h4>
+<p>論理演算子は複数の条件を結合します．サンプルをリスト2.4.5に示します．</p>
+
+リスト2.4.5　logical.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;logical.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ // 論理演算子
+ $name = &quot;yamada&quot;;
+ $year = 30;
+ if ( $name == &quot;yamada&quot; &amp;&amp; $year &gt;= 30 )/*$name と&quot;yamada&quot;が等しくかつ
+                         $yearが30以上ならばtrue */
+ {                              
+   print &quot;条件成立&quot;;
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/020405.gif" width="450">
+
+<p>「$name == "yamada" &amp;&amp; $year &gt;= 30」では，後で述べるように，「==」や「&gt;=」の比較演算子の方が「&amp;&amp;」の論理演算子より優先的に処理されます．この例では，「$name 
+  == "yamada"」がtrueで，「 $year &gt;= 30」もtrueですから，「$name == "yamada" 
+  &amp;&amp; $year &gt;= 30」は「true　&amp;&amp;　true」で，結果としてtrueと評価されます．したがって，if文の条件が成立し，if文の中の文が実行され，「"条件成立"」の文字列が表示されます．</p>
+
+<h4>2.4.7　文字列連結演算子</h4>
+<p>文字列連結演算子は二つのオペランドを文字列として結合します．サンプルをリスト2.4.6に示します．</p>
+
+リスト2.4.6　connect.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;connect.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 文字列結合演算子
+ $name1 = &quot;山田&quot;;
+ $name2 = &quot;太郎&quot;;
+ print $name1 . &quot; &quot; . $name2;    // 姓と名の間に空白を挿入する
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/020406.gif" width="450">
+
+
+<h4>2.4.8　エラー制御演算子</h4>
+<p>エラー制御演算子「@」を式の目前に記述すると，その式でエラーが発生してもエラーメッセージが表示されません．サンプルをリスト2.4.7にに示します．2回目の割算のときのエラーメッセージが表示されていないのがわかります．</font></p>
+
+リスト2.4.7　error_cont.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;error_cont.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// エラー制御演算子
+ $a = 10;
+ $b = 0;
+ print $a / $b;   // 0で除算すると通常はエラーメッセージが表示されます
+ print @($a / $b);  // @をつけるとエラーメッセージは表示されません
+ print &quot;&lt;br&gt;&quot;;
+ print &quot;$a / $b&quot;;
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+<img src="./files/020407.gif" width="450">
+<p>2回目の割算のときのエラーメッセージが表示されていないのがわかります．</font></p>
+<h4>2.4.9　複合演算子</h4>
+<p>複合演算子は代入演算子と他の演算子を組み合わせて短く記述したものです．サンプルをリスト2.4.8に示します．</p>
+
+リスト2.4.8　multiple.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;multiple.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 複合演算子
+ $a = 10;
+ $b = 20;
+ $c = $a + $b;
+ $a += $b;        // $a + $b の結果を$aに代入する
+ print &quot;$c&lt;br&gt;&quot;;
+ print $a;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<p><img src="./files/020408.gif" width="450"></p>
+
+<p>「$a += $b;」文で，「+=」は，左右のオペランドの加算演算の結果を左側のオペランドに代入しなさいという複合演算子です．プログラミングのタイピングの文字数を少しでも減らして，より早くプログラミングできるようにするための工夫の結果と言われています．</p>
+
+<h4>2.4.10　演算子の優先順位</h4>
+<p>演算子の優先順位は，二つの式が"緊密に"結合している度合いを指定します． 例えば，式 
+1 + 5 * 3 の答えは 16になり，18とはなりません． これは乗算演算子("*")は，加算演算子("+")より高い優先順位を有するからです．必要に応じて強制的に優先順位を設定するために括弧を使用する ことが可能です．例えば，18と評価するためには， (1 + 5) * 3 とします． サンプルをリスト2.4.9にに示します．</p>
+
+リスト2.4.9 priority.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;priority.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 演算子の優先順位
+ $a = 1+5*3;    // *が先に処理されるので，$aは16
+ $b = (1+5)*3;   // ( )の中が先に処理されるので，$bは18
+ $c = 100/20*5;  // 左の演算子から先に処理されるので，$cは25
+ $d = $e = 20;   // 代入演算子は右から順に処理されるので，$dも$eも20
+ print &quot;$a&lt;br&gt;&quot;;
+ print &quot;$b&lt;br&gt;&quot;;
+ print &quot;$c&lt;br&gt;&quot;;
+ print &quot;$d&lt;br&gt;&quot;;
+ print &quot;$e&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/020409.gif" width="450">
+
+<h3>2.5　配列</h3>
+<h4>2.5.1　配列</h4>
+<p>一つの変数で複数の値を格納することができます．このような変数を配列型変数あるいは単に配列といいます．配列内の値を参照するために，添字（インデックスあるいはキーとも言う）を用います．</font> 
+</p> 
+  <p class="command-print">配列名[添字]</p>
+
+<p>配列の名をつける際は以下のルールを守る必要があります． </font> 
+</p> 
+  <p class="command-print">・配列名は＄ではじめる． <br>
+    ・配列名に使用する文字は，半角の英文字，数字，[_」（アンダーバー）にする． <br>
+    ・$に続く変数名の１文字目は半角の英文字か[_」（アンダーバー）にする． </p>
+
+
+<h4>2.5.2　添字</h4>
+<p>添字には，数値か文字列を使います．数値の場合は，０以上の整数値を使います．整数値は必ずしも連続している必要はありません．PHPでは，配列を使用するにあたってあらかじめ配列を宣言する必要はありません．変数と同様，配列に値を代入した時点で，配列が生成されます．サンプルをリスト2.5.1に示します．</p>
+
+リスト2.5.1　array1.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;array1.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 配列
+ $arr_num[0] = 100;         // 添字付配列への代入
+ $arr_num[1] = 110;
+ $arr_num[3] = 130;
+ print &quot;$arr_num[0]&lt;br&gt;&quot;;
+ print &quot;$arr_num[1]&lt;br&gt;&quot;;
+ print &quot;$arr_num[3]&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/020501.gif" width="450">
+
+<p>添字を省略することもできます．その場合，使われているインデックスの最大値に１を加算した値が添字として使用されます．最初の添字は０です．１でないので注意が必要です．サンプルをリスト2.5.2に示します．</p>
+
+リスト2.5.2　array2.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;array2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 添字なしの配列への代入
+ $arr_num[] = 90;            // 添字は0となる
+ $arr_num[10] = 110;
+ $arr_num[] = 130;            // 添字は11となる
+ $arr_num[] = 150;            // 添字は12となる
+ print &quot;$arr_num[0]&lt;br&gt;&quot;;
+ print &quot;$arr_num[10]&lt;br&gt;&quot;;
+ print &quot;$arr_num[11]&lt;br&gt;&quot;;
+ print &quot;$arr_num[12]&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/020502.gif" width="450">
+
+<h4>2.5.3　array()関数</h4>
+<p>配列に値を代入する別の方法は，array()関数を使う方法です．その書式は次のようになります．</p>
+ 
+  <p class="command-print">配列名　=　array(値1,値2,・・・・・・値n);</p>
+
+<p>配列名の右隣に添字「[ ]」は記述する必要はありません．サンプルをリスト2.5.3に示します．</p>
+
+リスト2.5.3　array3.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;array3.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// array()関数による配列への値の代入
+ $arr_weekday = array(&quot;日&quot;,&quot;月&quot;,&quot;火&quot;,&quot;水&quot;,&quot;木&quot;,&quot;金&quot;,&quot;土&quot;);  
+ print &quot;$arr_weekday[0]&lt;br&gt;&quot;;
+ print &quot;$arr_weekday[1]&lt;br&gt;&quot;;
+ print &quot;$arr_weekday[2]&lt;br&gt;&quot;;
+ print &quot;$arr_weekday[3]&lt;br&gt;&quot;;
+ print &quot;$arr_weekday[4]&lt;br&gt;&quot;;
+ print &quot;$arr_weekday[5]&lt;br&gt;&quot;;
+ print &quot;$arr_weekday[6]&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/020503.gif" width="450">
+
+<p>array()関数で，添字を指定して配列に値を代入することができます．書式は次の通りです．添字の数値は連続でも不連続でも構いません．</p>
+
+  <p class="command-print">配列名　=　array(数値1 =&gt; 値1,数値2 =&gt; 値2,・・・・・・,数値n 
+    =&gt; 値ｎ);</p>
+
+<p>サンプルをリスト2.5.4に示します．</p>
+
+リスト2.5.4　array4.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;array4.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// array()関数による配列への値の代入
+ $arr_weekday = array(1 =&gt; &quot;日&quot;,2 =&gt; &quot;月&quot;,3 =&gt; &quot;火&quot;,4 =&gt; &quot;水&quot;
+            ,5 =&gt; &quot;木&quot;,6 =&gt; &quot;金&quot;,7 =&gt; &quot;土&quot;);  
+ print &quot;$arr_weekday[1]，&quot;;
+ print &quot;$arr_weekday[2]，&quot;;
+ print &quot;$arr_weekday[3]，&quot;;
+ print &quot;$arr_weekday[4]，&quot;;
+ print &quot;$arr_weekday[5]，&quot;;
+ print &quot;$arr_weekday[6]，&quot;;
+ print &quot;$arr_weekday[7]&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/020504.gif" width="450">
+
+<h4>2.5.4　連想配列</h4>
+<p>添字に文字列を使用する配列を連想配列といいます．あるいはハッシュと呼ぶ場合もあります．添字の文字列は「'」か「"」で囲む必要があります．サンプルをリスト2.5.5に示します．</p>
+
+リスト2.5.5　array5.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;array5.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 連想配列への代入
+ $arr_data[&#039;氏名&#039;] = &quot;山田太郎&quot;;   
+ $arr_data[&#039;住所&#039;] = &quot;横浜市都筑区&quot;;
+ print $arr_data[&#039;氏名&#039;];
+ print &quot;&lt;br&gt;&quot;;
+ print $arr_data[&#039;住所&#039;];
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+  <p class="command-print"><img src="./files/020505.gif" width="450"></p>
+
+<p>リスト2.5.5で，配列への値の代入にarray()関数を使うことができます．そのサンプルをリスト2.5.6に示します．</p>
+
+リスト2.5.6　array6.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;array6.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 連想配列へのarray()関数による代入
+ $arr_data = array(&quot;氏名&quot; =&gt; &quot;山田太郎&quot;, &quot;住所&quot; =&gt; &quot;横浜市都筑区&quot;);   
+ print $arr_data[&#039;氏名&#039;];
+ print &quot;&lt;br&gt;&quot;;
+ print $arr_data[&#039;住所&#039;];
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果はリスト2.5.5の場合と同じになります．</font></p>
+<h3>2.6　制御構造</h3>
+<p>スクリプトは一般に，上の行の文から１行づつ順次下の行の文が実行されます．</p>
+
+<h4>2.6.1　条件分岐</h4>
+<p>ただし，場合によっては，ある条件の場合には，次の行ではなく，何行かスキップして先の行の文を実行できると好都合の場合があります．</p>
+
+<h4>2.6.2　ループ</h4>
+<p>あるいは，少しづつ条件を変えて，繰り返し何行分かの同じ処理を実行できると好都合な場合もあります．このように，実行する行を制御するスクリプトのことを制御構造といいます．制御構造には条件分岐とループがあります．</p>
+
+<h4>2.6.3　if</h4>
+<p>if文は，命令の条件実行を可能にします．最も単純なif文の書式は次の通りです．</p>
+ 
+  <p class="command-print">if ( 式 )<br>
+    　　文</p>
+
+<p>式がtrueなら，文が実行されます．式がfaluseならば，文は実行されず文の次の行が実行されます．サンプルをリスト2.6.1に示します．</p>
+
+リスト2.6.1　if.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;if.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// if文
+ $menu = &quot;A&quot;;
+ if ( $menu == &quot;A&quot; )         // 条件が成立するので，次のprint文が実行される
+   print &quot;メニューAを実行します&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<p><img src="./files/020601.gif" width="450"></p>
+
+<p>条件判断の結果，実行する文が複数ある場合は，次の書式のように「｛｝」を使用してブロックにします．</font></p>
+ 
+  <p class="command-print">if ( 式 )<br>
+    {<br>
+    　　文１<br>
+    　　文２<br>
+    } </p>
+
+<p>サンプルをリスト2.6.2に示します．</p>
+
+リスト2.6.2 if2.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;if2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// if文
+ $menu = &quot;A&quot;;
+ if ( $menu == &quot;A&quot; ) 
+ {                   // 複数の文を実行するのでブロックにする
+   print &quot;メニューAを実行します&lt;br&gt;&quot;;
+   print $menu;
+ }                   // ブロックの終了
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下にに示します．</p>
+ 
+<p><img src="./files/020602.gif" width="450"></p>
+
+
+<h4>2.6.4　else</h4>
+<p>条件が成立したときに文１を実行し，条件が成立しないときは文２を実行するようにいずれか一方を実行するには，次の書式のif～elseを使います．</p>
+ 
+  <p class="command-print">if ( 式 )<br>
+    {<br>
+    　　文１<br>
+    }<br>
+    else<br>
+    {<br>
+    　　文２<br>
+    } </p>
+
+<p>サンプルをリスト2.6.3に示します．</p>
+
+リスト2.6.3　else.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;else.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// if～else
+ $a = 5;
+ if ( ($a % 2) == 0 ) 
+ {                    // 余りが0の場合
+   print $a . &quot;は偶数です&lt;br&gt;&quot;;
+ } 
+  else
+ {                    // 余りが0でない場合
+   print $a . &quot;は奇数です&lt;br&gt;&quot;;
+ } 
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/020603.gif" width="450">
+
+<h4>2.6.5　elseif</h4>
+<p>二つ以上の条件で分岐して実行したい場合は，次の書式のようにif～elseを使います．</font></p>
+ 
+  <p class="command-print">if ( 式１)<br>
+    {<br>
+    　　文１<br>
+    } <br>
+    elseif ( 式２ )<br>
+    {<br>
+    　　文２<br>
+    } <br>
+    elseif ( 式３ )<br>
+    {<br>
+    　　文３<br>
+    } <br>
+    else<br>
+    {<br>
+    　　文４<br>
+    }</p>
+
+<p>たとえば，式２がtrueで文２を実行するとif文を抜け出し，式３等はもはや評価されません．サンプルをリスト2.6.4に示します．</p>
+
+リスト2.6.4　elseif.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;elseif.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// if～else
+ $marks = 75;
+ if ( $markas &gt;= 80 )        // 第１の条件判定
+ {
+  print &quot;ランクAです&lt;br&gt;&quot;;
+ } 
+ elseif ( $marks &gt;= 70 )      // 第２の条件判定
+ {
+   print &quot;ランクBです&lt;br&gt;&quot;;
+ } 
+ elseif ( $marks &gt;= 60 )      // 第３の条件判定
+ {
+    print &quot;ランクCです&lt;br&gt;&quot;;
+ } 
+ else                // その他の条件の場合
+ {
+    print &quot;ランクDです&lt;br&gt;&quot;;
+ } 
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/020604.gif" width="450">
+
+<h4>2.6.6　Switch</h4>
+<p>Switch文では，式を評価しその値によって処理先を分岐します．書式は次のようになります．</font></p>
+ 
+  <p class="command-print">switch( 式 ) <br>
+    {<br>
+    　　case　値１;　　　　　//値の後ろに「:」（コロン）を記述します</font><br>
+    　　　　文１　　　　　　　//式の値が値１の場合にここにジャンプします</font><br>
+    　　　　break;　　　　　　//break文でswtich文を抜け出します</font><br>
+    　　case　値２:<br>
+    　　　　文２　　　　　　　//式の値が値２の場合にここにジャンプします</font><br>
+    　　　　break;　<br>
+    　　case　値３:<br>
+    　　　　文３<br>
+    　　　　break;　　　　　　//式の値が値３の場合にここにジャンプします</font><br>
+    　　default:　　　　　　　//defaultは省略できます</font><br>
+    　　　　文４　　　　　　　//式の値に一致する値nがない場合はこの文を実行します<br>
+    }</font></p>
+
+<p>サンプルをリスト2.6.5に示します．</p>
+
+リスト2.6.5　switch.php 
+<pre class="brush:php;">
+&lt;head&gt;
+&lt;title&gt;switch.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// switch文
+ $menu = &quot;メニューC&quot;;
+ switch ( $menu )              //$menuの値によって分岐します
+ {
+   case &quot;メニューA&quot; :           // １回目の値の判定による分岐
+     print &quot;メニューAを実行します&quot;;
+     break;               // switch文を抜け出す
+   case &quot;メニューB&quot; :           // ２回目の値の判定による分岐
+     print &quot;メニューBを実行します&quot;;
+     break;
+   case &quot;メニューC&quot; :          // ３回目の値の判定による分岐
+     print &quot;メニューCを実行します&quot;;
+     break;
+   default :               // 一致する値がない場合の分岐（省略可能）
+     print &quot;該当するメニューはありません&quot;;
+     break;
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を次に示します．</p>
+ 
+<p><img src="./files/020605.gif" width="450"></p>
+
+<p>このサンプルでは，$menuの値を評価して分岐します．$menuの値が"メニューC"なので，３回目の値判定がtrueになり，「print 
+  "メニューCを実行します";」の文を実行します．</p>
+
+<h4>2.6.7　while</h4>
+<p>while文はループの一つです．while文は，式がtrueの間，コードブロックを繰り返し実行します．書式は次のようになります．</font></p>
+ 
+  <p class="command-print">while ( 式 ) <br>
+    {<br>
+    　　コードブロック<br>
+    }</p>
+
+<p>つまり，式を評価し式がtrueならば，コードブロックを実行し，再度式を評価します．式が最初からfalseの場合，コードブロックは一度も実行されません．サンプルをリスト2.6.6に示します．</p>
+
+リスト2.6.6　while.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;while.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// while文
+ $i = 1;              // $iを1で初期化
+ while ( $i &lt;= 3 )         // $iが3になるまで繰り返す
+ { 
+   print $i++ . &quot;&lt;br&gt;&quot;;     // $iは出力後1加算
+ }
+ print &quot;while文を終了しました．&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/020606.gif" width="450">
+
+<p>$iの値は最初１で，$iの値が順次加算されて値がが４になった時点で「（$i　&lt;=　3）」がfalseになり，while文を抜け出します．</p>
+
+<h4>2.6.7　do-while</h4>
+<p>do～while文は、まずコードブロックを実行し、その後、式を評価し、式がtrueなら再度コードブロックを実行します。</p>
+ 
+<p class="command-print">
+do {<br>
+　　コードブロック<br>
+} while ( 式 ) ;<br>
+</p>
+
+<p>サンプルをリスト4.29に示します。アクセス結果を図4.31に示します。</p>
+
+リスト2.6.6　do-while.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;do_while.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// do～while文
+$i = 0;// $iを0に初期化
+do {
+print $i; // 必ず１回は実行される
+} while ($i&gt;0); // 式の評価。１回目でfalseとなる。
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/fig040608.gif" width="450">
+
+<h4>2.6.8　for</h4>
+<p>for文は，一見複雑ですが，変数の初期化，継続条件式，変数のインクリメントを一つのかっこ内で行うため，プログラムミスを未然に防ぐことが可能です．書式は次のようになります．</font></p>
+ 
+  <p class="command-print">for (式1; 式2; 式3) 
+    <br>
+    {<br>
+    　　コードブロック<br>
+  }</p>
+
+<p>最初の式(式1)は，変数の初期化を行います．ループ開始時に無条件に 評価(実行)されます．各繰り返しの開始時に，式2の継続条件式が評価されます． その式の値がtrueが場合，ループは継続され，かっこ内のコードブロックが実行されます．値がfalseの場合，ループの実行は終了します．各繰り返しの後，式3の変数のインクリメントが評価(実行)されます．各式は，空とすることができます．式2を空 にすることは，無限実行ループを意味します．サンプルをリスト2.6.7に示します． </p>
+
+リスト2.6.7　for.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;for.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ // for文
+ for ($i = 1; $i &lt;=3; $i++)    // $iの値が1縲鰀3について繰り返します
+ { 
+   print &quot;$i&lt;br&gt;&quot;;
+ }
+ print &quot;for文を終了しました&quot;; 
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/020607.gif" width="450">
+
+
+<h4>2.6.9　foreach</h4>
+<p>foreach文もループですが，配列のすべての要素について処理する場合に利用します．書式は次のようになります．</p>
+ 
+  <p class="command-print">foreach(配列 as $value)<br>
+    {<br>
+    　　コードブロック<br>
+    } </p>
+    
+<p>配列の各要素の値は順次変数$valueに代入されます．サンプルをリスト2.6.8に示します．</p>
+
+リスト2.6.8　foreach.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;foreach.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ // array()関数による配列への値の代入
+ $arr_weekday = array(&#039;日&#039;,&#039;月&#039;,&#039;火&#039;,&#039;水&#039;,&#039;木&#039;,&#039;金&#039;,&#039;土&#039;);
+ // foreach文
+ foreach ($arr_weekday as $value) 
+ { 
+  print &quot;$value&lt;br&gt;&quot;;
+ }
+ print &quot;foreach文を終了しました&lt;br&gt;&quot;; 
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/020608.gif" width="450">
+
+<p>配列$arr_weekdayの値が順次$valueに代入され，foreach文内で処理されます．foreach文で，配列のキーも参照したいときは，次の書式を使います．</p>
+ 
+  <p class="command-print">foreach(配列 as $key =&gt; $value)<br>
+    {<br>
+    　　コードブロック<br>
+    } </p>
+
+<p>各配列要素のキーが$keyに値が$valueに代入されます．サンプルをリスト2.6.9に示します．</p>
+
+リスト2.6.9　foreach2.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;foreach2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ // 連想配列への代入
+ $arr_data[&#039;氏名&#039;] = &quot;山田太郎&quot;; 
+ $arr_data[&#039;住所&#039;] = &quot;横浜市都筑区&quot;;
+ // foreach文
+ foreach($arr_data as $key =&gt; $value)
+ {
+   print &quot;$key = $value&lt;br&gt;&quot;;
+ }
+ print &quot;foreach文を終了しました．&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt; 
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/020609.gif" width="450">
+
+<p>最初の配列要素では，キーの'氏名'が$keyに代入され，値の'山田太郎'が$valueに代入されます．このように配列のキーも参照し使用することができます．</p>
+
+リスト2.6.8　foreach3.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;foreach.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// foreach文
+ $array_date = getdate();            //getdate()は日付情報を配列に格納する組込み関数
+ foreach ($array_date as $value) {       // 配列の要素を順に$valueに代入する
+   print "$value&lt;br&gt;";
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<p><img src="./files/fig040610.gif" width="450"></p>
+
+リスト2.6.8　foreach4.php
+
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;foreach2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ // foreach文（２）
+ $array_date = getdate();
+ foreach ($array_date as $key =&gt; $value) {      // 配列のキーを$keyに、要素をに$valueに代入する
+   print "$key = $value&lt;br&gt;";             // 配列のキーと値を出力する
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/fig040611.gif" width="450">
+
+<h4>2.6.10　break</h4>
+<p>break文を使うと，現在実行中の for, foreach while, do..while, switchなどのループの実行を途中で終了させることができます．サンプルをリスト2.6.10に示します．</p>
+
+リスト2.6.10　break.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;break.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ $arr_name = array (&#039;kato&#039;, &#039;saito&#039;, &#039;tanaka&#039;, &#039;yamada&#039;, &#039;wajima&#039;);
+ // break文
+ foreach ($arr_name as $value)         // 配列の要素を順に$valueに代入する
+ { 
+   if ( $value == &#039;yamada&#039; ) 
+    {
+      print $value . &quot;さんで終わります&lt;br&gt;&quot;;
+      break;                   // &#039;yamada&#039;まできたらforeachを抜け出す
+    }
+    print &quot;$value&lt;br&gt;&quot;; 
+ }
+ print &quot;break文でfoeach文を抜け出しました&lt;br&gt;&quot;; 
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/020610.gif" width="450">
+
+<p>配列$arr_nameの値を順次$valueに代入し，if文で$valueの値が'yamada'に等しいか毎回チェックします．そして，'yamada'に等しくなったときにif文の中に処理が移り，break文が実行され，foreach文から抜け出します．</p>
+
+<p>breakでは、オプションの引数で ネストしたループ構造を抜ける数を指定することができます。 「break 1;」は「break;」と引数の1を省略できます。</p>
+
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;break2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+	//break文でオプション引数を使用する。
+	$i=0;
+	while(++$i){
+		switch($i){
+			case 5:
+			echo "At5&lt;br&gt;";
+			break 1;//switch構造の１つのループ構造のみを抜ける
+			case 10:
+			echo "At10;quitting&lt;br&gt;";
+			break 2;//switchとwhileの２つのループ構造を抜ける
+			default:
+			echo "$i&lt;br&gt;";
+			break;
+		}
+	}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<img src="./files/fig040613.png" width="450">
+
+<h4>2.6.11　continue</h4>
+<p>continueは，ループにおいて現在の繰り返しループ の残りの処理をスキップし，次の繰り返しの最初から実行を続けるために使用されます．continueでは、オプションの引数で 処理をスキップするループ構造のレベルの数を指定できます。 サンプルをリスト2.6.11に示します．</p>
+
+リスト2.6.11　continue.php 
+<pre class="brush:php;">
+&lt;head&gt;
+&lt;title&gt;continue.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ // continue文
+ $i = 0;
+ while (++$i &lt;= 10) 
+ {
+   if ( $i % 2 ) continue;    // 奇数のときにスキップ
+   print &quot;$i&lt;br&gt;&quot;;
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+<p>アクセス結果を次にに示します． </p>
+ 
+<p><img src="./files/020611.gif" width="450"></p>
+
+<p>「if ( $i % 2 )」は，$iを２で割った余りを評価しています．余りは０か１で，１のときtrueとなりif文が実行されます．つまり余りが１のときのみcontinue文が実行され，while文の残りの処理つまり，if文の後の「print 
+  "$i&lt;br&gt;";」の実行はスキップされます．つまり，$iが偶数のときは「print "$i&lt;br&gt;";」の実行はスキップされ，奇数のときは実行されます．</p>
+
+<h3>2.7　組込み関数</h3>
+<h4>2.7.1　関数</h4>
+<p>関数はあるひとまりの処理を行うためのスクリプトの集まりに名前をつけたものです．PHPにあらかじめ組み込まれた<b>組込み関数</b>とユーザが新たに定義する<b>ユーザ定義関数</b>があります．</p>
+
+<h4>2.7.2　引数と戻り値</h4>
+<p>スクリプトのある場所で関数を使うことを関数を呼び出すといいます．関数を呼び出すときに，呼び出す側から関数に対してある値を引き渡すことができます．この引き渡す値のことを引数といいます．引数はない場合もあります．引数の数は任意です．呼び出された関数は引数で与えられた値を利用して処理を行い，実行結果を返します．実行結果の値は戻り値と呼ばれ，関数名にその値が代入されています．</font></p>
+<h4>2.7.3　関数の呼び出し</h4>
+<p>関数の呼び出し書式は一般に次のようになります．</font></p>
+ 
+  <p class="command-print">戻り値　=　関数名（引数１，引数２）;</p>
+
+<p>サンプルをリスト2.7.1に示します．</p>
+
+リスト2.7.1　php_function.php 
+<pre class="brush:php;">
+&lt;head&gt;
+&lt;title&gt;php_function.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 組込み関数の例
+ $str = &quot;yamada&quot;;
+ $length = strlen($str);    /* 組込み関数strlen()の
+                     戻り値を$lengthに代入*/
+ print $str . &quot;の文字列の長さは&quot; . $length . &quot;です．&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p> アクセス結果を以下に示します．</p>
+ 
+<p><img src="./files/020701.gif" width="450"></p>
+
+<p>組み込み関数strlen()は，引数の文字列の長さをはかり，その長さの値を返します．上の例では，引数の文字列は，"yamada"でその長さは６です．したがって，組み込み関数strlen()の戻り値は６で，変数$lengthに，戻り値の値６が代入されます．</p>
+<h3>2.8　ユーザ定義関数</h3>
+<p>関数はユーザが独自に定義することも可能です．関数の定義は次のような書式で行います．関数を記述する場所は，関数を呼び出す位置の前でも関数を呼び出す位置の後でもどこでも構いません．</p>
+ 
+  <p class="command-print">function 関数名(引数１, 引数２, 引数３)　　　// 
+    引数の数は任意．なくてもよい</font><br>
+    {<br>
+    　　スクリプ<br>
+    　　return 戻り値;　　　　　　　　　　　　　　　　// 戻り値を使う場合はreturn文</font><br>
+    }</p>
+
+<p>戻り値がある場合は，return文の後に記述します．戻り値がない場合は，return文は省略してもかまいません．戻り値がないユーザ定義関数のサンプルをリスト2.8.1に示します．このユーザ定義関数では，引数１の値が０以外のときに，変数の値を表示します．デバッグのときに使うと便利です．</p>
+
+リスト2.8.1　user_function1.php
+<pre class="brush:php;">
+&lt;?php
+// ユーザ定義関数の定義
+function disp_var($disp,$var,$var_name)
+{
+ if($disp == 0){return;}
+ print $var_name . &quot; = &quot; . $var . &quot;&lt;br&gt;&quot;;
+}
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;user_function1.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// ユーザ定義関数の使用例
+ $name = &quot;yamada&quot;;
+ disp_var(1,$name,&#039;$name&#039;);   // ユーザ定義関数の呼び出し
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果は，次のようになります．</p>
+
+<img src="./files/020801.gif" width="450">
+
+<p>ユーザ定義関数disp_var()は，第一の引数の値が０の時は，何もしないで即戻ります．第一の引数の値が０以外のとき（上の例では１）は，第2の引数の変数の名前と変数の値を" 
+= "で結んで，表示します．そのために，第２の引数には変数の値を，第３の引数には変数の名前を設定し関数に引き渡しています．なお，第３の引数は変数の名前を渡す必要があるので，変数名を必ず「'」で囲む必要があります．変数名を「"」で囲むと，変数の値に変換されてしまいます．上の例ですと，'$name'でなく，"$name"としてしまうと，$nameが変数として評価され，その値である"yamada"に変換されてしまいます．表示される結果は，yamada　=　yamada　になってしまいます．戻り値があるユーザ定義関数のサンプルをリスト2.8.2に示します．</p>
+
+リスト2.8.2　tags_convert.php
+<pre class="brush:php;">
+&lt;?php
+// ユーザ定義関数の定義
+function tags_convert($str) {
+/* $str中の以下のHTMLタグ等に使う文字をおのおのHTML特殊文字に変換します．
+ 「&amp;」-&gt;「&amp;amp;」
+ 「&lt;」-&gt;「&amp;lt;」
+ 「&gt;」-&gt;「&amp;gt;」
+ 「&quot;」-&gt;「&amp;quot;」
+*/
+ $str = str_replace(&quot;&amp;&quot;,&quot;&amp;amp;&quot;,$str);
+ $str = str_replace(&quot;&gt;&quot;,&quot;&amp;gt;&quot;,$str);
+ $str = str_replace(&quot;&lt;&quot;,&quot;&amp;lt;&quot;,$str);
+ $str = str_replace(&#039;&quot;&#039;,&quot;&amp;quot;&quot;,$str);
+ return $str;              // 戻り値の設定
+}
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;tags_convert.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// ユーザ定義関数の使用例
+ $str_in = &quot;&lt;html&gt;&lt;body&gt;A&amp;B&lt;/body&gt;&lt;/html&gt;&quot;;
+ $str_out = tags_convert($str_in);     // ユーザ定義関数の呼び出し
+ print $str_out;              // 戻り値の表示
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果は，次のようになります．</p>
+
+<img src="./files/020802.gif" width="450">
+
+<p>ユーザ定義関数tags_convert（）内のstr_replace（）関数は組み込み関数で，文字列の置き換え処理を行います．第３の引数の文字列の中に，第１の引数の文字列があれば，第２の引数の文字列に置き換えます．たとえば，最初の文では，変数$strの中に文字"&amp;"があればそれを文字列"&amp;amp"に置き換えます．一般には、HTMLファイル中の、「&lt;」、「&gt;」はタグとして解釈され、Webページ上には表示されませんが、あらかじめ「&amp;lt;」、「&amp;gt;」におのおの変換しておくと、ブラウザはこれらをあらかじめ定められた特殊文字と解釈し、Webページ上におのおの「&lt;」、「&gt;」と表示してくれます。置き換えた結果の文字列は再度$strに代入されますから，$strに対して，第２，第３，第４の置き換え処理をすべて実施することになります．すべての変換処理が終わった文字列は変数$str内に代入されていますから，この値をユーザ定義関数tags_convert()の戻り値とするために，最後の行に「return　$str;」と記述します．サンプルリストの下のほうでは，このユーザ定義関数tags_convert()を使って，HTMLのソースコード"&lt;html&gt;&lt;body&gt;A&amp;B&lt;/body&gt;&lt;/html&gt;"をそのままブラウザに表示できるよう，HTMLタグ文字をprint文による表示の前にあらかじめ変換しています．ユーザ定義関数tags_convert()の置換処理後の戻り値は変数$str_outに代入されています．</p>
+
+<h4>2.8.2　引数の値渡し</h4>
+
+<p>一般に、関数に引数で値を渡すと、関数内でその値を変更しても、呼び出し側の変数の値に影響を与えることはありません。これを引数の値渡しといいます。サンプルをリスト4.39に示します。アクセス結果を図4.41に示します。</p>
+
+リスト4.39 user_function2.php
+<pre class="brush:php;">
+&lt;?php
+// 関数の定義
+function usr_sum($a,$b) {            // 値渡しの引数
+  $a += $b;                    // 引数$aの値を変更
+  print "合計は" . $a . "です&lt;br&gt;";
+}
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;user_function2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// ユーザ定義関数：引数の値渡し例
+ $a = 5;
+ $b = 10;
+ $sum = usr_sum($a,$b);                   // 関数の呼び出し
+ print "変数の値は" . $a . " と " . $b . "です&lt;br&gt;";   // 変数の値の確認
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+<p>アクセス結果は，次のようになります．</p>
+
+<img src="./files/fig040618.png" width="450">
+
+<h4>2.8.3　引数の参照渡し</h4>
+
+<p>関数に引数で値を渡し、関数内でその値を変更した場合に、呼び出し側の変数の値に影響を与えるようにする場合があります。これを引数の参照渡しといいます。サンプルをリスト4.40に示します。アクセス結果を図4.42に示します。</p>
+
+user_function3.php
+<pre class="brush:php;">
+&lt;?php
+// 関数の定義
+function usr_sum(&$a,&$b) {       // 参照渡しの引数
+  $a += $b;                 // 引数$aの値を変更
+  print "合計は" . $a . "です&lt;br&gt;";
+}
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;user_function3.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// ユーザ定義関数：引数の値渡し例
+ $a = 5;
+ $b = 10;
+ $sum = usr_sum($a,$b);                   // 関数の呼び出し
+ print "変数の値は" . $a . " と " . $b . "です&lt;br&gt;";    // 変数の値の確認
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果は，次のようになります．</p>
+
+<img src="./files/fig040619.png" width="450">
+
+<h3>2.9　include</h3>
+<p>include文は指定されたファイルをスクリプト中のその場所に読み込み，評価します．サンプルをリスト2.9.1に示します．アクセス結果を図4.38に示します．</p>
+
+<p class="caution-print">【注意】読み込み用のファイルの保存先ディレクトリは、あらかじめphp.iniファイルのinclude_pathで指定されています。一般には/usr/local/lib/phpです。</p>
+
+リスト2.9.1 読み込まれるファイル1 user.php
+<pre class="brush:php;">
+
+&lt;?php
+// ユーザ用読み込みファイル（user.php） 
+// 定数
+define( DEBUG, 1 );    /* DEBUG=1 デバグを行う時
+                DEBUG=0 デバグを行わない時 */
+?&gt;
+</pre>
+
+読み込まれるファイル2 common.php
+
+<pre class="brush:php;">
+&lt;?php
+// 共通用読み込みファイル(common.php)
+// 関数
+function disp_var($disp,$var,$var_name)
+{
+  if(DEBUG == 0){return;} /* 定数_DEBUGの値は，user.phpの
+                中で定義されている */
+  if($disp == 0){return;}
+  print $var_name . &quot; = &quot; . $var . &quot;&lt;br&gt;&quot;;
+}
+
+</pre>
+
+読み込む側のファイル include.php
+
+<pre class="brush:php;">
+
+&lt;?php
+// include文
+include &quot;user.php&quot;;  /* &#039;user.php&#039;ファイルを
+             この位置に読み込みます*/
+include &quot;common.php&quot;; /* &#039;common.php&#039;ファイルを
+              この位置に読み込みます*/
+?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;include.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ $name = &quot;yamada&quot;;
+ disp_var(1,$name,&#039;$name&#039;); /* ユーザ定義関数disp_var()は
+                includeファイル&#039;common.php&#039;
+                の中で定義されている．*/
+ disp_var(1,DEBUG,&#039;DEBUG&#039;); /* 定数DEBUGはincludeファイル
+                 &#039;user.php&#039;の中で定義されている．*/
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>include.phpへのアクセス結果を以下に示します．なお，user.phpファイルとcommon.phpファイルはinclude.phpファイルと同じディレクトリに保存することとします．</p>
+ 
+<p><img src="./files/020901.gif" width="450"></p>
+
+リスト include2.php
+<pre class="brush:php;">
+&lt;head&gt;
+&lt;title&gt;include2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+	//include文
+	include 'user.php';//'user.inc'ファイルをこの位置に読み込みます
+	if(_DEBUG){/*定数_DEBUGの値は、user.incの中で定義されている
+		デバグを行う場合は、_DEBUG=1としておく。
+		たとえば、必要な環境変数の値をモニタする。*/
+		foreach($HTTP_SERVER_VARS as $key = &gt;$value){
+			print"$key=$value&lt;br&gt;";
+		}
+	}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  
+<img src="./files/fig040615.png" width="450">
+  
+<p>include.phpファイルで呼び出しているユーザ定義関数disp_var()は，同じinclude.phpファイルの中ではなく，includeファイルcommon.phpの中で定義され，include.phpファイルの冒頭で読み込まれています．この結果，ユーザ定義関数disp_var()はinclude.phpファイルの中で定義されたと同様に扱うことができます．このようにして，複数のphpファイルで共通に使用しそうなユーザ定義関数は， common.phpのような共通のincludeファイル上にまとめて定義しておき，個々のphpファイルにインクルードするようにしておけば，スクリプトを効率よく作成することができます．また，include.phpファイルで参照している定数DEBUGは，同じinclude.phpファイルの中でなく，includeファイルuser.phpの中で定義され，include.phpファイルの冒頭で読み込まれています．このようにデバグ専用の定数や，あるWebアプリケーションでユーザ固有のいわゆるカスタマイズ用の定数や変数などは，user.phpのようなユーザ固有のincludeファイル上にまとめて定義しておき，個々のphpファイルにインクルードするようにしておけば，スクリプトを効率よく作成することができます．</p>
+
+<h3>2.10　変数の有効範囲（スコープ）</h3>
+<h4>2.10.1　グローバルスコープ</h4>
+<p>定義された変数は一般にグローバルスコープを有し，同じｐｈpファイル中や，include文で読み込まれたファイル中でその変数を参照することができます．サンプルをリスト2.10.1に示します．</p>
+
+リスト2.10.1　global_scope.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;global_scope.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// グローバルスコープ
+ $str = &quot;global_scope&quot;;      // グローバルスコープの変数
+ include &#039;global_scope.inc&#039;;   // 読み込みファイル内で，$strを処理
+ print $str . &quot;&lt;br&gt;&quot;;       // 同じスクリプト内で，$strを処理
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+読み込みファイル global_scope.inc
+<pre class="brush:php;">
+&lt;?php
+// global_scope.inc
+ print $str . &quot; 読み込みファイル中&lt;br&gt;&quot;;
+?&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．読み込む側のファイルglobal_scope.php内で値が代入された変数$strは，読み込まれた側のファイルglobal_scope.inc内でも同様に参照できることがわかります．</p>
+ 
+<p><img src="./files/021001.gif" width="450"></p>
+
+<h4>2.10.2　ローカルスコープ</h4>
+<p>ユーザ定義関数内で定義された変数は，定義された関数内のみで有効です．このような変数はローカルスコープをもつといいます．したがって，グローバルスコープの変数と同一名の変数をユーザ定義関数内で使用しても両者は別変数とみなされます．サンプルをリスト2.10.2に示します．</p>
+
+リスト2.10.2　local_scope.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;local_scope.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// グローバルスコープ
+ $str = &quot;local_scope&quot;;      // グローバルスコープの変数
+ output_str( );         // ユーザ定義関数内で同名の$str変数を処理
+ print &quot;グローバルスコープ&lt;br&gt;&quot;;
+ print $str . &quot;&lt;br&gt;&quot;;      // 同じスクリプト内で，$strを処理
+
+function output_str( )      // ユーザ定義関数
+{
+// ローカルスコープ
+ print &quot;ローカルスコープ&lt;br&gt;&quot;;
+ print $str . &quot;&lt;br&gt;&quot;;       /* ローカル変数であり，未定義なので
+                      何も出力されない*/
+ $str = &quot;global_scope&quot;;         
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/021002.gif" width="450">
+
+<p>変数$strには，最初にグローバルスコープ内で"local_scope"の文字列が代入されている．その直後にユーザ定義関数output_str( 
+)が呼ばれ，output_str( )関数内で，変数$strの表示を行っているが，グローバルスコープ内で代入された文字列"local_scope"は表示されず，何も表示されない．これは，ユーザ定義関数内での変数は一般にユーザ定義関数内のみで有効だからで，したがって，グローバルスコープ内の変数$strとユーザ定義関数output_str内の変数$strは全く別物だからである．したがって，ユーザ定義関数output_str内で変数$strに"global_scope" を代入しても，グローバルスコープ内の変数$strには反映されません．</p>
+
+<h4>2.10.3　global</h4>
+<p>ユーザ定義関数内でグローバル変数を参照したり値を処理する場合は，引数で渡すか，global文を使って関数内で定義しなおす必要があります．サンプルをリスト2.10.3に示します．アクセス結果を図4.45に示します．</p>
+
+リスト2.10.3　global.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;global.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// global文
+ $str = &quot;global_scope&quot;;       // グローバルスコープの変数
+ output_str( );           // ユーザ定義関数内で同名の$str変数を処理
+ print  "グローバルスコープ&lt;br&gt;&quot;;
+ print $str . &quot;&lt;br&gt;&quot;;        /* 同じスクリプト内で，$strを処理
+                    ユーザ定義関数内で変更された値が出力される */
+//
+// ユーザ定義関数の定義
+function output_str( )       // ユーザ定義関数
+{
+  global $str;           // グローバル変数を使用することを宣言
+  print  &quot;ローカルスコープ&lt;br&gt;&quot;;
+  print $str . &quot;&lt;br&gt;&quot;;      // グローバル変数の値が出力される
+  $str = &quot;local_scope&quot;;      // グローバル変数の変更
+} 
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．このサンプルでは，ユーザ定義関数内で，変数$strのglobal宣言がなされているので，グローバルスコープ内の変数$strと，ローカルスコープ内の変数$strは同一変数として処理される．</p>
+ 
+<img src="./files/021003.gif" width="450">
+
+<h4>2.10.4　static</h4>
+
+<p>一般に、ユーザ定義内のローカル変数は、スクリプトの実行が別のスコープに移るとその値は未定義となり、値そのものがなくなってしまいます。次のサンプルリスト4.44はその例を示しています。アクセス結果を図4.46に示します。</p>
+
+static1.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;static1.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// static変数
+ usr_static( );              // ユーザ定義関数内でローカル変数を処理
+ usr_static( );              // ユーザ定義関数内でローカル変数を処理
+ usr_static( );              // ユーザ定義関数内でローカル変数を処理
+//
+// ユーザ定義関数の定義
+function usr_static( ) {        // ユーザ定義関数
+  $var = 1;               // ローカル変数の定義と初期化
+  print $var . "&lt;br&gt;";
+  $var++ ;               // ローカル変数の値をインクリメント
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を次にに示します． </p>
+ 
+<img src="./files/fig040623.png" width="450">
+
+<p>ユーザ定義関数usr_static()が３回呼び出されていますが、関数が呼び出されるたびにローカル変数$varの値が1に初期化されていることがわかります。</p>
+
+<p>一方、static変数を使うと、スコープの移行にかかわらず、変数は呼び出された最初の1回のみ初期化され、その後はスコープが移行しても値が初期化されず保持されます。次のサンプルリスト4.45はその例を示しています。アクセス結果を図4.47に示します。</p>
+
+static2.php 
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;static2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// static変数
+ usr_static( );                // ユーザ定義関数内でローカル変数を処理
+ usr_static( );               // ユーザ定義関数内でローカル変数を処理
+ usr_static( );                // ユーザ定義関数内でローカル変数を処理
+//
+// ユーザ定義関数の定義
+function usr_static( ) {           // ユーザ定義関数
+  static $var = 1;             // static変数の定義と初期化
+  print $var . "&lt;br&gt;";
+  $var++ ;                 // ローカル変数の値をインクリメント
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を次にに示します． </p>
+ 
+<img src="./files/fig040624.png" width="450">
+
+<h3>2.11　正規表現</h3>
+<h4>2.11.1　正規表現とは</h4>
+<p>正規表現は文字の組み合わせを定義したパターンを使用し，そのパターンに適合（マッチ）する文字列を検索したり，置換したりするのに使います．</font> 
+</p>
+<h4>2.11.2　PHPで利用できる正規表現</h4>
+<p>PHPには2種類の正規表現が用意されています．一つは，POSIX準拠の正規表現です．IEEEによって規定されたUNIX系OSの基本的な仕様です．もう一つはPerlに準拠した正規表現です．ここでは，より高機能なPerl互換の正規表現について扱います．</p>
+
+<h4>2.11.3　正規表現の書式</h4>
+<p>マッチングに使用するパターン文字列は次の書式で記述します．</p>
+ 
+  <p class="command-print">/パターン文字列/パターン修飾子</p>
+
+<p>「/」はデリミタと呼ばれ，パターン文字列の先頭と末尾につけられる．一般に「/」（スラッシュ」が使用される．パターン修飾子はオプションです．</p>
+<h4>2.11.4　文字（リテラル）</h4>
+<p>文字列そのものもパターンに記述することができます．大文字と小文字は区別されます．サンプルをリスト2.11.1に示します．</p>
+
+リスト2.11.1　preg_literal.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_literal.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 文字（リテラル）
+ $arr_str = array ( &#039;abc&#039;, &#039;123abc&#039;,&#039;123abc456&#039;,&#039;ABC&#039;,&#039;123ABC&#039;,&#039;bcd&#039; );
+ foreach ( $arr_str as $str )
+ { 
+   if ( preg_match( &quot;/abc/&quot;, $str ) )  // 文字列パターン/abc/の検索
+   {
+     print &quot;$str&lt;br&gt;&quot;;        // 一致した場合に出力
+   }
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/021101.gif" width="450">
+
+<p>「preg_match( "/abc/", $str )」は，変数$strの中に文字列"abc"があるかどうか検索し，あればtrueの値を返します．</p>
+
+<h4>2.11.5　任意の文字「.」</h4>
+<p>「.」（ピリオド）はメタ文字として使用した場合，改行以外の任意の１文字をあらわします．サンプルをリスト2.11.2に示します． 
+</p> 
+
+リスト2.11.2　preg_meta_any.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_meta_any.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// メタ文字：「.」任意の文字
+ $arr_str = array ( &#039;abc&#039;, &#039;123abc&#039;,&#039;123abc456&#039;,&#039;ABC&#039;,&#039;123ABC&#039;,&#039;bcd&#039; );
+ foreach ( $arr_str as $str ) 
+ {
+    if ( preg_match( &quot;/abc./&quot;, $str ) )   // 文字列パターン/abc./の検索
+    {
+      print &quot;$str&lt;br&gt;&quot;;          // 一致した場合に出力
+    }
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．「abc」や「123abc」の文字列は「ｃ」の後に１文字もないことから一致しないことがわかります．</p>
+ 
+<img src="./files/021102.gif" width="450">
+
+<h4>2.11.6  メタ文字のエスケープ</h4>
+
+<p>メタ文字は、文字の繰り返しや選択などなど特殊な書式を指定するために使用します。メタ文字をメタ文字でなく元の文字そのものとして文字パターンに使用する場合はエスケープ文字「\」を使用します。サンプルをリスト4.48に示します。</p>
+
+preg_meta_escape.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_meta_escape.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// メタ文字：「\」エスケープ文字
+ $arr_str = array ( 'abc.html', 'ade.html','123.html','abc.htm','abchtml' );
+ foreach ( $arr_str as $str ) {
+   if ( preg_match( "/a..\.html/", $str ) ) {     //文字列パターン/a..\.html/の検索
+     print "$str&lt;br&gt;";                 // 一致した場合に出力
+   }
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/fig040627.png" width="450">
+
+<h4>2.11.7　エスケープ文字による特殊文字、文字種の指定</h4>
+
+<p>特殊な文字や、文字種を示すためのメタ文字があります。エスケープ文字「\」とメタ文字以外の文字と組み合わせて使用します。たとえば「\d」は数字の文字種を示し0～9の数字にマッチします。サンプルをリスト4.49に示します。</p>
+
+preg_meta_special.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_meta_special.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// メタ文字：「\d」数字
+ $arr_str = array ( '200', '2000','2001','200x','20000','32000' );
+ foreach ( $arr_str as $str ) {
+   if ( preg_match( "/200\d/", $str ) ) {       /* 文字列パターン/200\d/の検索 */
+     print "$str&lt;br&gt;";                 // 一致した場合に出力
+   }
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/fig040628.png" width="450">
+
+<h4>2.11.8　エスケープ文字による位置条件の指定</h4>
+
+<p>文字列の始端、終端や単語の境界などの特定の位置でマッチする条件を指定するためのメタ文字もあります。エスケープ文字「\」とメタ文字以外の文字を組み合わせます。「\A」は対象文字列の先頭、「\Z」は対象文字列の最後の改行文字の直前までを意味します。「\b」は単語の境界を意味します。サンプルをリスト4.50に示します。</p>
+
+preg_meta_position.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_meta_position.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// メタ文字：「\b」単語境界
+ $arr_str = array ( 'newspaper', 'news','a new car','new','renew','new_' );
+ foreach ( $arr_str as $str ) {
+   if ( preg_match( "/\bnew\b/", $str ) ) {    //文字列パターン/\bnew\b/の検索
+     print "$str&lt;br&gt;";                // 一致した場合に出力
+   }
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/fig040629.png" width="450">
+
+<h4>2.11.9　繰り返し指定のメタ文字</h4>
+
+<p>正規表現ではパターンの繰り返しを記述できます。「*」は直前のパターンの0回以上の繰り返しを意味します。サンプルをリスト4.51に示します。</p>
+
+preg_meta_repeat.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_meta_repeat.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// メタ文字：「*」直前のパターンの0回以上の繰り返し
+ $arr_str = array ( 'net', 'news','a new car','new','renew','new_' );
+ foreach ( $arr_str as $str ) {
+   if ( preg_match( "/new.*/", $str ) ) {        // 文字列パターン/new.*/の検索 
+     print "$str&lt;br&gt;";                  // 一致した場合に出力
+   }
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/fig040630.png" width="450">
+
+<h4>2.11.10	　位置指定のメタ文字</h4>
+
+<p>「^」は対象文字列の先頭、「$」は対象文字列の終端を意味します。なお、パターン修飾子「m」を追加した場合はｍ文字列の先頭、終端だけでなく、各行の先頭、終端も意味します。サンプルをリスト4.52に示します。</p>
+
+preg_meta_position_m.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_meta_position_m.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// メタ文字：「^」,「$」各行の先頭と終端
+ $arr_str = array ( "123\n456\n", "abc\n45678\n","123\nabc456\n");
+ foreach ( $arr_str as $str ) {
+   if ( preg_match( "/^abc$/m", $str ) ) {       // 文字列パターン/^abc$/mの検索 
+     print $str . "&lt;br&gt;";                 // 一致した場合に出力
+   }
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/fig040631.png" width="450">
+
+<h4>2.11.11　文字クラス</h4>
+
+<p>文字クラスは、マッチする文字列のグループを定義する機能です。文字クラスの定義はメタ文字「[]」でくくって記述します。また、連続する文字を文字クラスの中で記述する場合は、「-」（ハイフン）を使用します。[a-z]は、すべての英小文字を意味します。サンプルをリスト4.53に示します。</p>
+
+preg_meta_char_class.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_meta_char_class.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// メタ文字：文字クラス
+ $arr_str = array ( "123","456xyz", "abc", "deFG","abc\n");
+ foreach ( $arr_str as $str ) {
+   if ( preg_match( "/^[a-z]+$/m", $str ) ) {      /* 文字列パターン
+                                        /^[a-z]+$/mの検索 */
+     print $str . "&lt;br&gt;";                 // 一致した場合に出力
+   }
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/fig040632.png" width="450">
+
+<h4>2.11.12　パターン修飾子</h4>
+
+<p>パターン修飾子はマッチングのオプションを指定します。「i」は大文字と小文字の区別をしないように指示します。「m」は複数行モードで処理するよう指示します。サンプルをリスト4.54に示します。</p>
+
+preg_meta_option.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_meta_option.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// 修飾子
+ $arr_str = array ( "123","456xyz", "abc", "deFG","abc\n");
+ foreach ( $arr_str as $str ) {
+   if ( preg_match( "/^[a-z]+$/mi", $str ) ) {     /* 文字列パターン
+                                        /^[a-z]+$/miの検索 */
+     print $str . "&lt;br&gt;";                 // 一致した場合に出力
+   }
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+
+<img src="./files/fig040633.png" width="450">
+
+
+<h3>2.12　正規表現関数</h3>
+<p>正規表現パターンを用いた検索や置換はデータベースを利用したWebアプリケーションではよく使います．PHPでは，そのために正規表現パターンを用いて処理する正規表現関数が準備されています．正規表現検索で使用する関数には，preg_match関数，preg_match_all関数，preg_grep関数があります．正規表現検索・置換で使用する関数には，preg_replace関数があります．正規表現パターンを用いた文字列の分割に使用する関数には，preg_split関数があります．</p>
+
+<h4>2.12.1　preg_match()</h4>
+<p>対象文字列の中にパターン文字列にマッチするものがあるかないかをチェックするには<b>preg_match</b>関数を使用します．preg_match関数の書式は次のとおりです．</p> 
+  <p class="command-print">preg_match(パターン文字列, 対象文字列）</p>
+
+<p>サンプルのリストを2.12.1に示します．</p>
+
+リスト2.12.1　preg_match.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_match.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// preg_match関数
+ $str = &quot;WEB means a server system using world wide web technology.&quot;;
+                      //
+ if( preg_match( &quot;/\bweb\b/&quot; , $str ) )  // preg_match関数の呼び出し
+ {                    // $bは単語境界を意味する
+    print &quot;マッチしました&quot;;
+ } else {
+    print &quot;マッチしません&quot;;
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/021201.gif" width="450">
+
+<p>正規表現で\bは単語境界を意味します．したがって，"/\bweb\b/"は"web"という単語の意味です．</p>
+
+<p>preg_mach関数では、マッチの有無だけでなく、マッチした文字列を格納することができます。その場合は次の書式のように第３引数にマッチした文字列を格納する配列変数を渡します。</p> 
+  <p class="command-print">preg_match(パターン文字列, 対象文字列, 格納配列）</p>
+
+<p>サンプルのリストを示します．</p>
+
+preg_match2.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_match2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// preg_match関数：マッチした文字列の格納
+ $str = "WEB means a server system using world wide web technology.";
+                                 //
+ if( preg_match( "/\bweb\b/" , $str, $arr_str ) ) {  // マッチした文字列を$arr_strに格納
+   print "マッチしました-&gt;";
+   print $arr_str[0];                    /*マッチした文字列を出力
+                                   配列キー0を指定する */
+ } else {
+   print "マッチしません";
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/fig041102.png" width="450">
+
+<h4>preg_match_all</h4>
+<p>preg_match_all関数では、指定されたパターンにマッチしたすべての文字列を格納します。書式は次の通りです。</p> 
+
+<p class="command-print">preg_match_all( パターン文字列, 対象文字列, 格納配列 ）</p>
+
+<p>サンプルのリストを示します．この例ではパターン修飾子として「i」を付加し、大文字と小文字を区別しません。その結果、「WEB」と「web」がマッチします。</p>
+
+preg_match_all.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_match_all.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// preg_match_all関数：マッチしたすべての文字列の格納
+ $str = "WEB means a server system using world wide web technology.";
+ preg_match_all( "/\bweb\b/i" , $str, $arr_str ); 
+                               /* preg_match_all関数の呼び出し
+                                 パターン修飾子「i」を使用 */
+ foreach( $arr_str[0] as $val ) {            // キー0を指定
+   print $val . "&lt;br&gt;";
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/fig041103.png" width="450">
+
+<h4>preg_grep</h4>
+<p>preg_grep関数は、配列内の各値に対してマッチングを行います。パターンにマッチする値のみを取り出して新しい配列を作ります。サンプルをリストを4.58に示します。</p> 
+
+preg_grep.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_grep.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// preg_grep関数
+ $arr_str = array ( "123","456xyz", "abc", "deFG","abc\n");
+ $arr_res = preg_grep( "/^[a-z]+$/i", $arr_str );
+                               /* 文字列パターン
+                                       /^[a-z]+$/iの検索 */
+ foreach ( $arr_res as $val ) {
+   print $val . "&lt;br&gt;";
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/fig041104.png" width="450">
+
+<h4>2.12.2　preg_replace</h4>
+<p>preg_replace関数は，マッチした文字列を別の文字列に置き換えます．preg_replace関数は次の書式で使用します．</font></p>
+ 
+  <p class="command-print">preg_replace( パターン文字列，置換文字列，対照文字列 )</p>
+
+<p>サンプルをリストを2.12.2に示します．アクセス結果を図4.61に示します．</p>
+
+リスト2.12.2　preg_replace.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_replace.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// preg_replace関数：文字列の置換
+ $str = &quot;Homepages is written by HTML Language.&quot;;
+ print $str . &quot;&lt;br&gt;&quot;;
+ $str_res = preg_replace( &quot;/\bhomepages\b/i&quot; , &quot;webpages&quot;, $str ); 
+                      // preg_replace関数の呼び出し
+ print $str_res . &quot;&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/021202.gif" width="450">
+
+<p>preg_rplace関数では、同時に複数のパターン文字列の置換ができます。その場合は、パターン文字列と置換文字列は配列で渡します。サンプルをリストを4.60に示します。アクセス結果を図4.62に示します。</p>
+
+リスト2.12.3　preg_replace2.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_replace2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// preg_replace関数：複数パターン文字列の置換
+$str = "Homepages is written by HTML Language.";
+$pattern = array("/\bhomepages\b/i", "/\bhtml\b/i");
+$replace = array("webpages", "XML");
+$str_res = preg_replace( $pattern , $replace, $str ); 
+// 複数の置換処理を配列で指定
+print $str_res . "&lt;br&gt;";
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を以下に示します．</p>
+ 
+<img src="./files/fig041106.gif" width="450">
+
+<h4>2.12.4　preg_split</h4>
+<p>preg_split関数は，対象の文字列を指定した正規表現にマッチする部分で分割します．preg_splitの書式は次の通りです．戻り値は配列で，分割された部分文字列が要素として格納されます．</p>
+ 
+  <p class="command-print">preg_split( 正規表現, 対象文字列 )</p>
+
+<p>サンプルをリストを2.12.3に示します．アクセス結果を図4.63に示します．</p>
+
+リスト2.12.3　preg_split.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;preg_split.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// preg_split関数：文字列の分割
+ $str = &quot;/usr/local/apache/htdocs/php&quot;;
+ $arr_res = preg_split( &quot;/\//&quot; , $str );    /* preg_split関数の呼び出し
+                         「/」で文字列を分割 */
+ foreach( $arr_res as $val )
+ {
+   print $val . &quot;&lt;br&gt;&quot;;
+ }
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>アクセス結果を次に示します．</p>
+ 
+<img src="./files/021203.gif" width="450">
+
+
+<h3>2.13　日本語処理</h3>
+<h4>2.13.1　日本語文字セット</h4>
+<p>Webアプリケーションで使用される日本語文字セットには以下のものがあります．</p>
+<table width="580" border="1" cellspacing="0" cellpadding="0">
+  <tbody><tr> 
+    <td width="100">日本語文字セット</font></td>
+    <td width="480">概要</font></td>
+  </tr>
+  <tr> 
+    <td width="100">ISO-2022-JP</font></td>
+    <td width="480">・別名JISコード<br>
+      ・ISO-2022規格に採用されている．<br>
+      ・漢字はエスケープシーケンスで切り替える</font></td>
+  </tr>
+  <tr> 
+    <td width="100">Shift-JIS</font></td>
+    <td width="480">・別名SJISコード<br>
+      ・Microsoft社によって作成された．<br>
+      ・文字コードの１バイト目で文字種を識別できる</font></td>
+  </tr>
+  <tr> 
+    <td width="100">EUC</font></td>
+    <td width="480">・UNIX環境で日本語処理を行うための文字コード<br>
+      ・AT&amp;T社によてって作成された．</font></td>
+  </tr>
+  <tr> 
+    <td width="100">Unicode</font></td>
+    <td width="480">・多言語を１つの文字セットで表現するために近年開発された．<br>
+      ・ISOで標準化<br>
+      ・すべての文字は２バイトで表現されるが，６５５３６文字しか表現できないという限界がある．</font></td>
+  </tr>
+</tbody></table>
+<h4>2.13.2　PHPでの日本語処理</h4>
+<p>PHPは，基本的にISO-8859-1用に設計されているため，SJISコードなどは，PHPで正常に動作しません．このため， 
+mbstring.internal_encoding にPHPで動作する文字 エンコーディングを設定することが必要です．PHPの内部文字コードとして使用可能な文字コードと 使用できない文字コードの例を以下に示します．</p>
+ 
+<p>PHPで動作する内部文字コード: 　　　ISO-8859-*, EUC-JP, UTF-8</font></p>
+<p>PHPで動作しない内部文字コード:　　JIS, SJIS<br>
+    </font></p>
+
+
+<p>PHPの内部文字コードとして使用できない文字コードは， mbstringのHTTP入力/出力変換の機能/関数により変換することが可能です． </font> </p>
+ 
+  <p class="caution-print">【注意】 SJIS は，読者がパーサ/コンパイラ，文字エンコーディングと文字エン 
+    コーディングの問題点について精通していない限り内部文字コードとして使用するべきではありません． 一般的にはUTF-8コードを使用します．</p>
+  <p class="caution-print">【注意】 PHPでデータベースを使用する場合，性能を向上させるためにデータベー 
+    スとPHPの内部文字コードについて同じ文字文字コードを使用 することを推奨します． 一般的にはUTF-8コードを使用します．</p>
+
+<h4>2.13.3　PHPのインストールと日本語処理</h4>
+<p>PHPをコンパイルするときに，以下の設定オプションがmbstringモジュールに関係し ています． </font></p>
+ 
+<p><b>--enable-mbstring</b> : mbstring 関数を有効にします．このオプションは， 
+    mbstring 関数を利用するために必要です． </font></p>
+<p><b>--enable-mbstr-enc-trans</b> : mbstring変換エンジンを使用したHTTP入力の文 
+    字エンコーディング変換を有効にします．この機能が有効の場合， HTTP入力文字エンコーディングは，自動的に mbstring.internal_encodingに変換されます． 
+    </font></p>
+  <p class="caution-print">【注意】PHP 4.3.0以降，このオプション --enable-mbstr-enc-trans 
+  は廃止され，mbstring.encoding_translation に変更となります．HTTP入力文字エンコーディング変換は， このオプションをOnに設定した場合のみ 
+  有効となります． (デフォルトは，Offです．) </p> 
+<p><b>--enable-mbregex</b> : マルチバイト対応の正規表現関数を使用可能とします． 
+    </font></p>
+
+
+<h4>2.13.4　日本語処理用マルチバイト文字列関数</h4>
+ 
+<p>mb_convert_case -- 文字列に対してケースフォルディングを行う<br>
+  mb_convert_encoding -- 文字エンコーディングを変換する<br>
+  mb_convert_kana -- カナを("全角かな"，"半角かな"等に)変換する <br>
+  mb_convert_variables -- 変数の文字コードを変換する<br>
+  mb_decode_mimeheader -- MIMEヘッダフィールドの文字列をデコードする<br>
+  mb_decode_numericentity -- HTML数値エンティティを文字にデコードする <br>
+  mb_detect_encoding -- 文字エンコーディングを検出する<br>
+  mb_detect_order -- 文字エンコーディング検出順序の設定/取得 <br>
+  mb_encode_mimeheader -- MIMEヘッダの文字列をエンコードする<br>
+  mb_encode_numericentity -- 文字をHTML数値エンティティにエンコードする <br>
+  mb_ereg_match -- マルチバイト文字列が正規表現に一致するか調べる<br>
+  mb_ereg_replace -- マルチバイト文字列に正規表現による置換を行う<br>
+  mb_ereg_search_getpos -- 次の正規表現検索を開始する位置を取得する <br>
+  mb_ereg_search_getregs -- マルチバイト文字列が正規表現に一致する部分があるか調べる <br>
+  mb_ereg_search_init -- マルチバイト正規表現検索用の文字列と正規表現を設定する <br>
+  mb_ereg_search_pos -- 指定したマルチバイト文字列が正規表現に一致する部分の位置と長さを返 す <br>
+  mb_ereg_search_regs -- 指定したマルチバイト文字列が正規表現に一致する部分を取得する <br>
+  mb_ereg_search_setpos -- 次の正規表現検索を開始する位置を設定する <br>
+  mb_ereg_search -- 指定したマルチバイト文字列が正規表現に一致するか調べる <br>
+  mb_ereg -- マルチバイト文字列に正規表現マッチを行う<br>
+  mb_eregi_replace -- マルチバイト文字列に大文字小文字を区別せずに正規表現による置換を行う <br>
+  mb_eregi -- マルチバイト文字列に大文字小文字を区別しない正規表現マッチを行う <br>
+  mb_get_info -- mbstringの内部設定値を取得する<br>
+  mb_http_input -- HTTP入力文字エンコーディングの検出<br>
+  mb_http_output -- HTTP出力文字エンコーディングの設定/取得<br>
+  mb_internal_encoding -- 内部文字エンコーディングの設定/取得 <br>
+  mb_language -- カレントの言語を設定/取得 <br>
+  mb_output_handler -- 出力バッファ内で文字エンコーディングを変換するコールバック関数 <br>
+  mb_parse_str -- GET/POST/COOKIEデータをパースし，グローバル変数を設定する <br>
+  mb_preferred_mime_name -- MIME文字設定を文字列で得る<br>
+  mb_regex_encoding -- カレントの正規表現用のエンコーディングを文字列として返す <br>
+  mb_regex_set_options -- マルチバイト正規表現関数のデフォルトオプションを取得または設定する <br>
+  mb_send_mail -- エンコード変換を行ってメールを送信する <br>
+  mb_split -- マルチバイト文字列を正規表現により分割する<br>
+  mb_strcut -- 文字列の一部を得る<br>
+  mb_strimwidth -- 指定した幅で文字列を丸める<br>
+  mb_strlen -- 文字列の長さを得る<br>
+  mb_strpos -- 文字列の中に指定した文字列が最初に現れる位置を見つける <br>
+  mb_strrpos -- 文字列の中に指定した文字列が最後に現れる位置を見つける <br>
+  mb_strtolower -- 文字列を小文字にする<br>
+  mb_strtoupper -- 文字列を大文字にする<br>
+  mb_strwidth -- 文字列の幅を返す<br>
+  mb_substitute_character -- 置換文字の設定/入手<br>
+  mb_substr_count -- 副文字列の出現関数を数える<br>
+  mb_substr -- 文字列の一部を得る 【参考】</p>
+ 
+<p>マルチバイト文字列関数(mbstring)<br>
+  ( http://de3.php.net/manual/ja/ref.mbstring.php )</p>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang = "ja">
+  <head>
+      <meta charset = "utf-8" />
+      <link rel="stylesheet" type="text/css" href="default.css">
+      <title>投稿</title>
+  </head>
+    <body>
+        <header>
+            <div>
+                <a href="Home.php">HOME</a>
+            </div>
+        </header>
+        <div class = "margin_post"></div>
+        <form method = "post" action = "upload.php" >
+        <br>
+        タイトル：
+        <input name = "title" required ="" type = "text"/>
+        <br>
+        <br />
+        趣味　　：
+        <select name = "category">
+            <option value="">選択してください</option>
+            <option value="1">音楽</option>
+            <option value="2">メディア</option>
+            <option value="3">映画</option>
+            <option value="4">スポーツ</option>
+            <option value="5">娯楽</option>
+            <option value="6">漫画・アニメ・ゲーム</option>
+            <option value="7">旅行・アミューズメントパーク・アウトドア</option>
+            <option value="8">食</option>
+            <option value="9">生活</option>
+            <option value="10">教養</option>
+            <option value="11">その他</option>
+        </select>
+        <br>
+        <br />
+        内容　　：
+        <textarea name="content" maxlength="150" rows="4" cols="40" align ="top"></textarea>
+        <br />
+        <input type="submit" value="送信">
+        </form>
+    </body>
+</html>

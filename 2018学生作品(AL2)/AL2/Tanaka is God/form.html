@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>入力フォーム</title>
+</head>
+<body>
+入力フォーム<br>
+<form method="post" action="add.php">
+日付：<input type="date" name="day" required></input><br>
+予定名：<input type="text" name="plan_name" required><br>
+カテゴリ：
+<select name="category">
+<option value="">選択してください</option>
+<option value="1">仕事</option>
+<option value="2">遊び</option>
+<option value="3">その他</option>
+</select>
+<br>
+重要度：
+<input type="radio" name="importance" value="1">低
+<input type="radio" name="importance" value="2" checked>中
+<input type="radio" name="importance" value="3">高
+<br>
+メモ：
+<textarea name="memo" cols="40" rows="4" maxlength="150"></textarea>
+<br>
+<input type="submit" value="送信">
+</form>
+</body>
+</html>

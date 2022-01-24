@@ -1,0 +1,351 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>2018実践II</title>
+<link rel="stylesheet" type="text/css" href="./files/manual.css">
+<script language="javascript" src="./files/css.js"></script>
+	
+	<script type="text/javascript" src="./js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushPhp.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushCss.js"></script>
+	<link type="text/css" rel="stylesheet" href="./syntaxhighlighter/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>  
+</head>
+
+<body>
+<h1>PHPとMySQLによるWebアプリケーションの基礎</h1>
+<form>
+  <div class="ar"> 
+		<input type="button" value="標準" onClick="css_print()">
+		<input type="button" value="拡大" onClick="css_presen()">
+  </div>
+</form>
+
+<h2>Chapter 1 PHP</h2>
+      
+<p>
+<b>localhost</b>: 以下の動作環境は，OSはWindows，WWWシステムはApache2，プログラミング言語はPHP5です．Webサーバは動作確認用ということで，ブラウザのあるクライアントPCと同一のPCとし，サーバ名は「localhost:80」です．「80」はポート番号で省略可能です．Apacheでlocalhostに接続する場合の既定のポート番号です．実験では，Linux(Ubuntu)を用いるため，若干異なる点があります．
+</p>
+<p><b>スクリプト</b>: C言語やJavaの場合，ソースプログラムをあらかじめコンパイラを用いて機械語に変換しておく必要がありますが，PHPの場合はそのような事前の変換処理が不要で，Webサーバはソースプログラムを直接読み取って実行します．このようにあらかじめコンパイラ処理が不要な簡易なプログラムをスクリプトといいます．スクリプトを記述するための言語をスクリプト言語といいます．
+</p>
+    <p>※教材のプログラムは全てchrome推奨です。動作の確認は全てGoogle Chromeで行ってください。</p>
+<h3>1.1　PHPの動作確認</h3>
+
+<h4>1.1.1　phpinfo()</h4>
+<p>Webサーバで，PHPが正常に動作しているかを確認するために，以下の簡単なスクリプトを作成します．phpinfo()は，PHPの環境設定情報を出力する関数です．ファイル名をphpinfo.phpとします． 
+</p>
+
+リスト1.1 phpinfo.php
+<pre class="brush: php;">
+&lt;?php
+   phpinfo();
+?&gt;
+</pre>
+
+<p>このスクリプトをWebサーバのドキュメントルートディレクトリにアップロードし，ブラウザからそのURLにアクセスしてみます．ここでは，URLを下記とします．</p>
+       
+<p class="command-print">http://localhost/phpinfo.php</p>
+      
+      
+<p>図のようなWebページが表示されれば，Webサーバで正常にPHPが動作しています．</p>
+
+       
+  <img src="./files/010101.png" width="450">
+      
+
+<h4>1.1.2　拡張子</h4>
+<p>
+PHPのスクリプトはHTMLファイルの中に埋め込む形で記述します．HTMLファイルの拡張子は「.html」ですが，PHPのスクリプトが埋め込まれている場合の拡張子は「.php」とする必要があります．</p>
+<h4>1.1.3　デリミタ</h4>
+<p>
+        PHPのスクリプトをHTMLファイルに埋め込んだ場合に，どこからどこまでがHTMLで記述されていて，どこからどこまでがPHPのスクリプトかを区別する必要があります．HTMLファイルの中で，PHPスクリプトの始まりと終わりを示す特別の文字列のことをデリミタといいます．文字列「&lt;?php」はPHPスクリプトの始まりを示すデリミタで，「?&gt;」はPHPスクリプトの終わりを示すデリミタです．なお，上記リスト1.1では簡単のため，&lt;html&gt;,&lt;head&gt;,&lt;body&gt;などすべてのHTMLタグが省略されています． 
+        この場合，ブラウザは自動的に既定のタグを補ってくれます． </p>
+<h4>1.1.4　文</h4>
+<p>
+        PHPのスクリプトは，文（ステートメント）の集まりとして記述されます．文の終わりには必ず「;」（セミコロン）を記述する必要があります．リスト1.1で「phpinfo()；」は一つの文です．ここではPHPの中にあらかじめ組み込まれた関数phpinfo()を呼び出しています．</p>
+      
+<h3>1.2　HTMLファイルとPHPファイル</h3>
+<h4>1.2.1　HTMLファイル</h4>
+<p>リスト1.2のスクリプトを記述します．このスクリプトをhello.htmlというファイル名でドキュメントルートディレクトリにアップロードします．
+</p>
+
+リスト1.2 hello.html
+<pre class="brush:html;">
+          &lt;html&gt;
+          &lt;head&gt;
+          &lt;meta http-equiv="content-type" content="text/html;charset=utf-8" &gt;
+          &lt;title&gt;hello.html&lt;/title&gt;
+          &lt;/head&gt;
+          &lt;body&gt;
+          今日は！&lt;br&gt;
+          &lt;/body&gt;
+          &lt;/html&gt;
+</pre>
+      
+<p>このURLにアクセスすると，図のように表示されます．</p>
+       
+<img src="./files/010201.png" width="450">
+      
+
+<h4>1.2.2　PHPファイル</h4>
+<p>HTMLファイルはファイル拡張子を「.php」とすれば，そのままPHPファイルと認識され，HTMLファイルと同じ動作をします．リスト1.2の拡張子を「.php」に変更して保存し，ドキュメントルートディレクトリにアップロードします．</p>
+
+リスト1.3 hello2.php
+<pre class="brush:html;">
+          &lt;html&gt;
+          &lt;head&gt;
+          &lt;meta http-equiv="content-type" content="text/html;charset=utf-8" &gt;
+          &lt;title&gt;hello.html&lt;/title&gt;
+          &lt;/head&gt;
+          &lt;body&gt;
+          今日は！&lt;br&gt;
+          &lt;/body&gt;
+          &lt;/html&gt;
+</pre>
+
+<h4>1.2.3　日本語UTF-8コード</h4>
+<p>ただし，ファイルとして保存するときに，文字コードを日本語UTF-8コードとして保存します．リスト1.3のファイルにアクセスした結果を図に示します．</p>
+<p>文字コードを指定するときは&lt;head&gt;&lt;/head&gt;の間に以下のmetaコードを埋め込みます</p>
+<pre class="brush:html;">
+&lt;meta http-equiv="content-type" content="text/html;charset=utf-8" &gt;
+</pre>
+<p><img src="./files/010203.gif" width="450"></p>
+      
+<h3>1.3　文字列の送信</h3>
+<h4>1.3.1　print文</h4>
+
+<p>ここでは，簡単なPHPスクリプトを記述してみます．PHPスクリプトはいろんな処理を実行しますが，結果的にはクライアントPCにHTMLタグによる文字列を動的に生成し送信します．そこで，スクリプトの中できわめて基本的な，クライアントPCに文字列を送信するスクリプトを記述してみましょう．このスクリプトは次のような文として記述します． 
+</p>
+       
+        <p class="command-print">print　"送信文字列";</p>
+      
+<p>送信文字列の長さは任意です．送信文字列の両端は「"」（ダブルクォーテーション）で囲む必要があります． </p>
+<p>リスト1.4のスクリプトを記述して，アクセスしてみましょう．</p>
+
+リスト1.4 today.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="content-type" content="text/html;charset=utf-8" &gt;
+&lt;title&gt;today.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+	print "今日は！&lt;br&gt;";
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt; 
+</pre>
+
+<p>リスト1.4のファイルにアクセスした結果を図に示します．</p>
+       
+<p><img src="./files/010301.png" width="450" ></p>
+      
+<p>ちなみに，このWebページのHTML表示をみてみると図のようになっています．</p>
+       
+<p><img src="./files/010302.png" width="450"></p>
+      
+<p>（注）WebページのHTML表示をみるには，ブラウザ（IE)で「表示」竏秩uソース」を選択します．</p>
+<p>つまり，PHPスクリプト領域の</p>
+       
+<pre class="brush:php;">
+&lt;?php
+print "今日は！&lt;br&gt;"
+?&gt;
+</pre>
+      
+<p>の部分は，ApacheのPHPモジュールで解釈・実行されて，その結果 
+</p> 
+<pre class="brush:php;">
+"今日は！&lt;br&gt;"
+</pre>
+      
+<p>の文字列をクライアントに送信していたことがわかります．逆に，PHPスクリプトがそのままクライアントに送信されることはありません．</p>
+<h4>1.3.2　デリミタ</h4>
+<p>リスト1.4に示したように，PHPファイルでは，HTMLタグとPHPスクリプトを混在して記述できます．HTMLタグを記述してある領域とPHPスクリプトを記述してある領域を区別するために，一対のデリミタが使われます．デリミタは「&lt;?php」と「?&gt;」で記述されます．「&lt;?php」は，PHPスクリプトの開始タグで，「?&gt;」はPHPスクリプトの終了タグです．</p>
+
+<h4>1.3.3　文の終わり</h4>
+<p>PHPスクリプトは，文（ステートメント）の集まりとして記述されます．文の終わりは「;」（セミコロン）で示します．セミコロンを書き忘れると構文エラーとなり，スクリプトが正常に動作しなくなります．</p>
+
+<h4>1.3.4　行と文</h4>
+<p>スクリプト領域では，一般に文は１行に１個のみ記述します．１個の文を複数行にわたって記述することもできます．たとえば，リスト3.5は正しく実行されます．</p>
+
+リスト1.5 today2.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="content-type" content="text/html;charset=utf-8" &gt;
+&lt;title&gt;today2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+	print "今日は！&lt;br&gt;";
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>１行に複数の行を記述する場合は，たとえば，リスト1.6のように記述します．</font></p>
+
+リスト1.6 today3.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="content-type" content="text/html;charset=utf-8" &gt;
+&lt;title&gt;today3.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+	print &quot;今日は！&lt;br&gt;&quot;; print &quot;山田です&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+       
+      
+<p>結果は，図のようになります．</font></p>
+       
+<p><img src="./files/010303.png" width="450"></p>
+      
+      
+<h4>1.3.5　文字列の結合</h4>
+
+<p>リスト1.6はリスト1.7のように記述することも可能です．</font></p>
+
+リスト1.7 hello5.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="content-type" content="text/html;charset=utf-8" &gt;
+&lt;title&gt;hello5.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ print &quot;今日は！&lt;br&gt;&quot; . &quot;山田です&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>「.」（ピリオド）は，文字列の結合演算子です．つまり，</font></p>
+ 
+        <p class="command-print">"今日は！&lt;br&gt;" 
+          . "山田です&lt;br&gt;"</p>
+
+<p>は以下の文字列になります．</p>
+       
+        <p class="command-print">"今日は！&lt;br&gt;山田です&lt;br&gt;"</p>
+
+
+<h4>1.3.6　単一行のコメント</h4>
+<p>単一行のコメントは「//」か「#」で始め，その後ろにコメント文字列を記述します．終了を指示する記号はなく，その行の行末までをコメントとみなします．コメントの開始は，行の先頭でも途中でも構いません．リスト1.8にサンプルを示します．</p>
+
+リスト1.8 comment.php
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="content-type" content="text/html;charset=utf-8" &gt;
+&lt;title&gt;comment.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+// PHPスクリプトの始まりです
+ print &quot;今日は&lt;br&gt;&quot;;       // PHPスクリプトです
+# PHPスクリプトの終わりです
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<h4>1.3.7　複数行のコメント</h4>
+<p>複数行のコメントはコメント文を「/*」と「*/」で囲みます．途中で改行することができます．リスト1.9にサンプルを示します．</p>
+
+リスト1.9　comment2.php       
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="content-type" content="text/html;charset=utf-8" &gt;
+&lt;title&gt;comment2.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+print &quot;今日は！&lt;br&gt;&quot;;
+/*
+ 複数行のコメント
+ 改行することができます
+ print &quot;今日は！&lt;br&gt;&quot;;はコメントで，実行されません
+*/
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>結果は，図のようになります．当然ですが，コメント部分は，表示されません．</p>
+       
+<p><img src="./files/010304.gif" width="450"></p>
+        
+      
+<h3>1.4　時刻の表示</h3>
+
+<h4>1.4.1　HTMLファイルでの静的時刻表示</h4>
+
+<p>HTMLファイルで時刻を表示する場合は，例えばリスト1.10のように記述します． 
+</p>
+
+リスト1.10　time.html
+<pre class="brush:html;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="content-type" content="text/html;charset=utf-8" &gt;
+&lt;title&gt;time.html&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+更新時刻は１６時２１分です．&lt;br&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>静的なHTMLファイルでは，時刻もあらかじめ文字列で記述しておく必要があります．したがって，利用者がHTMLファイルにアクセスした時刻などを動的に表示することはできません．</font></p>
+
+<h4>1.4.2　PHPファイルによる動的時刻表示</h4>
+<p>PHPファイルでは，簡単に現在の時刻をWebページに表示することができます．現在の時刻を表示するためのPHPファイルの例をリスト1.11に示します．date()はPHPの組み込み関数で，現在のシステム時刻（Webサーバの管理する時刻）を返す関数です．引数"H:i"は，時刻の表示法を指示する文字列です．"H"は，２桁の数字で表した２４時間単位の時を表示します．"i"は，２桁の数字で表した分を表示します．":"は時と分の間にコロンを表示することを意味します．関数は，あるひとまとまりの処理をするスクリプト文（ステートメント）の集まりです．組み込み関数とはあらかじめPHPで準備されている関数です．これに対して，ユーザが任意に定義して利用できるユーザ定義関数もあります．関数に，データを渡したいときには，引数を利用します．引数の個数は任意です．ない場合もありますし，２個や３個の場合もあります．date()関数では引数の数は１個で，時刻の表示形式を文字列で与えています．関数で処理した結果の値は，関数名を変数名とみなして，関数名に値が代入された形で，元のスクリプトに引き渡されます．下の例では，処理結果としての時刻の値「16:53」の文字列は，関数名dateに代入された形で，元のスクリプトに渡されます．</p>
+       
+<pre class="brush:php;">
+print "ただいまの時刻は" . date("H:i") . "です．&lt;br&gt;";
+</pre>
+      
+<p>は以下と同義になります．</p>
+
+<pre class="brush:php;">
+print "ただいまの時刻は" . "16:53" . "です．&lt;br&gt;";
+</pre>
+      
+<p>ただし，このtime.phpファイルにいつアクセスするかにより，時刻の値は動的に変わります．</p>
+
+リスト1.11　time.php       
+<pre class="brush:php;">
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="content-type" content="text/html;charset=utf-8" &gt;
+&lt;title&gt;time.php&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+ print &quot;ただいまの時刻は&quot; . date(&quot;H:i&quot;) . &quot;です．&lt;br&gt;&quot;;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+      
+<p>このPHPファイルにアクセスした結果を以下に示します．</p>
+       
+<p><img src="./files/010401.png" width="450"></p>
+      
+<p>date()関数の引数を"H時i分"とすれば，以下のように表示されます．</font></p>
+       
+<p><img src="./files/010402.png" width="450"></p>
+      
+</body></html>

@@ -1,0 +1,23 @@
+<?php
+//$title変数の値はhead.php内で<title>部分に代入されて
+//ページタイトルになる
+$title = "会員専用ページ";
+//ページの冒頭部を記述したファイルを取り込む
+include "head.php";
+
+//ログインの表示と処理を行うファイルを取り込む
+include "login.php";
+
+//ログイン状態を示す変数を確認する
+if($flg_login){ //ログイン中
+echo<<<EO_MEMBER
+<h1>会員さん、いらっしゃい！</h1>
+<p>さあこれが会員専用コンテンツですよ</p>
+EO_MEMBER;
+}else{          //ログアウト中
+echo<<<EO_MEMBER
+<h1>ここは会員専用ページです。閲覧するにはログインしてください。</h1>
+EO_MEMBER;
+}
+?>
+</body></html>

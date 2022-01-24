@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>入力フォーム</title>
+	<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+    入力フォーム<br>
+    <form method="post" action="add.php">
+        料理名：<input type="text" name="recipe_name" required><br>
+        カテゴリ：
+        <select name="category">
+            <option value="">選択してください</option>
+            <option value="1">和食</option>
+            <option value="2">中華</option>
+            <option value="3">洋食</option>
+        </select>
+        <br>
+        難易度：
+        <input type="radio" name="difficulity" value="1">簡単
+        <input type="radio" name="difficulity" value="2" checked>普通
+        <input type="radio" name="difficulity" value="3">難しい
+        <br>
+        予算：
+        <input type="number" min="1" max="9999" name="budget">円
+        <br>
+        調理時間：
+        <input type="number" min="1" max="999" name="time">分
+        <br>
+        人数：
+        <input type="number" min="1" max="99" name="persons">人
+        <br>
+        材料：
+        <textarea name="material" cols="40" rows="4" maxlength="150">
+        </textarea>
+        <br>
+        作り方：
+        <textarea name="howto" cols="40" rows="4" maxlength="150"></textarea>
+        <br>
+        <input type="submit" value="送信">
+    </form>
+</body>
+</html>

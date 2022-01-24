@@ -1,0 +1,166 @@
+.xxs { font-size: xx-small ;}
+.xs { font-size: x-small }
+.s { font-size: small }
+.m { font-size: medium }
+.l { font-size: large }
+.xl { font-size: x-large }
+.xxl { font-size: xx-large }
+.smaller { font-size: smaller }
+.larger { font-size: larger }
+.fbold { font-weight: bold}
+.underline { text-decoration: underline}
+.p200 { font-size: 200% }
+.aleft { text-align: left }
+.aright { text-align: right }
+.acenter { text-align: center}
+.vtop { vertical-align: top; }
+.vmiddle { vertical-align: middle; }
+.al { text-align: left;}
+.ac { text-align: center;}
+.ar { text-align: right;}
+.vtop_al {
+vertical-align: top; 
+text-align: left;
+}
+.vtop_ac { 
+vertical-align: top; 
+text-align: center;
+}
+.vtop_ar {
+vertical-align: top; 
+text-align: right;
+}
+.vmiddle_ac {
+vertical-align: middle; 
+text-align: center;
+}
+.font_red {color: red;}
+.font_black {color: black;}
+.black {color: black;}
+.red {color: red;}
+.blue {color: blue;}
+.green {color: green;}
+.silver {color: silver;}
+.yellow {color: yellow;}
+.696969 {color: #696969;}
+.ffccff {color: #ffccff;}
+.ffcc99 {color: #ffcc99;}
+.white {color: white;}
+
+.padding0 {padding:0px}
+.padding1 {padding:1px}
+.padding2 {padding:2px}
+.padding3 {padding:3px}
+.padding4 {padding:4px}
+.padding5 {padding:5px}
+.padding6 {padding:6px}
+.padding8 {padding:8px}
+.padding10 {padding:10px}
+.margin0 {margin:0px}
+.margin1 {margin:1px}
+.margin2 {margin:2px}
+.margin3 {margin:3px}
+.margin4 {margin:4px}
+.margin5 {margin:5px}
+.margin6 {margin:6px}
+.margin8 {margin:8px}
+.margin10 {margin:10px}
+
+.bd_collapse {border-collapse:collapse}
+.bd_separate {border-collapse:separate}
+.bd_w0 {border-width:0px}
+.bd_w1 {border-width:1px}
+.bd_w2 {border-width:2px}
+.bd_solid {border-style:solid}
+.bd_spacing0 {border-spacing:0px}
+.bd_spacing1 {border-spacing:1px}
+.bd_spacing2 {border-spacing:2px}
+
+.zenkaku {ime-mode: active;}
+.hankaku {ime-mode: inactive;}
+.float_left {float: left;}
+.float_right {float: right;}
+.clear_left {clear: left;}
+.clear_right {clear: right;}
+.warn { color: red;}
+.w10 { width: 10px;}
+.w16 { width: 16px;}
+.w20 { width: 20px;}
+.w24 { width: 24px;}
+.w30 { width: 30px;}
+.w40 { width: 40px;}
+.w50 { width: 50px;}
+.w60 { width: 60px;}
+.w70 { width: 70px;}
+.w80 { width: 80px;}
+.w90 { width: 90px;}
+.w100 { width: 100px;}
+.w120 { width: 120px;}
+.w140 { width: 140px;}
+.w160 { width: 160px;}
+.w180 { width: 180px;}
+.w200 { width: 200px;}
+.w250 { width: 250px;}
+.w300 { width: 300px;}
+.w400 { width: 400px;}
+.w500 { width: 500px;}
+.w600 { width: 600px;}
+.w640 { width: 640px;}
+.w10p { width: 10%;}
+.w15p { width: 15%;}
+.w50p { width: 50%;}
+.w100p { width: 100%;}
+.h10 { height: 10px;}
+.h15 { height: 15px;}
+.h20 { height: 20px;}
+
+.b1 { border: solid 1px;}
+.b2 { border: solid 2px;}
+.b_w { background-color: white;}
+.b_b { background-color: black;}
+.b_gray { background-color: gray;}
+.b_silver { background-color: #c0c0c0;}
+.b_red { background-color: red;}
+.b_yellow{ background-color: yellow;}
+.b_sunday{ background-color: #ffcccc;}
+.b_cccccc {background-color: #cccccc;}
+.b_dcdcdc {background-color: #dcdcdc;}
+.b_808080 {background-color: #808080;}
+.b_696969 {background-color: #696969;}
+.b_ccccff {background-color: #ccccff;}
+.b_ccffcc {background-color: #ccffcc;}
+.b_ffcccc {background-color: #ffcccc;}
+.b_ccffff {background-color: #ccffff;}
+.b_ffccff {background-color: #ffccff;}
+.b_ffffcc {background-color: #ffffcc;}
+.b_ccff99 {background-color: #ccff99;}
+.b_99ccff {background-color: #99ccff;}
+.b_ff99cc {background-color: #ff99cc;}
+.b_99ffcc {background-color: #99ffcc;}
+.b_cc99ff {background-color: #cc99ff;}
+.b_ffcc99 {background-color: #ffcc99;}
+.b_99ffff {background-color: #99ffff;}
+.b_ff99ff {background-color: #ff99ff;}
+.b_ffff99 {background-color: #ffff99;}
+.b_ccff66 {background-color: #ccff66;}
+.b_66ccff {background-color: #66ccff;}
+.b_ff66cc {background-color: #ff66cc;}
+
+.bd_b { border-color: black;}
+.bd_gray { border-color: gray;}
+.bd_red { border-color: red;}
+.bd_top_gray { border-top:solid 1px;
+border-top-color: gray;
+} 
+.bd_bottom_gray { border-bottom:solid 1px;
+border-bottom-color: gray;
+} 
+.h_cal { height: 50}
+.disp_block {display: block;}
+.disp_inline {display: inline;}
+.disp_none {display: none;}
+.mark1 { padding-left:10px;
+background-image:url(m1.gif);
+background-repeat:no-repeat;
+}
+A:hover { color:red}

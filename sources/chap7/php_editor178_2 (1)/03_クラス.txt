@@ -1,0 +1,13 @@
+
+/**
+ * クラスの説明
+ *
+ * @package  パッケージ名
+ * @author   著作者 <著作者メール>
+ * @since    PHP 4.0
+ * @version  $Id: DB.php,v 1.58 2004/03/13 16:17:19 danielc Exp $
+ */
+// class命名規則) Log,Net_Finger,HTML_Upload_Error
+class Foo {
+    
+}

@@ -1,0 +1,1986 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>2018実践II</title>
+<link rel="stylesheet" type="text/css" href="./files/manual.css">
+<script language="javascript" src="./files/css.js"></script>
+	
+	<script type="text/javascript" src="./js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushPhp.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushCss.js"></script>
+	<link type="text/css" rel="stylesheet" href="./syntaxhighlighter/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>  
+</head>
+
+<body>
+<h1>PHPとMySQLによるWebアプリケーションの基礎</h1>
+<form>
+  <div class="ar"> 
+		<input type="button" value="標準" onClick="css_print()">
+		<input type="button" value="拡大" onClick="css_presen()">
+  </div>
+</form>
+
+<h2>Chapter 8　PHPとMySQLによるブログの作成</h2>
+<h3>6.1　ホーム画面の作成</h3>
+<p>htmlとphpを使ってデータベースからデータを読み込んで記事を出力させましょう。以下のsql文を使って記事のデータベースを作成します。
+    <pre class="brush:php;">
+--
+-- テーブルの構造 `entry_table`
+--
+
+CREATE TABLE IF NOT EXISTS `entry_table` (
+  `entry_id` int(11) NOT NULL auto_increment,
+  `subject` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `digest` text collate utf8_unicode_ci NOT NULL,
+  `document` text collate utf8_unicode_ci,
+  `post_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`entry_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=17 ;
+
+--
+-- テーブルのデータをダンプしています `entry_table`
+--
+
+INSERT INTO `entry_table` (`entry_id`, `subject`, `digest`, `document`, `post_date`) VALUES
+(4, 'わはは', 'おほほ', 'いひひ・えへへ', '2009-03-21 23:01:41'),
+(5, 'あいう', 'いいい', 'ううう', '2009-03-21 23:04:41'),
+(6, 'あああ', 'あああ', 'あああ', '2009-03-21 23:25:00'),
+(3, 'ポリンキー', 'ポリンキー', '三角形の秘密はね', '2009-02-23 23:46:39'),
+(7, 'いいい', 'いいい', 'いいい', '2009-03-21 23:25:13'),
+(8, 'ううう', 'ううう', 'ううう', '2009-03-21 23:25:28'),
+(9, 'えええ', 'えええ', 'えええ', '2009-03-21 23:25:42'),
+(10, 'おおお', 'おおお', 'おおお', '2009-03-21 23:26:02'),
+(11, '111', '11', '111', '2009-03-21 23:26:10'),
+(12, '222', '222', '222', '2009-03-21 23:26:14'),
+(13, '333', '333', '333', '2009-03-21 23:26:18'),
+(14, '444', '444', '444', '2009-03-21 23:26:24'),
+(15, '555', '555', '555', '2009-03-21 23:26:29'),
+(16, '666', '666', '666', '2009-03-21 23:26:33');
+
+-- --------------------------------------------------------
+    </pre>
+ 
+  <p class="caution-print">（注）MySQL 4.1以上では，これらのデータベースの構造の記述にはUNICODEのutf-8コードのみが使われるようになりました．2006年9月時点では，例えばシフトJISコードで記述したフィールド名等はutf-8コードへ変換はされません．入力を拒否されます．詳細は， http://www.mysql.gr.jp/frame/modules/bwiki/index.php?cmd=read&amp;page=FAQ#content_1_40を参照してください．</p>
+
+
+<h4>6.1.1　記事表示ページの作成</h4>
+<p>上のテーブルのデータをページ「index.php」に出力して閲覧できるようにしましょう。</p>
+<p>画面上には一度に出る記事が10までになるように制限します。次の記事への移動はリンクとGETを使って画面を更新することで行えるようにします。
+    </p>
+<pre class="brush:php">
+if ($pageNum_Recordset1 > 0) { // Show if not first page 
+    print "<a href="index.php?pageNum_Recordset1=" .max(0, $pageNum_Recordset1 - 1)."">前のページへ</a>"; 
+} // Show if not first page 
+if ($pageNum_Recordset1 < $totalPages_Recordset1) { // Show if not last page 
+    print "<a href="index.php?pageNum_Recordset1=".min($totalPages_Recordset1, $pageNum_Recordset1 + 1)."">次のページへ</a>";
+} // Show if not last page 
+</pre>
+<p>上のようにリンクにGETで変数を取得できるようにURLを書きましょう</p>
+「localhost.php」
+<pre class="brush:php">
+&lt;?php
+$host = "localhost";
+$database = "my_blog";
+$user = "root";
+$pass = "root";
+
+$mysqli = new mysqli($host, $user, $pass, $database);
+
+if (mysqli_connect_errno()){
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+
+mysqli_set_charset($mysqli,"utf8");
+
+?&gt;
+</pre>
+「index.php」
+      <pre class="brush:php;">
+&lt;?php require_once('Connections/localhost.php');
+
+$maxRows_Recordset1 = 10;
+$pageNum_Recordset1 = 0;
+if (isset($_GET['pageNum_Recordset1'])) {
+  $pageNum_Recordset1 = $_GET['pageNum_Recordset1'];
+}
+
+$startRow_Recordset1 = $pageNum_Recordset1 * $maxRows_Recordset1;
+
+$query_Recordset1 = "SELECT * FROM entry_table ORDER BY entry_id DESC";
+$query_limit_Recordset1 = "$query_Recordset1 LIMIT $startRow_Recordset1, $maxRows_Recordset1";
+
+$Recordset1 = $mysqli->query($query_limit_Recordset1);
+$Recordset1->fetch_assoc();
+
+if (isset($_GET['totalRows_Recordset1'])) {
+	$totalRows_Recordset1 = $_GET['totalRows_Recordset1'];
+} else {
+	$all_Recordset1 = $mysqli->query($query_Recordset1);
+	$totalRows_Recordset1 = $all_Recordset1->num_rows;
+}
+
+$totalPages_Recordset1 = ceil($totalRows_Recordset1/$maxRows_Recordset1)-1;
+
+?&gt;
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css">
+<title>MyBlog</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="all" />
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>MyBlog</h1>
+ <ul id="PAN">
+   <li><a href="rss.php">RSS</a></li>
+   <li><a href="admin/login.php">管理者</a></li>
+ </ul>
+</div>
+
+<hr>
+
+&lt;?php 
+while ($row_Recordset1 = $Recordset1->fetch_assoc()){  
+	print "<h2>".$row_Recordset1['subject']."</h2>";
+    print "<p>".$row_Recordset1['digest']."</p>"; 
+    print "<p><a href='topic.php?entry_id=". $row_Recordset1['entry_id']."'>もっと読む</a></p>";
+    print "<ul class='modori'>";
+	print "<li><a href='#PAGETOP'>TOP</a></li></ul><hr>";
+}
+
+print "<p style='text-align:center'>";
+
+if ($pageNum_Recordset1 > 0) { // Show if not first page 
+	print "<a href='index.php?pageNum_Recordset1=" .max(0, $pageNum_Recordset1 - 1)."'>前のページへ</a>"; 
+} // Show if not first page 
+if ($pageNum_Recordset1 < $totalPages_Recordset1) { // Show if not last page 
+	print "<a href='index.php?pageNum_Recordset1=".min($totalPages_Recordset1, $pageNum_Recordset1 + 1)."'>次のページへ</a>";
+} // Show if not last page 
+mysqli_free_result($Recordset1);
+?&gt;
+
+</div>
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+
+「style.css」
+<pre class="brush:php;">
+@charset "UTF-8"; /* 文字エンコードの設定（削除不可） */
+
+br
+	{
+	letter-spacing: normal;
+	}
+
+code, pre, kbd, samp
+	{
+	font-size: 100%;
+	}
+
+p, blockquote, pre, address, table
+	{
+	margin: 1em 0;
+	}
+
+li address, li form
+	{
+	margin: 0;
+	}
+
+em, strong, caption, th
+	{
+	font-style: normal;
+	font-weight: bold;
+	}
+
+cite, var, dfn,
+cite em, var em, dfn em,
+cite strong, var strong, dfn strong
+	{
+	font-style: oblique;
+	}
+
+cite, var, dfn
+	{
+	padding-right: 0.2em;
+	}
+
+/* ******************************************************* */
+
+a:link
+	{
+	color: #0A3CCB
+	}
+
+a:visited
+	{
+	color: #6E447E;
+	}
+
+a:active
+	{
+	color: #CE2333;
+	}
+
+a:hover, a:focus
+	{
+	color: #999999;
+	}
+
+/* ******************************************************* */
+
+h1,h2,h3,h4,h5,h6
+	{
+	font-weight: bold;
+	color: #213B84;
+	}
+
+h2
+	{
+	margin: 1em 0 0.2em;
+	padding: 0 0.5em;
+	font-size: 180%;
+	background-color: #F9F9F9;
+	border-top: 1px solid #DDDDDD;
+	border-bottom: 1px solid #DDDDDD;
+	}
+
+h3
+	{
+	margin: 1.2em 0 0.2em;
+	padding: 0 1em;
+	font-size: 150%;
+	background-color: #F9F9F9;
+	}
+
+h4
+	{
+	margin: 1.2em 0 0.2em;
+	font-size: 125%;
+	}
+
+h5,h6
+	{
+	margin: 1em 0 0.3em;
+	font-size: 110%;
+	}
+
+/* ******************************************************* */
+
+em
+	{
+	}
+
+code>em
+	{
+	color: #000;
+	}
+
+strong
+	{
+	color: #F02038;
+	}
+
+body>ins, div>ins, body>del, div>del
+	{
+	display: block;
+	}
+
+body>ins, div>ins
+	{
+	margin: 1em 0;
+	padding: 0.3em 1em;
+	border: 1px solid #DDDDDD;
+	text-decoration: none;
+	}
+
+body>ins:before, div>ins:before
+	{
+	display: block;
+	content: "追記";
+	border-bottom: 1px dashed #DDDDDD;
+	font-weight: bold;
+	}
+
+/* ******************************************************* */
+
+fieldset
+	{
+	margin: 0.5em 0;
+	padding: 0.25em 1em;
+	border: 2px solid #EEEEEE;
+	}
+
+input, textarea, select
+	{
+	margin: 0.12em;
+	vertical-align: middle;
+	}
+
+input[type="submit"],input[type="button"],
+button[type="submit"],button[type="button"]
+	{
+	cursor: pointer;
+	}
+
+
+/* ******************************************************* */
+
+dt:before
+	{
+	content: "○";
+	color: #68FF2D;
+	}
+
+/* ******************************************************* */
+
+address
+	{
+	}
+
+q
+	{
+	color: #249855;
+	}
+
+cite
+	{
+		color: #555555;
+		font-weight: bold;
+	}
+
+blockquote
+	{
+	margin-left: 3em;
+	padding: 0.5em 1em;
+	color: #249855;
+	background-color: #FFFFFF;
+	border: 2px dotted #249855;
+	}
+
+pre
+	{
+	padding: 0.5em 1em;
+	width: 95%;
+	font-family: monospace;
+	line-height: 1.2;
+	color: #000000;
+	background-color: #EFEFEF;
+	border: 1px solid #999999;
+	overflow: scroll;
+	}
+
+/* ******************************************************* */
+
+table
+	{
+	border-collapse: collapse;
+	}
+
+th,td
+	{
+	padding: 0.3em 0.8em;
+	border: 3px solid #FFFFFF;
+	vertical-align: top;
+	}
+
+th
+	{
+	background-color: #FFCBD1;
+	color: #000000;
+	}
+
+thead th
+	{
+	color: #800110;
+	}
+
+td
+	{
+	background-color: #E2F7FB;
+	color: #000000;
+	}
+
+thead td
+	{
+	color: #011680;
+	}
+
+/* ******************************************************* */
+
+abbr,acronym
+	{
+	border: dotted #000000;
+	border-width: 0 0 1px;
+	cursor: help;
+	}
+
+code
+	{
+	color: #555555;
+	font-family: "Courier New", "Courier", monospace;
+	}
+
+dfn
+	{
+	}
+
+kbd
+	{
+	font-family: "Courier New", monospace;
+	color: #986324;
+	}
+
+samp
+	{
+	font-family: monospace;
+	color: #000000;
+	background-color: #EEEEEE;
+	}
+
+var
+	{
+	font-family: "ＭＳ Ｐ明朝", Serif;
+	}
+
+/* ******************************************************* */
+
+img
+	{
+	vertical-align: text-bottom;
+	}
+
+a:link img
+	{
+	border: 1px solid #B2C6FF;
+	}
+
+a:visited img
+	{
+	border: 1px solid #CCCCCC;
+	}
+
+/* ******************************************************* */
+
+body
+	{
+	margin: 0;
+	padding: 0;
+	font-size: small;
+	font-family: "Meiryo", "メイリオ", Osaka, Sans-serif;
+	line-height: 1.6;
+	color: #000000;
+	background-color: #FFFFFF;
+	}
+
+#PAGETOP
+	{
+	padding: 20px;
+	max-width: 650px;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
+	margin-top: 0;
+	margin-right: auto;
+	margin-bottom: 0;
+	margin-left: auto;
+	height: 100%;
+	}
+
+* html body #PAGETOP
+	{
+	width: 68%; /* IE6用 */
+	}
+
+#HEADER
+	{
+	padding: 2%;
+	background-color: #D9E3FF;
+	border: 3px outset #AEBCE5;
+	}
+
+#HEADER h1
+	{
+	margin: 0;
+	padding: 0;
+	}
+
+#PAN
+	{
+	margin: 0;
+	padding: 0;
+	}
+
+#PAN li
+	{
+	display: inline;
+	margin: 0;
+	padding: 0;
+	}
+
+#PAN a
+	{
+	margin-right: 0.5em;
+	padding: 0 0.5em;
+	background-color: #ABB9E1;
+	text-decoration: none;
+	}
+
+#MENU
+	{
+	float: right;
+	width: 180px;
+	margin: 1.5em 0 1em;
+	border-left: 10px solid #FFFFFF;
+	border-bottom: 10px solid #FFFFFF;
+	background: #FFFFFF;
+	}
+
+#MENU ul
+	{
+	margin: 0;
+	padding: 0;
+	border: 1px solid #DDDDDD;
+	}
+
+#MENU li[id]
+	{
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	}
+
+#MENU li[id]+li[id]
+	{
+	border-top: 1px solid #DDDDDD;
+	}
+
+#MENU li[id]>a
+	{
+	display: block;
+	padding: 0.2em 0.8em;
+	}
+
+#MENU li.menu-on a
+	{
+	text-decoration: none;
+	}
+
+#MENU li.menu-on a:before
+	{
+	content: "○";
+	color: red;
+	}
+
+#MENU li form
+	{
+	display: block;
+	padding: 0.2em 0.8em;
+	text-align: center;
+	}
+
+ul.modori
+	{
+	list-style-type: none;
+	text-align: right;
+	}
+
+/* ******************************************************* */
+/* 消しちゃうもの */
+
+hr,
+#MENU h2
+	{
+	display: none;
+	}
+</pre>
+    <p>アクセスすると下のように表示されます</p>
+<img src="./files/fig0801.png" width="504" height="352">
+<img src="./files/fig0802.png" width="504" height="352">
+<img src="./files/fig0803.png" width="504" height="352">
+
+<h4>6.1.2 　フォームによる情報の取得</h4>
+<p>「もっと読む」をクリックして記事の内容を確認できるようにします。このときクリックした記事のidを使ってGETで内容を表示させます。</p>
+「テーブルcomment」
+<pre class="brush:php;">
+--
+-- テーブルの構造 `comment_table`
+--
+
+CREATE TABLE IF NOT EXISTS `comment_table` (
+  `comment_id` int(11) NOT NULL auto_increment,
+  `entry_id` int(11) NOT NULL,
+  `name` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `email` varchar(255) collate utf8_unicode_ci default NULL,
+  `url` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment` text collate utf8_unicode_ci,
+  `post_table` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`comment_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=11 ;
+
+--
+-- テーブルのデータをダンプしています `comment_table`
+--
+
+INSERT INTO `comment_table` (`comment_id`, `entry_id`, `name`, `email`, `url`, `comment`, `post_table`) VALUES
+(1, 4, 'aa', 'aa', 'aa', 'aa', '2009-03-22 00:13:32'),
+(2, 3, 'aaaa', 'aaa', 'aaaa', 'aaaa', '2009-03-22 00:19:28'),
+(3, 3, 'gege', 'gege', 'gge', 'eggeeg', '2009-03-22 00:19:31'),
+(4, 7, 'ざっぱ', 'ざっぱ', 'ざっぱ', 'おおざっぱ', '2009-03-22 00:21:24'),
+(5, 7, 'ざっぱ', 'ざっぱ', 'ざっぱ', 'おおざっぱ', '2009-03-22 00:27:19'),
+(6, 7, 'ざっぱ', 'ざっぱ', 'ざっぱ', 'おおざっぱ', '2009-03-22 00:27:27'),
+(7, 7, 'ざっぱ', 'ざっぱ', 'ざっぱ', 'おおざっぱ', '2009-03-22 00:27:53'),
+(8, 6, 'gege', 'gegeeg', 'eggeege', 'gegeeg', '2009-03-22 00:28:15'),
+(9, 6, 'gege', 'gegeeg', 'eggeege', 'gegeeg', '2009-03-22 00:28:34'),
+(10, 4, '名無しさん', 'gege', 'gege', 'gegeg', '0000-00-00 00:00:00');
+
+-- --------------------------------------------------------
+</pre>
+
+
+「topic.php」
+      <pre class="brush:php;">
+&lt;?php 
+require_once('Connections/localhost.php');
+
+if (isset($_GET['entry_id']) && isset($_POST["MM_insert"]) && $_POST["MM_insert"] == "formComment") {
+	$insertSQL = "INSERT INTO comment_table (entry_id, name, email, url, comment) VALUES (". $_POST['hiddenField'] .", '". $_POST['name'] ."', '". $_POST['email'] ."', '". $_POST['url'] ."', '". $_POST['comment'] ."')";
+
+	$Result1 = $mysqli->query($insertSQL);
+}
+
+$colname_Recordset1 = "-1";
+if (isset($_GET['entry_id'])) {
+	$colname_Recordset1 = $_GET['entry_id'];
+}
+
+$query_Recordset1 = "SELECT * FROM entry_table WHERE entry_id = $colname_Recordset1";
+$Recordset1 = $mysqli->query($query_Recordset1);
+
+$row_Recordset1 = $Recordset1->fetch_assoc();
+
+$colname_Recordset2 = "-1";
+if (isset($_GET['entry_id'])) {
+	$colname_Recordset2 = $_GET['entry_id'];
+}
+
+$query_Recordset2 = "SELECT * FROM comment_table WHERE entry_id = $colname_Recordset2 ORDER BY comment_id DESC";
+
+$Recordset2 = $mysqli->query($query_Recordset2);
+$row_Recordset2 = $Recordset2->fetch_assoc();
+
+?&gt;
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css">
+<title>MyBlog</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="all" />
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>MyBlog</h1>
+ <ul id="PAN">
+   <li><a href="rss.php">RSS</a></li>
+   <li><a href="admin/login.php">管理者</a></li>
+ </ul>
+</div>
+
+<hr>
+&lt;?php
+print "<h2>". $row_Recordset1['subject']. "</h2>". PHP_EOL;
+print "<p>". $row_Recordset1['digest']. "</p>". PHP_EOL;
+print "<p>". $row_Recordset1['document']. "</p>". PHP_EOL;
+?&gt;
+<hr />
+<h3>コメント</h3>
+&lt;?php 
+
+do {
+	print "<dl class='comment'>";
+	print "<dt><a href='mailto:". $row_Recordset2['email']. "'>". $row_Recordset2['name']. "</a>/". $row_Recordset2['url']. "</dt>";
+    print "<dd>". $row_Recordset2['comment']. "</dd>";
+	print "</dl>";
+} while ($row_Recordset2 = $Recordset2->fetch_assoc()); 
+?&gt;
+<h3>新しいコメント</h3>
+<form id="formComment" name="formComment" method="POST" action="<?php echo $editFormAction; ?>">
+  <h4>名前：</h4>
+  <p>
+    <input name="name" type="text" id="name" size="35" />
+</p>
+  <h4>メールアドレス：</h4>
+  <p>
+    <input name="email" type="text" id="email" size="35" />
+  </p>
+  <h4>Webサイト：</h4>
+  <p>
+    <input name="url" type="text" id="url" size="50" />
+  </p>
+  <h4>コメント：</h4>
+  <p>
+    <textarea name="comment" cols="50" rows="5" id="comment"></textarea>
+  </p>
+  <p>
+    <input type="submit" name="Submit" value="投稿する" />
+  </p>
+  <p>
+    <input name="hiddenField" type="hidden" id="hiddenField" value="<?php echo $row_Recordset1['entry_id']; ?>" />
+  </p>
+  <input type="hidden" name="MM_insert" value="formComment" />
+</form>
+
+<hr />
+<p><a href="index.php">リストにもどる</a></p>
+</div>
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;?php
+mysqli_free_result($Recordset1);
+mysqli_free_result($Recordset2);
+?&gt;
+</pre>
+  <img src="./files/fig0801041.png" width="504" height="552">
+
+<p>Getはこれらのようにformから送るだけでなく自分でurlに追加してページの情報の分割にも使用することができます。</p>
+ 
+
+<h3>6.2.　rssの取得</h3>
+ 
+ <p>rssとは「Really Simple Syndication」、または「Rich Site Summary」の略語で、Webサイトのニュースやブログなどの、更新情報の日付やタイトル、その内容の要約などを配信するため技術のことです。簡単に言うと情報を効率よく収集することができるフォーマットです。rssの情報を取得すれば、ブログの読者はいつ更新されたかどうかをすぐに確認することができるようになります。rssを作成して読者が記事の更新を確認できるようにします。</p>
+
+<h4>6.2.1 rssの表示</h4>
+<p>rssを取得できるようにするために記事のデータベースを使って記事更新情報を記載したrssを作成します。</p>
+「rss.php」
+<pre class="brush:php;">
+&lt;?php 
+
+require_once('Connections/localhost.php'); 
+
+$maxRows_Recordset1 = 10;
+$startRow_Recordset1 = 0;
+
+
+$query_limit_Recordset1 = "SELECT * FROM entry_table ORDER BY entry_id DESC LIMIT $startRow_Recordset1, $maxRows_Recordset1";
+
+$Recordset1 = $mysqli->query($query_limit_Recordset1);
+
+print "&lt;?xml version='1.0' encoding='UTF-8'?&gt;";
+
+?&gt;
+&lt;rss version="2.0"&gt;
+&lt;channel&gt;
+&lt;title &gt;My Blogの RSS&lt;/title&gt;
+&lt;link&gt;
+http://localhost/
+&lt;/link&gt;
+&lt;description&gt;このRSSは、MyBlogの RSSです&lt;/description&gt;
+&lt;language&gt;ja&lt;/language&gt;
+&lt;copyright&gt;&lt;/copyright&gt;
+&lt;managingEditor&gt;&lt;/managingEditor&gt;
+&lt;webMaster&gt;&lt;/webMaster&gt;
+&lt;pubDate&gt;&lt;/pubDate&gt;
+&lt;lastBuildDate&gt;&lt;/lastBuildDate&gt;
+&lt;?php 
+do {
+	print "<item>".PHP_EOL."<title>". $row_Recordset1['subject'] ."</title>".PHP_EOL;
+	print "<link>http://localhost/topic.php?entry_id=". $row_Recordset1['entry_id'] ."</link>".PHP_EOL;
+	print "<description>". $row_Recordset1['digest'] ."</description>".PHP_EOL;
+	print "<pubDate>". date("D, d M Y H:i:s +0900", strtotime($row_Recordset1['post_date'])) ."</pubDate>".PHP_EOL."</item>".PHP_EOL;
+} while ($row_Recordset1 = $Recordset1->fetch_assoc()); 
+mysqli_free_result($Recordset1);  
+?&gt;
+&lt;/channel&gt;
+&lt;/rss&gt;
+&lt;/pre&gt;
+</pre>
+
+<img src="./files/fig0801051.png" width="704" height="352">
+
+<h4>6.2.2   rssの取得</h4>
+
+<p>rssを取得するフリーソフトとして「feedly」があります</p>
+https://feedly.com/i/welcome
+<p>これにブログのページを登録することで更新記録が確認できるようになります。</p>
+
+<p>例えば広島工業大学の公式サイトの場合は以下のようになります。</p>
+<img src="./files/fig0806.png" width="704" height="352">
+
+
+<h3>6.3　管理者ページの作成</h3>
+
+<p>ブログにおいて誰でも記事の編集、削除ができてはなりません。そこで管理者ページを作成して、管理者アカウントを知っている人のみが編集、削除を行えるようにします。</p>
+
+<h4>6.3.1　ログインぺージの作成</h4>
+
+<p>管理者ページに移動するためのログイン画面を作成します。ログインの成功の際にデータをセッションに保存しておいて、セッションがタイムアウトするまで、ログインしなくても管理者画面に入れるようにしましょう。ユーザ名は「admin」,パスワードは「12345」としてます。</p>
+「セッションの保存の仕方」
+<pre class="brush:php;">
+if (!isset($_SESSION)) {
+  session_start();
+}
+$_SESSION['セッション名'] = 保存したいもの;  
+</pre>
+「テーブルlogin_table」
+<pre class="brush:php;">
+--
+-- テーブルの構造 `login_table`
+--
+
+CREATE TABLE IF NOT EXISTS `login_table` (
+  `admin_id` varchar(25) collate utf8_unicode_ci NOT NULL,
+  `password` varchar(25) collate utf8_unicode_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- テーブルのデータをダンプしています `login_table`
+--
+
+INSERT INTO `login_table` (`admin_id`, `password`) VALUES
+('admin', '12345');
+</pre>
+「login.php」
+      <pre class="brush:php;">
+&lt;?php 
+
+require_once('../Connections/localhost.php'); 
+
+// *** Validate request to login to this site.
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+if (isset($_POST['admin_id'])) {
+
+	$loginUsername=$_POST['admin_id'];
+	$password=$_POST['password'];
+	$MM_fldUserAuthorization = "";
+	$MM_redirectLoginSuccess = "index.php";
+	$MM_redirectLoginFailed = "login_error.php";
+	$MM_redirecttoReferrer = false;
+  
+	$LoginRS_query = "SELECT admin_id, password FROM login_table WHERE admin_id='$loginUsername' AND password='$password'";
+   
+	$LoginRS = $mysqli->query($LoginRS_query);
+    
+	$loginFoundUser = $LoginRS->num_rows;
+
+	if ($loginFoundUser) {
+    
+		$_SESSION['MM_Username'] = $loginUsername;     
+
+		if (isset($_SESSION['PrevUrl']) && false) {
+			$MM_redirectLoginSuccess = $_SESSION['PrevUrl'];	
+		}
+			header("Location: " . $MM_redirectLoginSuccess );
+	}
+	else {
+		header("Location: ". $MM_redirectLoginFailed );
+	}
+}
+?&gt;
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog&lt;/title&gt;
+&lt;link href="../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>MyBlog</h1>
+ <ul id="PAN">
+   <li><a href="../index.php">ブログ</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h2>Blogシステム管理画面</h2>
+<h3>ログイン</h3>
+<p style="text-align:center">
+<form id="formLogin" name="formLogin" method="POST" action="login.php">
+  <table border="0" cellspacing="0" cellpadding="3">
+    <tr>
+      <th scope="row">ID:</th>
+      <td><input name="admin_id" type="text" id="admin_id" size="25" /></td>
+    </tr>
+    <tr>
+      <th scope="row">Password:</th>
+      <td><input name="password" type="text" id="password" size="25" /></td>
+    </tr>
+    <tr>
+      <th scope="row">&nbsp;</th>
+      <td><input type="submit" name="Submit" value="ログイン" /></td>
+    </tr>
+  </table>
+</form>
+</p>
+</div>
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+「login_error.php」
+<pre class="brush:php;">
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog&lt;/title&gt;
+&lt;link href="../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>MyBlog</h1>
+ <ul id="PAN">
+   <li><a href="../index.php">ブログ</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h2>Blogシステム管理画面</h2>
+<h3>ログイン</h3>
+<p>IDまたはパスワードが違います。もう一度ログインしてください。</p>
+<p><a href="login.php">ログイン画面にもどる</a></p>
+</div>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<img src="./files/fig08071.png" width="504" height="352">
+<img src="./files/fig08081.png" width="504" height="352">
+    
+<h4>6.3.2　管理者ぺージの作成</h4>
+
+<p>管理者ページから記事の追加、編集、削除をできるようにして。コメントでも同様の操作を行えるようにします。</p>
+「index.php」
+<pre class="brush:php;">
+&lt;?php 
+
+require_once('../Connections/localhost.php');
+
+//セッション処理ここから
+
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+	//to fully log out a visitor we need to clear the session varialbles
+	$_SESSION['MM_Username'] = NULL;
+	$_SESSION['PrevUrl'] = NULL;
+	unset($_SESSION['MM_Username']);
+	unset($_SESSION['PrevUrl']);
+	
+	header("Location: login.php");
+}
+
+if (!isset($_SESSION['MM_Username'])) {   
+  header("Location: login.php"); 
+}
+
+//セッション処理ここまで
+
+$maxRows_Recordset1 = 10;
+$pageNum_Recordset1 = 0;
+if (isset($_GET['pageNum_Recordset1'])) {
+  $pageNum_Recordset1 = $_GET['pageNum_Recordset1'];
+}
+
+$startRow_Recordset1 = $pageNum_Recordset1 * $maxRows_Recordset1;
+
+
+$query_Recordset1 = "SELECT * FROM entry_table ORDER BY entry_id DESC";
+$query_limit_Recordset1 = "$query_Recordset1 LIMIT $startRow_Recordset1, $maxRows_Recordset1";
+
+$Recordset1 = $mysqli->query($query_limit_Recordset1);
+
+if (isset($_GET['totalRows_Recordset1'])) {
+	$totalRows_Recordset1 = $_GET['totalRows_Recordset1'];
+} else {
+	$all_Recordset1 = $mysqli->query($query_Recordset1);
+	$totalRows_Recordset1 = $all_Recordset1->num_rows;
+}
+$totalPages_Recordset1 = ceil($totalRows_Recordset1/$maxRows_Recordset1)-1;
+
+?&gt;
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog管理画面&lt;/title&gt;
+&lt;link href="../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>Blogシステム管理画面</h1>
+ <ul id="PAN">
+   <li><a href="&lt;?php print $_SERVER['PHP_SELF']."?doLogout=true"; ?>">ログアウト</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h3><a href="input.php">新しい記事を追加する</a></h3>
+<h3><a href="comment/all.php">全てのコメントを見る</a></h3>
+
+<h2>記事一覧</h2>
+<table width="100%" border="1" cellpadding="0" cellspacing="0">
+  <tr>
+    <th scope="col">ID</th>
+    <th scope="col">タイトル</th>
+    <th scope="col">編集</th>
+    <th scope="col">削除</th>
+    <th scope="col">コメント</th>
+  </tr>
+&lt;?php 
+
+while ($row_Recordset1 = $Recordset1->fetch_assoc()) {
+	print "<tr>". PHP_EOL ."<td style='text-align:center'>". $row_Recordset1['entry_id'] ."</td>". PHP_EOL;
+    print "<td>". $row_Recordset1['subject'] ."</td>". PHP_EOL;
+	print "<td style='text-align:center'><a href='edit.php?entry_id=". $row_Recordset1['entry_id'] ."'>編集</a></td>". PHP_EOL;
+	print "<td style='text-align:center'><a href='remove.php?entry_id=". $row_Recordset1['entry_id'] ."'>削除</a></td>". PHP_EOL;
+	print "<td style='text-align:center'><a href='comment/index.php?entry_id=". $row_Recordset1['entry_id'] ."'>コメント</a></td>". PHP_EOL ."</tr>";
+} 
+
+print "</table>";
+print "<br><p style='text-align:center'>";
+
+if ($pageNum_Recordset1 > 0) { // Show if not first page 
+	print "<a href='index.php?pageNum_Recordset1=" .max(0, $pageNum_Recordset1 - 1)."'>前のページへ</a>"; 
+} // Show if not first page 
+if ($pageNum_Recordset1 < $totalPages_Recordset1) { // Show if not last page 
+	print "<a href='index.php?pageNum_Recordset1=".min($totalPages_Recordset1, $pageNum_Recordset1 + 1)."'>次のページへ</a>";
+} // Show if not last page 
+mysqli_free_result($Recordset1);
+
+?&gt;
+</div>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+「input.php」
+      <pre class="brush:php;">
+&lt;?php 
+
+require_once('../Connections/localhost.php');
+
+//セッション処理ここから
+
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+	//to fully log out a visitor we need to clear the session varialbles
+	$_SESSION['MM_Username'] = NULL;
+	$_SESSION['PrevUrl'] = NULL;
+	unset($_SESSION['MM_Username']);
+	unset($_SESSION['PrevUrl']);
+	
+	header("Location: login.php");
+}
+
+if (!isset($_SESSION['MM_Username'])) {   
+	header("Location: login.php"); 
+}
+
+//セッション処理ここまで
+
+if (isset($_POST["MM_insert"]) && $_POST["MM_insert"] == "formMain") {
+	$insertSQL = "INSERT INTO entry_table (subject, digest, `document`) VALUES ('". $_POST['subject']. "', '". $_POST['digest'] ."', '". $_POST['document_text'] ."')";
+
+	$Result1 = $mysqli->query($insertSQL);
+
+	header("Location: index.php");
+}
+
+?&gt;
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog管理画面&lt;/title&gt;
+&lt;link href="../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>Blogシステム管理画面</h1>
+ <ul id="PAN">
+   <li><a href="index.php">一覧画面に戻る</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h2>記事登録画面</h2>
+<p>記事の内容を入力して、[登録]ボタンをクリックしてください。</p>
+<form id="formMain" name="formMain" method="POST" action="input.php">
+  <h3>タイトル</h3>
+  <p>
+    <input name="subject" type="text" id="subject" size="50" maxlength="255" />
+  </p>
+  <h3>内容</h3>
+  <p>
+    <textarea name="digest" cols="50" rows="5" id="digest"></textarea>
+  </p>
+  <h3>続き</h3>
+  <p>
+    <textarea name="document_text" id="document_text" cols="50" rows="20"></textarea>
+  </p>
+<p>
+    <input type="submit" name="Submit" value="登録" />
+  </p>
+<input type="hidden" name="MM_insert" value="formMain" />
+</form>
+</div>
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+「edit.php」
+<pre class="brush:php;">
+&lt;?php 
+
+require_once('../Connections/localhost.php');
+
+//セッション処理ここから
+
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+	//to fully log out a visitor we need to clear the session varialbles
+	$_SESSION['MM_Username'] = NULL;
+	$_SESSION['PrevUrl'] = NULL;
+	unset($_SESSION['MM_Username']);
+	unset($_SESSION['PrevUrl']);
+	
+	header("Location: login.php");
+}
+
+if (!isset($_SESSION['MM_Username'])) {   
+	header("Location: login.php"); 
+}
+
+//セッション処理ここまで
+
+if (isset($_POST["MM_update"]) && $_POST["MM_update"] == "formMain") {
+  $updateSQL = "UPDATE entry_table SET subject='". $_POST['subject'] ."', digest='". $_POST['digest'] ."', `document`='". $_POST['document'] ."' WHERE entry_id='". $_POST['hiddenField'] ."'";
+
+  $Result1 = $mysqli->query($updateSQL);
+
+  header("Location: index.php");
+}
+
+$colname_Recordset1 = "-1";
+if (isset($_GET['entry_id'])) {
+	$colname_Recordset1 = $_GET['entry_id'];
+}
+
+$query_Recordset1 = "SELECT * FROM entry_table WHERE entry_id = $colname_Recordset1";
+$Recordset1 = $mysqli->query($query_Recordset1);
+$row_Recordset1 =$Recordset1->fetch_assoc();
+
+?&gt;
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog管理画面&lt;/title&gt;
+&lt;link href="../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>Blogシステム管理画面</h1>
+ <ul id="PAN">
+   <li><a href="index.php">一覧画面に戻る</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h2>記事編集画面</h2>
+<p>記事の内容を編集して、[更新]ボタンをクリックしてください。</p>
+<form action="<?php print $_SERVER['PHP_SELF']; ?>" id="formMain" name="formMain" method="POST">
+  <h3>タイトル</h3>
+  <p>
+    <input name="subject" type="text" id="subject" value="<?php print $row_Recordset1['subject']; ?>" size="50" maxlength="255" />
+  </p>
+  <h3>内容</h3>
+  <p>
+    <textarea name="digest" cols="50" rows="5" id="digest"><?php print $row_Recordset1['digest']; ?></textarea>
+  </p>
+  <h3>続き</h3>
+  <p>
+    <textarea name="document" cols="50" rows="20" id="document"><?php print $row_Recordset1['document']; ?></textarea>
+  </p>
+  <p>
+    <input type="submit" name="Submit" value="更新" />
+    <input name="hiddenField" type="hidden" id="hiddenField" value="<?php print $row_Recordset1['entry_id']; ?>" />
+  </p>
+  <input type="hidden" name="MM_update" value="formMain" />
+</form>
+</div>
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;?php
+mysqli_free_result($Recordset1);
+?&gt;
+
+</pre>
+「remove.php」
+<pre class="brush:php;">
+&lt;?php 
+
+require_once('../Connections/localhost.php');
+
+//セッション処理ここから
+
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+	//to fully log out a visitor we need to clear the session varialbles
+	$_SESSION['MM_Username'] = NULL;
+	$_SESSION['PrevUrl'] = NULL;
+	unset($_SESSION['MM_Username']);
+	unset($_SESSION['PrevUrl']);
+	
+	header("Location: login.php");
+}
+
+if (!isset($_SESSION['MM_Username'])) {   
+  header("Location: login.php"); 
+}
+
+//セッション処理ここまで
+
+if ((isset($_GET['entry_id'])) && ($_GET['entry_id'] != "")) {
+  $deleteSQL = "DELETE FROM entry_table WHERE entry_id=". $_GET['entry_id'];
+
+  $Result1 = $mysqli->query($deleteSQL);
+
+  header("Location: index.php");
+}
+?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog管理画面&lt;/title&gt;
+&lt;link href="../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>Blogシステム管理画面</h1>
+ <ul id="PAN">
+   <li><a href="index.php">管理トップ</a></li>
+   <li><a href="<?php print $_SERVER['PHP_SELF']."?doLogout=true"; ?>">ログアウト</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h3>この画面は記事削除画面です</h3>
+
+</div>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<img src="./files/fig08091.png" width="454" height="452">
+<img src="./files/fig08011_1.png" width="454" height="452">
+<img src="./files/fig08101.png" width="454" height="452">
+
+<p>最後にコメントの管理画面を作成します。今までやったことをもとに考えてみましょう。</p>
+<p>ファイルはフォルダ「admin」の下に「comment」フォルダを作ってそこに配置しましょう。</p>
+<h5>ファイル配置図</h5>
+<pre>
+ローカルディスク---MAMP---htdocs---2018_zissen---blog---「ホーム画面用のphpファイル」
+                                                   |  
+                                                   |--- Connections ---「データベース接続用phpファイル」
+                                                   |        
+                                                   |
+                                                    --- admin --- 「管理者用ページphpファイル」
+                                                    　　　|
+                                                          |
+                                                          --- comment ---「管理者用コメント管理ページphpファイル」
+</pre>
+
+「comment/index.php」
+<pre class="brush:php;">
+&lt;?php 
+
+require_once('../../Connections/localhost.php');
+
+//セッション処理ここから
+
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+	//to fully log out a visitor we need to clear the session varialbles
+	$_SESSION['MM_Username'] = NULL;
+	$_SESSION['PrevUrl'] = NULL;
+	unset($_SESSION['MM_Username']);
+	unset($_SESSION['PrevUrl']);
+	
+	header("Location: login.php");
+}
+
+if (!isset($_SESSION['MM_Username'])) {   
+	header("Location: login.php"); 
+}
+
+//セッション処理ここまで
+
+$currentPage = $_SERVER["PHP_SELF"];
+
+$maxRows_Recordset1 = 10;
+$pageNum_Recordset1 = 0;
+if (isset($_GET['pageNum_Recordset1'])) {
+  $pageNum_Recordset1 = $_GET['pageNum_Recordset1'];
+}
+$startRow_Recordset1 = $pageNum_Recordset1 * $maxRows_Recordset1;
+
+
+$query_Recordset1 = "SELECT * FROM comment_table where entry_id = ". $_GET['entry_id'] ." ORDER BY comment_id DESC";
+
+$query_limit_Recordset1 = "$query_Recordset1 LIMIT $startRow_Recordset1, $maxRows_Recordset1";
+
+$Recordset1 = $mysqli->query($query_limit_Recordset1);
+
+$all_Recordset1 = $mysqli->query($query_Recordset1);
+
+$totalRows_Recordset1 = $all_Recordset1->num_rows;
+$totalPages_Recordset1 = ceil($totalRows_Recordset1/$maxRows_Recordset1)-1;
+
+?&gt;
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog管理画面&lt;/title&gt;
+&lt;link href="../../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>Blogシステム管理画面</h1>
+ <ul id="PAN">
+   <li><a href="../index.php">一覧画面に戻る</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h2>コメント管理画面</h2>
+
+<h3>エントリーID<?php print $row_Recordset1['entry_id']; ?>の記事に対するコメント一覧</h3>
+
+<table width="100%" border="1" cellpadding="0" cellspacing="0">
+  <tr>
+    <th scope="col">comment_id</th>
+    <th scope="col">name</th>
+    <th scope="col">編集</th>
+    <th scope="col">削除</th>
+  </tr>
+  &lt;?php while ($row_Recordset1 = mysql_fetch_assoc($Recordset1)) { ?&gt;
+    <tr>
+      <td><a href="detail.php?recordID=<?php print $row_Recordset1['comment_id']; ?>"> <?php print $row_Recordset1['comment_id']; ?>&nbsp; </a> </td>
+      <td><?php print $row_Recordset1['name']; ?>&nbsp; </td>
+      <td><a href="edit.php?comment_id=<?php print $row_Recordset1['comment_id']; ?>">編集</a></td>
+      <td><a href="remove.php?comment_id=<?php print $row_Recordset1['comment_id']; ?>">削除</a></td>
+    </tr>
+    &lt;?php }  ?&gt;
+</table>
+<br />
+<table border="0">
+  <tr>
+    <td>&lt;?php if ($pageNum_Recordset1 > 0) { // Show if not first page ?&gt;
+          <a href="<?php printf("%s?pageNum_Recordset1=%d%s", $currentPage, 0); ?>">先頭</a>
+          &lt;?php } // Show if not first page ?&gt;
+    </td>
+    <td>&lt;?php if ($pageNum_Recordset1 > 0) { // Show if not first page ?&gt;
+          <a href="&lt;?php printf("%s?pageNum_Recordset1=%d%s", $currentPage, max(0, $pageNum_Recordset1 - 1)); ?&gt;">戻る</a>
+          &lt;?php } // Show if not first page ?&gt;
+    </td>
+    <td>&lt;?php if ($pageNum_Recordset1 < $totalPages_Recordset1) { // Show if not last page ?&gt;
+          <a href="&lt;?php printf("%s?pageNum_Recordset1=%d%s", $currentPage, min($totalPages_Recordset1, $pageNum_Recordset1 + 1)); ?&gt;">次へ</a>
+          &lt;?php } // Show if not last page ?&gt;
+    </td>
+    <td>&lt;?php if ($pageNum_Recordset1 < $totalPages_Recordset1) { // Show if not last page ?&gt;
+          <a href="&lt;?php printf("%s?pageNum_Recordset1=%d%s", $currentPage, $totalPages_Recordset1); ?&gt;">最終</a>
+          &lt;?php } // Show if not last page ?&gt;
+    </td>
+  </tr>
+</table>
+<p style='text-align:center'>
+&lt;?php
+print "レコード". ($startRow_Recordset1 + 1) ." ～ ". min($startRow_Recordset1 + $maxRows_Recordset1, $totalRows_Recordset1) ." 件 / 全 ". $totalRows_Recordset1;
+mysqli_free_result($Recordset1);
+?&gt;
+</p>
+</div>
+&lt;/body&gt;
+</html>
+</pre>
+「comment/all.php」
+<pre class="brush:php;">
+&lt;?php 
+
+require_once('../../Connections/localhost.php');
+
+//セッション処理ここから
+
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+	//to fully log out a visitor we need to clear the session varialbles
+	$_SESSION['MM_Username'] = NULL;
+	$_SESSION['PrevUrl'] = NULL;
+	unset($_SESSION['MM_Username']);
+	unset($_SESSION['PrevUrl']);
+	
+	header("Location: login.php");
+}
+
+if (!isset($_SESSION['MM_Username'])) {   
+	header("Location: login.php"); 
+}
+
+//セッション処理ここまで
+
+$currentPage = $_SERVER["PHP_SELF"];
+
+$maxRows_Recordset1 = 10;
+$pageNum_Recordset1 = 0;
+if (isset($_GET['pageNum_Recordset1'])) {
+  $pageNum_Recordset1 = $_GET['pageNum_Recordset1'];
+}
+$startRow_Recordset1 = $pageNum_Recordset1 * $maxRows_Recordset1;
+
+$query_Recordset1 = "SELECT * FROM comment_table ORDER BY comment_id DESC";
+$query_limit_Recordset1 = sprintf("%s LIMIT %d, %d", $query_Recordset1, $startRow_Recordset1, $maxRows_Recordset1);
+$Recordset1 = $mysqli->query($query_limit_Recordset1) or die(mysql_error());
+$row_Recordset1 = $Recordset1->fetch_assoc();
+
+if (isset($_GET['totalRows_Recordset1'])) {
+  $totalRows_Recordset1 = $_GET['totalRows_Recordset1'];
+} else {
+  $all_Recordset1 = $mysqli->query($query_Recordset1);
+  $totalRows_Recordset1 = $all_Recordset1->num_rows;
+}
+$totalPages_Recordset1 = ceil($totalRows_Recordset1/$maxRows_Recordset1)-1;
+
+?&gt;
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog管理画面&lt;/title&gt;
+&lt;link href="../../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>Blogシステム管理画面</h1>
+ <ul id="PAN">
+   <li><a href="../index.php">一覧画面に戻る</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h2>コメント管理画面</h2>
+
+<h3>全てのコメント表示</h3>
+
+<table width="100%" border="1" cellpadding="0" cellspacing="0">
+  <tr>
+    <th scope="col">comment_id</th>
+    <th scope="col">entry_id</td>
+    <th scope="col">name</th>
+    <th scope="col">編集</th>
+    <th scope="col">削除</th>
+  </tr>
+  &lt;?php do { ?&gt;
+    <tr>
+      <td><a href="detail.php?recordID=&lt;?php print $row_Recordset1['comment_id']; ?&gt;"> &lt;?php print $row_Recordset1['comment_id']; ?&gt;&nbsp; </a> </td>
+      <td>&lt;?php print $row_Recordset1['entry_id']; ?&gt;&nbsp; </td>
+      <td>&lt;?php print $row_Recordset1['name']; ?&gt;&nbsp; </td>
+      <td><a href="edit.php?comment_id=&lt;?php print $row_Recordset1['comment_id']; ?&gt;">編集</a></td>
+      <td><a href="remove.php?comment_id=&lt;?php print $row_Recordset1['comment_id']; ?&gt;">削除</a></td>
+    </tr>
+    &lt;?php } while ($row_Recordset1 = $Recordset1->fetch_assoc()); ?&gt;
+</table>
+<br />
+<p style='text-align:center'>
+&lt;?php if ($pageNum_Recordset1 > 0) { // Show if not first page ?&gt;
+          <a href="&lt;?php printf("%s?pageNum_Recordset1=%d%s", $currentPage, 0, $queryString_Recordset1); ?&gt;">先頭</a>&nbsp;
+          &lt;?php } // Show if not first page ?&gt;
+&lt;?php if ($pageNum_Recordset1 > 0) { // Show if not first page ?&gt;
+          <a href="&lt;?php printf("%s?pageNum_Recordset1=%d%s", $currentPage, max(0, $pageNum_Recordset1 - 1), $queryString_Recordset1); ?&gt;">戻る</a>&nbsp;
+          &lt;?php } // Show if not first page ?&gt;
+&lt;?php if ($pageNum_Recordset1 < $totalPages_Recordset1) { // Show if not last page ?&gt;
+          <a href="&lt;?php printf("%s?pageNum_Recordset1=%d%s", $currentPage, min($totalPages_Recordset1, $pageNum_Recordset1 + 1), $queryString_Recordset1); ?&gt;">次へ</a>&nbsp;
+          &lt;?php } // Show if not last page ?&gt;
+&lt;?php if ($pageNum_Recordset1 < $totalPages_Recordset1) { // Show if not last page ?&gt;
+          <a href="&lt;?php printf("%s?pageNum_Recordset1=%d%s", $currentPage, $totalPages_Recordset1, $queryString_Recordset1); ?&gt;">最終</a></p>
+          &lt;?php } // Show if not last page ?&gt;
+<p style='text-align:center'>
+&lt;?php
+print "レコード". ($startRow_Recordset1 + 1) ." ～ ". min($startRow_Recordset1 + $maxRows_Recordset1, $totalRows_Recordset1) ." 件 / 全 ". $totalRows_Recordset1;
+mysqli_free_result($Recordset1);
+?&gt;
+</p>
+</div>
+&lt;/body&gt;
+</html>
+
+</pre>
+「comment/detail.php」
+<pre class="brush:php;">
+&lt;?php 
+
+require_once('../../Connections/localhost.php');
+
+//セッション処理ここから
+
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+	//to fully log out a visitor we need to clear the session varialbles
+	$_SESSION['MM_Username'] = NULL;
+	$_SESSION['PrevUrl'] = NULL;
+	unset($_SESSION['MM_Username']);
+	unset($_SESSION['PrevUrl']);
+	
+	header("Location: login.php");
+}
+
+if (!isset($_SESSION['MM_Username'])) {   
+	header("Location: login.php"); 
+}
+
+//セッション処理ここまで
+
+$query_DetailRS1 = "SELECT * FROM comment_table WHERE comment_id = ". $_GET['recordID'] ." ORDER BY comment_id DESC";
+
+$DetailRS1 = $mysqli->query($query_DetailRS1);
+$row_DetailRS1 = $DetailRS1->fetch_assoc();
+
+?&gt;
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog管理画面&lt;/title&gt;
+&lt;link href="../../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>Blogシステム管理画面</h1>
+ <ul id="PAN">
+   <li><a href="index.php?entry_id=&lt;?php print $row_DetailRS1['entry_id']; ?&gt;">一覧画面に戻る</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h2>コメント管理画面</h2>
+<h3>閲覧</h3>
+
+<table border="1" align="center">
+  <tr>
+    <td>comment_id</td>
+    <td>&lt;?php print $row_DetailRS1['comment_id']; ?&gt; </td>
+  </tr>
+  <tr>
+    <td>entry_id</td>
+    <td>&lt;?php print $row_DetailRS1['entry_id']; ?&gt; </td>
+  </tr>
+  <tr>
+    <td>name</td>
+    <td>&lt;?php print $row_DetailRS1['name']; ?&gt; </td>
+  </tr>
+  <tr>
+    <td>email</td>
+    <td>&lt;?php print $row_DetailRS1['email']; ?&gt; </td>
+  </tr>
+  <tr>
+    <td>url</td>
+    <td>&lt;?php print $row_DetailRS1['url']; ?&gt; </td>
+  </tr>
+  <tr>
+    <td>comment</td>
+    <td>&lt;?php print $row_DetailRS1['comment']; ?&gt; </td>
+  </tr>
+  <tr>
+    <td>post_table</td>
+    <td>&lt;?php print $row_DetailRS1['post_table']; ?&gt; </td>
+  </tr>
+</table>
+</p>
+</div>
+&lt;/body&gt;
+</html>
+&lt;?php
+mysqli_free_result($DetailRS1);
+?&gt;
+
+</pre>
+
+「comment/edit.php」
+<pre class="brush:php;">
+&lt;?php 
+
+require_once('../../Connections/localhost.php');
+
+//セッション処理ここから
+
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+	//to fully log out a visitor we need to clear the session varialbles
+	$_SESSION['MM_Username'] = NULL;
+	$_SESSION['PrevUrl'] = NULL;
+	unset($_SESSION['MM_Username']);
+	unset($_SESSION['PrevUrl']);
+	
+	header("Location: login.php");
+}
+
+if (!isset($_SESSION['MM_Username'])) {   
+	header("Location: login.php"); 
+}
+
+//セッション処理ここまで
+
+
+if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "form1")) {
+	$updateSQL = sprintf("UPDATE comment_table SET entry_id=%s, name='%s', email='%s', url='%s', comment='%s', post_table='%s' WHERE comment_id=%s", $_POST['entry_id'], $_POST['name'], $_POST['email'], $_POST['url'], $_POST['comment'], $_POST['post_table'], $_POST['comment_id']);
+
+  $Result1 = $mysqli->query($updateSQL);
+
+  header("Location: ../index.php?entry_id=". $_POST['entry_id']);
+}
+
+$colname_Recordset1 = "-1";
+if (isset($_GET['comment_id'])) {
+  $colname_Recordset1 = $_GET['comment_id'];
+}
+
+$query_Recordset1 = "SELECT * FROM comment_table WHERE comment_id = $colname_Recordset1";
+
+$Recordset1 = $mysqli->query($query_Recordset1);
+$row_Recordset1 = $Recordset1->fetch_assoc();
+?&gt;
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog管理画面&lt;/title&gt;
+&lt;link href="../../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>Blogシステム管理画面</h1>
+ <ul id="PAN">
+   <li><a href="index.php?entry_id=<?php print $row_Recordset1['entry_id']; ?>">一覧画面に戻る</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h2>コメント管理画面</h2>
+<h3>編集</h3>
+
+<form action="<?php print $editFormAction; ?>" method="post" name="form1" id="form1">
+  <table align="center">
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Comment_id:</td>
+      <td><?php print $row_Recordset1['comment_id']; ?></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Entry_id:</td>
+      <td><input type="text" name="entry_id" value="<?php print $row_Recordset1['entry_id']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Name:</td>
+      <td><input type="text" name="name" value="<?php print $row_Recordset1['name']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Email:</td>
+      <td><input type="text" name="email" value="<?php print $row_Recordset1['email']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Url:</td>
+      <td><input type="text" name="url" value="<?php print $row_Recordset1['url']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Comment:</td>
+      <td><input type="text" name="comment" value="<?php print $row_Recordset1['comment']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Post_table:</td>
+      <td><input type="text" name="post_table" value="<?php print $row_Recordset1['post_table']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">&nbsp;</td>
+      <td><input type="submit" value="レコードの更新" /></td>
+    </tr>
+  </table>
+  <input type="hidden" name="MM_update" value="form1" />
+  <input type="hidden" name="comment_id" value="<?php print $row_Recordset1['comment_id']; ?>" /> 
+</form>
+</div>
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;?php
+mysqli_free_result($Recordset1);
+?&gt;
+</pre>
+
+「comment/edit.php」
+<pre class="brush:php;">
+&lt;?php 
+
+require_once('../../Connections/localhost.php');
+
+//セッション処理ここから
+
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+	//to fully log out a visitor we need to clear the session varialbles
+	$_SESSION['MM_Username'] = NULL;
+	$_SESSION['PrevUrl'] = NULL;
+	unset($_SESSION['MM_Username']);
+	unset($_SESSION['PrevUrl']);
+	
+	header("Location: login.php");
+}
+
+if (!isset($_SESSION['MM_Username'])) {   
+	header("Location: login.php"); 
+}
+
+//セッション処理ここまで
+
+
+if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "form1")) {
+	$updateSQL = sprintf("UPDATE comment_table SET entry_id=%s, name='%s', email='%s', url='%s', comment='%s', post_table='%s' WHERE comment_id=%s", $_POST['entry_id'], $_POST['name'], $_POST['email'], $_POST['url'], $_POST['comment'], $_POST['post_table'], $_POST['comment_id']);
+
+  $Result1 = $mysqli->query($updateSQL);
+
+  header("Location: ../index.php?entry_id=". $_POST['entry_id']);
+}
+
+$colname_Recordset1 = "-1";
+if (isset($_GET['comment_id'])) {
+  $colname_Recordset1 = $_GET['comment_id'];
+}
+
+$query_Recordset1 = "SELECT * FROM comment_table WHERE comment_id = $colname_Recordset1";
+
+$Recordset1 = $mysqli->query($query_Recordset1);
+$row_Recordset1 = $Recordset1->fetch_assoc();
+?&gt;
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog管理画面&lt;/title&gt;
+&lt;link href="../../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>Blogシステム管理画面</h1>
+ <ul id="PAN">
+   <li><a href="index.php?entry_id=<?php print $row_Recordset1['entry_id']; ?>">一覧画面に戻る</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h2>コメント管理画面</h2>
+<h3>編集</h3>
+
+<form action="<?php print $editFormAction; ?>" method="post" name="form1" id="form1">
+  <table align="center">
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Comment_id:</td>
+      <td><?php print $row_Recordset1['comment_id']; ?></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Entry_id:</td>
+      <td><input type="text" name="entry_id" value="<?php print $row_Recordset1['entry_id']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Name:</td>
+      <td><input type="text" name="name" value="<?php print $row_Recordset1['name']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Email:</td>
+      <td><input type="text" name="email" value="<?php print $row_Recordset1['email']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Url:</td>
+      <td><input type="text" name="url" value="<?php print $row_Recordset1['url']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Comment:</td>
+      <td><input type="text" name="comment" value="<?php print $row_Recordset1['comment']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">Post_table:</td>
+      <td><input type="text" name="post_table" value="<?php print $row_Recordset1['post_table']; ?>" size="32" /></td>
+    </tr>
+    <tr valign="baseline">
+      <td nowrap="nowrap" align="right">&nbsp;</td>
+      <td><input type="submit" value="レコードの更新" /></td>
+    </tr>
+  </table>
+  <input type="hidden" name="MM_update" value="form1" />
+  <input type="hidden" name="comment_id" value="<?php print $row_Recordset1['comment_id']; ?>" /> 
+</form>
+</div>
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;?php
+mysqli_free_result($Recordset1);
+?&gt;
+</pre>
+
+「comment/remove.php」
+<pre class="brush:php;">
+&lt;?php 
+
+require_once('../../Connections/localhost.php');
+
+//セッション処理ここから
+
+if (!isset($_SESSION)) {
+  session_start();
+}
+
+if ((isset($_GET['doLogout'])) &&($_GET['doLogout']=="true")){
+	//to fully log out a visitor we need to clear the session varialbles
+	$_SESSION['MM_Username'] = NULL;
+	$_SESSION['PrevUrl'] = NULL;
+	unset($_SESSION['MM_Username']);
+	unset($_SESSION['PrevUrl']);
+	
+	header("Location: login.php");
+}
+
+if (!isset($_SESSION['MM_Username'])) {   
+  header("Location: login.php"); 
+}
+
+//セッション処理ここまで
+
+if ((isset($_GET['comment_id'])) && ($_GET['comment_id'] != "")) {
+	$query_Recordset1 = "DELETE FROM comment_table WHERE comment_id = ". $_GET['comment_id'];
+	$mysqli->query($query_Recordset1);
+
+  header("Location: ../index.php");
+}
+?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta http-equiv="content-style-type" content="text/css"&gt;
+&lt;title&gt;MyBlog管理画面&lt;/title&gt;
+&lt;link href="../../style.css" rel="stylesheet" type="text/css" media="all" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+<div id="PAGETOP">
+
+<div id="HEADER">
+<h1>コメント管理画面</h1>
+ <ul id="PAN">
+   <li><a href="../index.php">一覧画面に戻る</a></li>
+ </ul>
+</div>
+
+<hr />
+
+<h3>この画面はコメント削除画面です</h3>
+
+</div>
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<!-- 文字サイズ変更用ボタンの表示 -->
+
+
+</body></html>

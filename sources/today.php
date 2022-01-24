@@ -1,0 +1,1 @@
+<html><head><title>hello2.php</title></head><body><?php    print "今日は！<br>";?></body></html> 

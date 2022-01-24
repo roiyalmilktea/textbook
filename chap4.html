@@ -1,0 +1,894 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>2011実践II</title>
+<link rel="stylesheet" type="text/css" href="./files/manual.css">
+<script language="javascript" src="./files/css.js"></script>
+	
+	<script type="text/javascript" src="./js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushPhp.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript" src="./syntaxhighlighter/scripts/shBrushCss.js"></script>
+	<link type="text/css" rel="stylesheet" href="./syntaxhighlighter/scripts/shBrushBash.js"/>
+	<link type="text/css" rel="stylesheet" href="./syntaxhighlighter/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>  
+</head>
+
+<body>
+
+<h1>PHPとMySQLによるWebアプリケーションの基礎</h1>
+<form>
+  <div class="ar"> 
+		<input type="button" value="標準" onClick="css_print()">
+		<input type="button" value="拡大" onClick="css_presen()">
+  </div>
+</form>
+
+<h2>Chapter 4　MySQLの操作</h2>
+
+<h3>4.1　端末によるMySQLの操作</h3>
+<p>MySQLコマンドラインクライアントを以下簡単のために略して「MySQLクライアント」と呼びます．</p>
+
+<h4>4.1.1　MySQLクライアントの起動</h4>
+<p>「mysql -u root -p」と入力し，MySQLクライアントを管理者のユーザ名である「root」で起動します．パスワード入力を求められるますのでrootのパスワードを入力します．</p>  
+
+  <pre class="brush:php;">
+cd /MAMP/bin/mysql/bin
+C:\mysql\販売管理&gt;mysql -u root -p
+Enter password: ********
+</pre>
+
+<p>MySQLクライアントが起動され，プロンプト文が「mysql&gt;」と表示され，ラインコマンドの入力待ち状態になります．</p>
+<img src="./files/1020102.gif" width="500">
+
+<h4>4.1.2　MySQLクライアントの終了</h4>
+<p>MySQLクライアントの終了は，「\q」と入力します．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; \q
+Bye
+
+D:\mysql\販売管理&gt;
+</pre>
+
+<h4>4.1.3　先に入力したコマンドラインの再利用</h4>
+<p>先に入力したコマンドラインを再度利用することができます．上向き矢印キーを押すと，順次前に入力したコマンドラインが表示されます．直前に入力した方向のコマンドラインにもどすには，下向き矢印キーを押します．先に入力したコマンドラインをそのままあるいは一部変更し，行末で「Enter」キーを押せば，そのコマンドラインが実行されます．上記の状態で，上向き矢印を１回押せば，「mysql -u root -p」と再表示されます．そのまま「Enter」キーを押せば，MySQLクライアントが起動します．</p>
+
+<h4>4.1.4　MySQLクライアントのヘルプ表示</h4>
+<p>MySQLクライアントのヘルプを表示 するには，「\h」と入力します． </p>
+ 
+  <pre class="brush:php;">
+mysql&gt; \h
+
+For information about MySQL products and services, visit:
+http://www.mysql.com/
+For developer information, including the MySQL Reference Manual, visit:
+http://dev.mysql.com/
+To buy MySQL Network Support, training, or other products, visit:
+https://shop.mysql.com/
+
+List of all MySQL commands:
+Note that all text commands must be first on line and end with ';'
+? (\?) Synonym for `help'.
+clear (\c) Clear command.
+connect (\r) Reconnect to the server. Optional arguments are db and host.
+delimiter (\d) Set statement delimiter. NOTE: Takes the rest of the line as new
+delimiter.
+ego (\G) Send command to mysql server, display result vertically.
+exit (\q) Exit mysql. Same as quit.
+go (\g) Send command to mysql server.
+help (\h) Display this help.
+notee (\t) Don't write into outfile.
+print (\p) Print current command.
+prompt (\R) Change your mysql prompt.
+quit (\q) Quit mysql.
+rehash (\#) Rebuild completion hash.
+source (\.) Execute an SQL script file. Takes a file name as an argument.
+status (\s) Get status information from the server.
+tee (\T) Set outfile [to_outfile]. Append everything into given outfile.
+use (\u) Use another database. Takes database name as argument.
+charset (\C) Switch to another charset. Might be needed for processing binlog
+with multi-byte charsets.
+warnings (\W) Show warnings after every statement.
+nowarning (\w) Don't show warnings after every statement.
+
+For server side help, type 'help contents'
+
+mysql&gt;
+</pre>
+
+<h4>4.1.5　入力のキャンセル</h4>
+<p>MySQLクライアントでは，複数行にまたがりSQL文を入力することができるます．入力を途中でキャンセルするには「\c」と入力します．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; create table tbl_test(
+-&gt; name_id int,
+-&gt; name char(16)\c
+mysql&gt;
+</pre>
+
+<h4>4.1.6　MySQLの状態確認</h4>
+<p>MySQLの状態を確認するには，「\s」と入力します．</p>
+<img src="./files/020103.gif" width="500" >
+
+<!-- 文字サイズ変更用ボタンの表示 -->
+<h3>4.2　データベース・テーブルの操作</h3>
+<p>MySQL 4.1以上のバージョンでは，データベース名，テーブル名，フィールド名等データベースの構造を記述する文字に日本語文字コードは使わないことを強く勧めます．</p>
+ 
+  <p class="caution-print">（注）MySQL 4.1以上では，これらのデータベースの構造の記述にはUNICODEのutf-8コードのみが使われるようになりました．2006年9月時点では，例えばシフトJISコードで記述したフィールド名等はutf-8コードへ変換はされません．入力を拒否されます．詳細は， <a href="http://www.mysql.gr.jp/frame/modules/bwiki/index.php?cmd=read&page=FAQ#content_1_40">http://www.mysql.gr.jp/frame/modules/bwiki/index.php?cmd=read&amp;page=FAQ#content_1_40</a>を参照してください．</p>
+
+
+<h4>4.2.1　作成済みのデータベースの一覧表示</h4>
+<p>作成済みのデータベースの一覧表示には，「SHOW DATABASES」文を使います．</p> 
+  <p class="command-print">mysql&gt; SHOW DATABASES;</p>
+  <pre class="brush:php;">
+mysql&gt; SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| test               |
++--------------------+
+3 rows in set (0.00 sec)
+
+mysql&gt;
+</pre>
+
+<h4>4.2.2　データベースの作成</h4>
+<p>データベースの作成には，「CREATE DATABASE」文を使います．なお，MySQL 4.1以降はデータベース名に日本語（２バイト文字）コードは使わないようにします．半角の英数字のみの名前とします．</p>
+ 
+  <p class="command-print">mysql&gt; CREATE DATABASE データベース名;</p>
+  <pre class="brush:php;">
+mysql&gt; CREATE DATABASE db_hanbai_kanri;
+Query OK, 1 row affected (0.00 sec)
+
+mysql&gt; SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| db_hanbai_kanri    |
+| mysql              |
+| test               |
++--------------------+
+4 rows in set (0.00 sec)
+
+mysql&gt;
+</pre>
+
+<h4>4.2.3　データベースの削除</h4>
+<p>データベースの削除には，「DROP　DATABASE」文を使います．</p>
+ 
+  <p class="command-print">mysql&gt; DROP　DATABASE データベース名;</p>
+  <pre class="brush:php;">
+mysql&gt; CREATE DATABASE db_test;
+Query OK, 1 row affected (0.00 sec)
+
+mysql&gt; SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| db_hanbai_kanri    |
+| db_test            |
+| mysql              |
+| test               |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql&gt; DROP DATABASE db_test;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| db_hanbai_kanri    |
+| mysql              |
+| test               |
++--------------------+
+4 rows in set (0.02 sec)
+
+mysql&gt;
+</pre>
+
+<h4>4.2.4　利用するデータベースの設定・変更</h4>
+<p>利用するデータベースを新たに設定したり，別のデータベースに変更するには「USE」文を使います．</p>
+ 
+  <p class="command-print">mysql&gt; USE データベース名;</p>
+  <pre class="brush:php;">
+mysql&gt; USE db_hanbai_kanri;
+Database changed
+mysql&gt;
+</pre>
+
+<h4>4.2.5　テーブルの作成</h4>
+<p>テーブルの作成には，SQLコマンドの「CREATE TABLE」文を使います．なお，MySQL 4.1以降は，テーブル名，フィールド名は半角英数字のみを使用し，２バイト系の日本語文字は使わないようにします．</p>
+ 
+  <p class="command-print">mysql&gt; CREATE TABLE テーブル名（フィールド定義);</p>
+<p>フィールドは列あるいはカラムともいいますが，以下フィールドと呼びます．フィールド定義は以下のように記述します．ここでは，オプションを省略した最も単純な例を示します．フィールド名と型の間は半角スペースで区切ります．次のフィールド名の定義に移る場合は半角カンマで区切ります．最後に，主キー（プライマリーキー：PRIMARY 
+  KEY）を定義します．フィールド名nはPRIMARY KEYとするフィールド名を記入します．</p> 
+  <p class="command-print">(<br>
+    　フィールド名1　型1, <br>
+    　フィールド名2　型2, <br>
+    　フィールド名3　型3, <br>
+    　PRIMARY KEY(フィールド名n)<br>
+    )</p>
+<p>ここでは，以下のテーブル「tbl_shouhin_hyou」を作成します．</p> 
+  <table border="1" cellspacing="0" cellpadding="0">
+    <tbody><tr> 
+      <td>フィールド名</td>
+      <td>型</td>
+      <td>主キー</td>
+      <td>説明</td>
+    </tr>
+    <tr> 
+      <td>shouhin_code</td>
+      <td>CHAR(4)</td>
+      <td>○</td>
+      <td>商品コード</td>
+    </tr>
+    <tr> 
+      <td height="16">shouhin_mei</td>
+      <td height="16">CHAR(16)</td>
+      <td height="16">　</td>
+      <td height="16">商品名</td>
+    </tr>
+    <tr> 
+      <td>tanka</td>
+      <td>INTEGER</td>
+      <td>　</td>
+      <td>単価</td>
+    </tr>
+  </tbody></table>
+  <pre class="brush:php;">
+mysql&gt; USE db_hanbai_kanri;
+Database changed
+mysql&gt; CREATE TABLE tbl_shouhin_hyou
+-&gt; (
+-&gt; shouhin_code char(4),
+-&gt; shouhin_mei  char(16),
+-&gt; tanka     integer,
+-&gt; primary key(shouhin_code)
+-&gt; );
+Query OK, 0 rows affected (0.13 sec)
+
+mysql&gt;
+</pre>
+
+<h4>4.2.6　作成済みテーブルの確認</h4>
+<p>作成済みのテーブルの一覧表示には，「SHOW TABLES」文を使います．</p>
+ 
+  <p class="command-print">mysql&gt;　SHOW TABLES;</p>
+  <pre class="brush:php;">
+mysql&gt; SHOW TABLES;
++---------------------------+
+| Tables_in_db_hanbai_kanri |
++---------------------------+
+| tbl_shouhin_hyou          |
++---------------------------+
+1 row in set (0.02 sec)
+
+mysql&gt;
+</pre>
+
+<h4>4.2.7　テーブルのフィールド一覧表示</h4>
+<p>テーブルのフィールド一覧を表示するには，「SHOW FIELDS FROM」文を使います．</p>
+ 
+  <p class="command-print">mysql&gt; SHOW FIELDS FROM テーブル名;</p>
+  <pre class="brush:php;">
+mysql&gt; SHOW FIELDS FROM tbl_shouhin_hyou;
++--------------+----------+------+-----+---------+-------+
+| Field        | Type     | Null | Key | Default | Extra |
++--------------+----------+------+-----+---------+-------+
+| shouhin_code | char(4)  | NO   | PRI |         |       |
+| shouhin_mei  | char(16) | YES  |     | NULL    |       |
+| tanka        | int(11)  | YES  |     | NULL    |       |
++--------------+----------+------+-----+---------+-------+
+3 rows in set (0.41 sec)
+
+mysql&gt;
+</pre>
+
+
+<h4>4.2.8　テーブルの削除</h4>
+<p>テーブルを削除するには，「DROP TABLE IF EXISTS｣文を使います．</p>
+ 
+  <p class="command-print">mysql&gt; DROP TABLE IF EXISTS テーブル名;</p>
+  <pre class="brush:php;">
+mysql&gt; CREATE TABLE tbl_test
+  -&gt; (
+  -&gt; id INTEGER,
+  -&gt; name CHAR(20),
+  -&gt; PRIMARY KEY(id)
+  -&gt; );
+Query OK, 0 rows affected (0.07 sec)
+
+mysql&gt; SHOW TABLES;
++---------------------------+
+| Tables_in_db_hanbai_kanri |
++---------------------------+
+| tbl_shouhin_hyou          |
+| tbl_test                  |
++---------------------------+
+2 rows in set (0.00 sec)
+
+mysql&gt; DROP TABLE IF EXISTS tbl_test;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; SHOW TABLES;
++---------------------------+
+| Tables_in_db_hanbai_kanri |
++---------------------------+
+| tbl_shouhin_hyou          |
++---------------------------+
+1 row in set (0.02 sec)
+
+
+mysql&gt;
+</pre>
+
+
+<h4>4.2.9　テーブルへのデータ入力</h4>
+<p>テーブルへデータを入力するには，SQLコマンドの「INSERT INTO」文を使います．テーブルへデータを入力するとレコードが順次追加されます．レコードは行あるいはロウとも呼ばれますが，以下レコードと呼びます．</p>
+ 
+  <p class="command-print">mysql&gt; INSERT INTO テーブル名<br>
+    　　　　　(<br>
+    　　　　　　　フィールド名1,<br>
+    　　　 　　　 フィールド名2, <br>
+    　　　　　　　　：<br>
+    　　 　 　)<br>
+    　 　　 　VALUES<br>
+    　　 　 　(<br>
+    　　 　 　　 値1,<br>
+    　　 　 　　 値2,<br>
+    　 　　 　　　：<br>
+    　 　　 　)</p>
+
+<img src="./files/1020201.gif" width="500">
+
+
+
+<h4>4.2.10　テーブルの全レコードの一覧表示</h4>
+<p>テーブルの全レコードを一覧表示するには，「SELECT * FROM」文を使います．「*」はワイルドカードといい，「全て」を意味します．ここでは，テーブルの全てのフィールドを選択して表示しなさいという意味になります．</p>
+ 
+  <p class="command-print">mysql&gt; SELECT * FROM テーブル名;</p>
+
+<img src="./files/020203.gif" width="500">
+<p>最初のレコードのデータが正常にテーブルに入力されていることが確認できます．</p>
+
+
+<h4>4.2.11　ファイルに記述したSQL文の実行</h4>
+<p>INSERT INTO文のような数行にわたるSQL分をコマンドプロンプト（MySQLクライアント）から入力するのはなかなか大変です．そこでSQL文をあらかじめ，テキストファイルに記述しておき，そのファイルをコマンドプロンプトから読み込んで実行する方法があります．「\.」コマンドを使います．</p>
+ 
+  <p class="command-print">mysql&gt;　\.　ファイル名</p>
+<p>たとえば，以下のテキストファイルを「insert01.sql」のファイル名で作成し，「D:\mysql\販売管理」フォルダに保存しておきます．「D:\mysql\販売管理」フォルダは，カレントディレクトリです．</p>
+
+テキストファイル「insert01.sql」の内容：
+  <pre class="brush:php;">
+INSERT INTO tbl_shouhin_hyou
+   (shouhin_code,shouhin_mei,tanka)
+   VALUES ('1002' ,'山の幸御膳',1200);
+INSERT INTO tbl_shouhin_hyou
+   (shouhin_code,shouhin_mei,tanka)
+   VALUES ('1003' ,'海の幸御膳',1400);
+INSERT INTO tbl_shouhin_hyou
+   (shouhin_code,shouhin_mei,tanka)
+   VALUES ('1004' ,'松竹梅御膳',1800);
+</pre>
+
+
+<p>テキストファイル「insert01.sql」を読みこんだ実施結果は，次のようになります．</p>
+<img src="./files/020205.gif" width="500">
+
+<h4>4.2.12　レコードの修正</h4>
+<p>入力済みのレコードの一部のフィールドの値を修正（更新）するには，SQLコマンドの「UPDATE」文を使います．</p> 
+  <p class="command-print">mysql&gt;　UPDATE　　テーブル名<br>
+    　　　　　　　SET　　　 フィールド名1 = 値1, <br>
+    　　　　　　　　　　　 　 フィールド名2 = 値2, <br>
+    　　　　　　　　　　　　　　：<br>
+    　　　　　　　WHERE　更新条件;</p>
+
+<p>実行例を以下に示します．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; UPDATE tbl_shouhin_hyou
+-&gt; SET shouhin_mei = '地方御前'
+-&gt; WHERE shouhin_code = '1001';
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1 Changed: 1 Warnings: 0
+
+mysql&gt; SELECT * FROM tbL_shouhin_hyou;
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1001         | 地方御前    | 1000  |
+| 1002         | 山の幸御膳  | 1200  |
+| 1003         | 海の幸御膳  | 1400  |
+| 1004         | 松竹梅御膳  | 1800  |
++--------------+-------------+-------+
+4 rows in set (0.00 sec)
+
+mysql&gt;
+</pre>
+
+
+<h4>4.2.13　レコードの削除</h4>
+<p>入力済みのレコードを削除するには，SQLコマンドの「DELETE」文を使います．</p>
+ 
+  <p class="command-print">mysql&gt;　DELETE　FROM　　テーブル名<br>
+    　　　　　　　　　　　WHERE　　条件式;</p>
+
+<p>実行例を以下に示します．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; DELETE FROM tbl_shouhin_hyou
+-&gt; WHERE shouhin_code = '1004';
+Query OK, 1 row affected (0.06 sec)
+
+mysql&gt; SELECT * FROM tbl_shouhin_hyou;
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1001         | 地方御前    | 1000  |
+| 1002         | 山の幸御膳  | 1200  |
+| 1003         | 海の幸御膳  | 1400  |
++--------------+-------------+-------+
+3 rows in set (0.00 sec)
+
+mysql&gt;
+</pre>
+
+<p>shouhin_codeの値が「1004」のレコードが削除されたのが確認できます．</p>
+
+<h4>4.2.14　レコードの参照</h4>
+
+<p>テーブルに格納したデータ（レコード）を参照（検索，抽出などの表現も使う）する場合には，SQLコマンドの「SELECT」文を使います．SELECT文はもっともよく使うSQLコマンドです．このような操作は問い合わせ（query）とも言います．</p> 
+  <p class="command-print">SELECT　　　　フィールド名1,フィールド名2,　　・・<br>
+    FROM　　　　　テーブル名<br>
+    WHERE　　　　条件式<br>
+    ORDER　BY　フィールド名;</p>
+
+<p>いくつかの例を示します．参照するテーブルは，次の「tbl_商品表2」です．</p>
+
+「tbl_shouhin_hyou2」
+  <pre class="brush:php;">
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1001         | 田舎御膳    | 1000  |
+| 1002         | 山の幸御膳  | 1200  |
+| 1003         | 海の幸御膳  | 1500  |
+| 1004         | 七福神御膳  | 3000  |
+| 1005         | 松竹梅御膳  | 2000  |
+| 1006         | 鶴亀御膳    | 2500  |
++--------------+-------------+-------+
+</pre>
+
+
+<p>テーブルのすべてのフィールドとすべてのレコードのデータを参照する場合は，以下のSELECT文を使います．「*」はワイルドカードですべてのフィールド名を意味します．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT * FROM tbl_shouhi_hyou2;
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1001         | 田舎御膳    | 1000  |
+| 1002         | 山の幸御膳  | 1200  |
+| 1003         | 海の幸御膳  | 1500  |
+| 1004         | 七福神御膳  | 3000  |
+| 1005         | 松竹梅御膳  | 2000  |
+| 1006         | 鶴亀御膳    | 2500  |
++--------------+-------------+-------+
+6 rows in set (0.02 sec)
+
+mysql&gt;
+</pre>
+
+<p>一部のフィールド名のみを表示する場合は，次のようなSELECT文を使います．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT shouhi_code,shouhin_mei FROM tbl_shouhin_hyou2;
++--------------+-------------+
+| shouhin_code | shouhin_mei |
++--------------+-------------+
+| 1001         | 田舎御膳    |
+| 1002         | 山の幸御膳  |
+| 1003         | 海の幸御膳  |
+| 1004         | 七福神御膳  |
+| 1005         | 松竹梅御膳  |
+| 1006         | 鶴亀御膳    |
++--------------+-------------+
+6 rows in set (0.00 sec)
+
+mysql&gt;
+</pre>
+
+<p>条件にあったレコードのみを参照（抽出）する場合は，次のようにSELECT文にWHERE句を使います．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; select * from tbl_shouhin_hyou2 where tanka &gt;= 2000;
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1004         | 七福神御膳  | 3000  |
+| 1005         | 松竹梅御膳  | 2000  |
+| 1006         | 鶴亀御膳    | 2500  |
++--------------+-------------+-------+
+3 rows in set (0.02 sec)
+
+mysql&gt;
+</pre>
+
+
+<p>条件に「and」を使い，複数の条件を満たすレコードを参照する場合のSELECT文です．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT shouhin_mei,tanka FROM tbl_shouhin_hyou2
+  -&gt; WHERE tanka&lt;1500 and shouhin_code&gt;= '1002';
++-------------+-------+
+| shouhin_mei | tanka |
++-------------+-------+
+| 山の幸御膳  | 1200  |
++-------------+-------+
+1 row in set (0.03 sec)
+
+mysql&gt;
+</pre>
+
+
+<p>次に，条件式にあいまい条件や，範囲指定を用いる例を示します．参照するテーブルは，次の「tbl_商品表3」です．</p> 
+「tbl_shouhin_hyou3」
+  <pre class="brush:php;">
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1001         | 田舎定食    | 1000  |
+| 1002         | 山の幸定食  | 1200  |
+| 1003         | 海の幸定食  | 1500  |
+| 1004         | 七福神御膳  | 3000  |
+| 1005         | 松竹梅御膳  | 2000  |
+| 1006         | 鶴亀御膳    | 2500  |
++--------------+-------------+-------+
+</pre>
+
+<p>文字列の部分一致条件を使う場合は，LIKE演算子とワイルドカード文字「%」（半角）を使います．ワイルドカード文字「%」は０文字以上の任意の文字列を意味します．次の例は末尾が「定食」となる商品名を含むレコードを参照します．いわゆる後方一致検索です．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT * FROM tbl_shouhin_hyou3
+  -&gt; WHERE shouhin_mei LIKE '%定食';
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1001         | 田舎定食    | 1000  |
+| 1002         | 山の幸定食  | 1200  |
+| 1003         | 海の幸定食  | 1500  |
++--------------+-------------+-------+
+3 rows in set (0.03 sec)
+
+mysql&gt;
+</pre>
+
+
+<p>前方一致検索の場合は，「LIKE　'山%'」のようにします．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT * FROM tbl_shouhin_hyou3 
+  -&gt; WHERE shouhin_mei LIKE '山%';
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1002         | 山の幸定食  | 1200  |
++--------------+-------------+-------+
+1 row in set (0.00 sec)
+
+mysql&gt;
+</pre>
+
+
+<p>商品名に「幸」の文字が含まれるレコードを参照する場合は，「LIKE　'%幸%'」とします．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT * FROM tbl_shouhin_hyou3 
+  -&gt; WHERE shouhin_mei LIKE '%幸%';
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1002         | 山の幸定食  | 1200  |
+| 1003         | 海の幸定食  | 1500  |
++--------------+-------------+-------+
+2 rows in set (0.00 sec)
+
+mysql&gt;
+</pre>
+
+<p>特定の長さの文字列に一致する条件を指定する場合は，ワイルドカード文字「_」（半角のアンダーバー）を使います．冒頭が「鶴亀」で４文字の商品名を含むレコードを参照する場合は，「LIKE　'鶴亀_ 
+  _'」とします．（「_ _」は２個連続した半角のアンダーバーの意味です．ここでは分かりやすいように，間に半角スペースを挿入していますが，SQL文では，半角スペースは入れません）</p>
+   
+  <pre class="brush:php;">
+mysql&gt; SELECT * FROM tbl_shouhin_hyou3 
+  -&gt; WHERE shouhin_mei LIKE '鶴亀__';
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1006         | 鶴亀御膳    | 2500  |
++--------------+-------------+-------+
+1 row in set (0.00 sec)
+
+mysql&gt;
+</pre>
+
+<p>いくつかの特定の値に一致する場合の条件式には，IN演算子を使います．「1000」あるいは「1500」のいずれかに一致する場合という条件式は，「IN(1000,1500)」と記述します．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT shouhin_mei,tanka FROM tbl_shouhin_hyou3 
+  -&gt; WHERE tanka IN(1000,1500);
++-------------+-------+
+| shouhin_mei | tanka |
++-------------+-------+
+| 田舎定食    | 1000  |
+| 海の幸定食  | 1500  |
++-------------+-------+
+2 rows in set (0.41 sec)
+
+mysql&gt;
+</pre>
+
+
+<p>また，2000から2500までの間の任意の値に一致する条件式は，BETWEEN演算子を使います．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT shouhin_code,shouhin_mei FROM tbl_shouhin_hyou3 
+  -&gt; WHERE tanka BETWEEN 2000 and 2500;
++--------------+-------------+
+| shouhin_code | shouhin_mei |
++--------------+-------------+
+| 1005         | 松竹梅御膳  |
+| 1006         | 鶴亀御膳    |
++--------------+-------------+
+2 rows in set (0.00 sec)
+
+mysql&gt;
+</pre>
+
+
+<h4>4.2.15　データの並べ替え（ソート）</h4>
+<p>あるフィールド名の値に注目してデータの並べ替えを行うには，「ORDER　BY」句を使います．次の例は，参照したレコードを単価の値の昇順に並べて表示しています．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT * FROM tbl_shouhin_hyou2 ORDER BY tanka;
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1001         | 田舎御膳    | 1000  |
+| 1002         | 山の幸御膳  | 1200  |
+| 1003         | 海の幸御膳  | 1500  |
+| 1005         | 松竹梅御膳  | 2000  |
+| 1006         | 鶴亀御膳    | 2500  |
+| 1004         | 七福神御膳  | 3000  |
++--------------+-------------+-------+
+6 rows in set (0.02 sec)
+
+mysql&gt;
+</pre>
+
+
+<p>降順に並べ替える場合は，「DESC」オプションを使います．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT * FROM tbl_shouhin_hyou2 ORDER BY tanka DESC;
++--------------+-------------+-------+
+| shouhin_code | shouhin_mei | tanka |
++--------------+-------------+-------+
+| 1004         | 七福神御膳  | 3000  |
+| 1006         | 鶴亀御膳    | 2500  |
+| 1005         | 松竹梅御膳  | 2000  |
+| 1003         | 海の幸御膳  | 1500  |
+| 1002         | 山の幸御膳  | 1200  |
+| 1001         | 田舎御膳    | 1000  |
++--------------+-------------+-------+
+6 rows in set (0.00 sec)
+
+mysql&gt;
+</pre>
+
+
+<h4>4.2.16　集約関数</h4>
+<p>参照したレコードの特定のフィールド名に着目して，そのフィールド名の値が数値の場合，最大値，最小値，平均値などの演算を行うことができます．このような演算を行う関数を集約関数あるいは集合関数と呼びます．次の例は，「単価」フィールドの平均値を計算しています．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT AVG(tanka) FROM tbl_shouhin_hyou2;
++------------+
+| avg(tanka) |
++------------+
+| 1866.6667  |
++------------+
+1 row in set (0.03 sec)
+
+mysql&gt;
+</pre>
+
+
+<p>参照した（条件にあった）レコード数を計数することもできます．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT COUNT(*) FROM tbl_shouhin_hyou2;
++----------+
+| COUNT(*) |
++----------+
+|     6    |
++----------+
+1 row in set (0.02 sec)
+
+mysql&gt;
+</pre>
+
+
+
+<h4>4.2.17　グループ化</h4>
+<p>あるフィールド名に着目し，その値が同じレコードを部分集合としてグループ化することができます．一般には，その部分集合ごとにある演算を行います．次のテーブル「tbl_商品」を参照することとします．</p>
+
+「tbl_shouhin」
+  <pre class="brush:php;">
++--------------+--------------+----------------+------+
+| shouhin_code | hinmoku      | hinmei         | tanka|
++--------------+--------------+----------------+------+
+| 110          | せんべい     | 塩せんべい     | 200  |
+| 120          | せんべい     | えびせんべい   | 300  |
+| 130          | せんべい     | のりせんべい   | 350  |
+| 210          | チョコレート | 板チョコ       | 200  |
+| 220          | チョコレート | 棒ョコ         | 250  |
+| 310          | つまみ       | つまみ詰め合せ | 500  |
++--------------+--------------+----------------+------+
+</pre>
+
+
+<p>次の例では，フィールド名「品目」に着目し，同じ「品目」の値のレコードをグループ化し，各グループのレコード数を計数しています．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT hinmoku,COUNT(*) FROM tbl_shouhin GROUP BY hinmoku;
++--------------+----------+
+| hinmoku      | COUNT(*) |
++--------------+----------+
+| せんべい     |     3    |
+| つまみ       |     1    |
+| チョコレート |     2    |
++--------------+----------+
+3 rows in set (0.03 sec)
+
+mysql&gt;
+</pre>
+
+<p>次の例は，グループごとの単価の合計値を計算しています．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT hinmoku,SUM(tanka) FROM tbl_shouhin GROUP BY hinmoku;
++--------------+-----------+
+| hinmoku      | SUM(tanka)|
++--------------+-----------+
+| せんべい     |    850    |
+| つまみ       |    500    |
+| チョコレート |    450    |
++--------------+-----------+
+3 rows in set (0.05 sec)
+
+mysql&gt;
+</pre>
+
+<p>また，グループごとの演算結果についてある条件にあったグループのみを参照（抽出）することができます．この場合はWHERE句でなくHAVING句を使います．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT hinmoku,SUM(tanka) FROM tbl_shouhin GROUP BY hinmoku
+  -&gt; HAVING SUM(tanka) &gt; 800;
++----------+-----------+
+| hinmoku  | SUM(tanka)|
++----------+-----------+
+| せんべい |     850   |
++----------+-----------+
+1 row in set (0.00 sec)
+
+mysql&gt;
+</pre>
+
+
+<h4>4.2.18　表結合と相関名</h4>
+<p>データの正規化により作成されたテーブルは冗長性のない合理的な構造となりますが，逆に人間にはわかりにくいものとなっています．そこで，実際の利用では，正規化により分割されたテーブルを結合して，わかりやすくします．これを表結合といいます．次のテーブル「tbl_uriage_meisai」とテーブル「tbl_shouhin1」を例にとります．</p>
+
+「tbl_uriage_meisai」 
+  <pre class="brush:php;">
++-------------+--------------+-------+
+| denpyo_code | shouhin_code | kosuu |
++-------------+--------------+-------+
+| 1101        | 100          |  100  |
+| 1101        | 110          |  150  |
+| 1120        | 120          |  80   |
+| 1128        | 130          |  100  |
++-------------+--------------+-------+
+4 rows in set (0.00 sec)
+</pre>
+
+「tbl_shouhin1」
+<pre class="brush:php;">
++--------------+--------------+-------+
+| shouhin_code | shouhin_mei  | tanka |
++--------------+--------------+-------+
+| 100          | チョコレート |  200  |
+| 110          | キャンディ   |  300  |
+| 120          | せんべい     |  250  |
+| 130          | ケーキ       |  400  |
++--------------+--------------+-------+
+4 rows in set (0.00 sec)
+</pre>
+
+<p>テーブル「tbl_uriage_meisai」には「shouhin_code」はありますが，第２正規化を行っているので，商品名は別途テーブル「tbl_shouhin1」を参照しないとわかりません．たとえば，テーブル「tbl_uriage_meisai」の「shouhin_code」='100'の商品名は，「tbl_shouhin1」の「shouhin_code」='100'のレコードの「shouhin_mei」を参照して，「チョコレート」であることがわかります．テーブル「tbl_uriage_meisai」の「shouhin_code」フィールドのとなりに，「shouhin_mei」フィールドがあると，人間にとってわかりやすくなります．そこで，テーブル「tbl_uriage_meisai」とテーブル「tbl_shouhin1」を結合させることを考えます．この場合，自然結合のための「NATURAL JOIN」句を使います．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT * FROM tbl_uriage_meisai NATURAL JOIN tbl_shouhin1;
++--------------+-------------+-------+--------------+-------+
+| shouhin_code | denpyo_code | kosuu | shouhin_mei  | tanka |
++--------------+-------------+-------+--------------+-------+
+| 100          | 1101        | 100   | チョコレート |  200  |
+| 110          | 1101        | 150   | キャンディ   |  300  |
+| 120          | 1120        | 80    | せんべい     |  250  |
+| 130          | 1128        | 100   | ケーキ       |  400  |
++--------------+-------------+-------+--------------+-------+
+4 rows in set (0.38 sec)
+</pre>
+
+
+<p>同じような表結合は，等結合を用いたSELECT文でも記述できます．</p>
+ 
+  <pre class="brush:php;">
+mysql&gt; SELECT tbl_uriage_meisai.denpyo_code, 
+  -&gt;    tbl_uriage_meisai.shouhin_code,
+  -&gt;    tbl_uriage_meisai.kosuu,
+  -&gt;    tbl_shouhin1.shouhin_mei,
+  -&gt;    tbl_shouhin1.tanka
+  -&gt; FROM tbl_uriage_meisai,tbl_shouhin1
+  -&gt; WHERE tbl_uriage_meisai.shouhin_code
+  -&gt;    = tbl_shouhin1.shouhin_code;
++-------------+--------------+-------+--------------+-------+
+| denpyo_code | shouhin_code | kosuu | shouhin_mei  | tanka |
++-------------+--------------+-------+--------------+-------+
+| 1101        | 100          |  100  | チョコレート |  200  |
+| 1101        | 110          |  150  | キャンディ   |  300  |
+| 1120        | 120          |  80   | せんべい     |  250  |
+| 1128        | 130          |  100  | ケーキ       |  400  |
++-------------+--------------+-------+--------------+-------+
+4 rows in set (0.02 sec)
+</pre>
+
+
+<p>複数のテーブルのフィールド名を混在して使用する場合は，どのテーブルのどのフィールド名かが分かるように，「テーブル名.フィールド名」のようにテーブル名とフィールド名を「.」（半角ピリオド）で結合した表記を使います．ただ，このような表記では，表記が長くわかりづらくなるので，「相関名」を使ってより簡単に表記することができます．相関名とはたとえば，テーブル「tbl_uriage_meisai」を１文字のアルファベット「M」で表記するような方法です．相関名は，FROM句内で，テーブル名の後に半角スペース1個以上で区切って相関名となるアルファベットを挿入することで定義します．</p> 
+  <pre class="brush:php;">
+mysql&gt; SELECT Ｍ.denpyou_code, 
+  -&gt;    Ｍ.shouhin_code,
+  -&gt;    Ｍ.kosuu,
+  -&gt;    Ｓ.shouhin_mei,
+  -&gt;    Ｓ.tanka
+  -&gt; FROM tbl_uriage_meisai Ｍ,tbl_shouhin1 Ｓ
+  -&gt; WHERE Ｍ.shouhin_code = Ｓ.shouhin_code;
+
++-------------+--------------+-------+--------------+-------+
+| denpyo_code | shouhin_code | kosuu | shouhin_mei  | tanka |
++-------------+--------------+-------+--------------+-------+
+| 1101        | 100          |  100  | チョコレート |  200  |
+| 1101        | 110          |  150  | キャンディ   |  300  |
+| 1120        | 120          |  80   | せんべい     |  250  |
+| 1128        | 130          |  100  | ケーキ       |  400  |
++-------------+--------------+-------+--------------+-------+
+4 rows in set (0.02 sec)
+</pre>
+
+
+<h4>4.2.19　副問い合わせ</h4>
+<p>MySQLの4.0版以前では，副問い合わせ（サブクエリ）はサポートしていないようです．</p>
+
+<h4>4.2.20　ビュー</h4>
+<p>MySQLの4.0版以前では，ビュー（VIEW)はサポートしていないようです．</p>
+      
+</body></html>

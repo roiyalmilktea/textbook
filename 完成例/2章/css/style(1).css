@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+/**************** 共通 ****************/
+
+html {
+  overflow: scroll; /* 領域をスクロール表示 */
+}
+
+body {
+  letter-spacing: 1px;  /* 文字の間隔 */
+  font-size: 12px;      /* 文字の大きさ */
+  color: #5A482B;       /* 文字色 */
+}
+
+br {
+  letter-spacing: normal;  /* 文字の間隔 */
+}
+
+a {
+  color: #5A482B;         /* 文字色 */
+  text-decoration: none;  /* 文字装飾 */
+}
+
+a:hover {
+  color: #6289C6;         /* 文字色 */
+}
