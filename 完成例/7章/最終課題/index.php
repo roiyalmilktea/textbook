@@ -11,7 +11,7 @@
     <div id="pr">
       <p></p>
     </div>
-    <h1><a href="./index.php"><img src="./images/logo.png" alt=""></a></h1>
+    <h1><a href="./index.php"><img src="./images/welcome.png" alt=""></a></h1>
     <div id="contact">
       <h2>ご予約／お問い合わせ</h2>
       <span class="tel">☎0120-000-000</span>
@@ -23,7 +23,7 @@
   <!-- メニュー：終了 -->
   <!-- アイキャッチ：開始 -->
   <div id="icatch">
-    <img src="./images/icatch.jpg" alt="">
+    <img src="./images/background.jpg" alt="">
   </div>
   <!-- アイキャッチ：終了 -->
   <!-- コンテンツ：開始 -->
@@ -41,21 +41,25 @@
           </dl>
         </section>
         <section>
-          <h2><img class="small" src="./images/about.png"><br>JikkyoPensionについて</h2>
-          <h3>にこやか笑顔でお出迎え</h3>
+          <h2><img class="small" src="./images/about.png"><br>サイトの目的について</h2>
+          <h3>読んできた中でおすすめの本を紹介</h3>
           <p>
-            少人数で営業している当ペンションですが、スタッフ一同心掛けているのは、
-            <br> にこやかな笑顔で接客対応することです！
+            主にWeb、serverなどの技術書を中心に紹介します。
+            <br>分野ごとに細分化しているので、参考になれば幸いです。
           </p>
-          <h3>大人数でワイワイと</h3>
+          <h3>Webアプリケーションセキュリティ</h3>
           <p>
-            部活やサークル、仲の良いお友達同士などと、
-            <br> 大人数でワイワイしながら過ごすのに最適な環境づくりを目指しています！
+            Webアプリケーションは今や誰もが恩恵を受けています。しかし、その一方で自分の利用するアプリケーション、Webサイトの
+            <br> セキュリティに対する知識は知らないと危険です。そこで、Webセキュリティの概念から専門的な技術書を紹介します。
           </p>
-          <h3>観光スポットに恵まれた好立地</h3>
+          <h3>ローレイヤーセキュリティ</h3>
           <p>
-            ゲレンデ、テニスコート、各種レクリエーション施設へのアクセスは抜群です！
-            <br> また、温泉地の中心街からも近いため、観光にも最適です！
+            自分の好きな分野のセキュリティ技術です。Linuxの基礎からリバースエンジニアリングの技術を紹介します。
+            <br>マニアックな部分なので利用数は少ないと思います。
+          </p>
+          <h3>職業・進路</h3>
+          <p>
+            就職活動で使う本やキャリアに参考になる書籍を集めました。
           </p>
         </section>
       </article>
@@ -64,13 +68,13 @@
     <!-- サイド：開始 -->
     <aside id="side">
       <section>
-        <h2>ご予約</h2>
+        <h2>一日貸し切りサービス</h2>
         <ul>
-          <li><a href="#">宿泊日入力</a></li>
+          <li><a href="#">利用日入力</a></li>
         </ul>
       </section>
       <section>
-        <h2>お部屋紹介</h2>
+        <h2>分野別紹介</h2>
 <?php include("./sideList.php"); ?>
       </section>
     </aside>
@@ -84,7 +88,7 @@
   <!-- コンテンツ：終了 -->
   <!-- フッター：開始 -->
   <footer id="footer">
-    Copyright c 2016 Jikkyo Pension All Rights Reserved.
+    this website desinged for beginner.
   </footer>
   <!-- フッター：終了 -->
 </body>
