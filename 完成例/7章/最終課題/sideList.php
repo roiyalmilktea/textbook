@@ -12,6 +12,7 @@
     echo "<li><a href='./bookList.php?tid=" . 
         $s_row['type_id'] . "'>" . $s_row['type_name'] . "</a></li>";
   }
+  
   echo "</ul>";
   mysqli_free_result($s_result);
   mysqli_close($s_link);

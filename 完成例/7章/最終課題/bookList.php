@@ -41,24 +41,25 @@
       <article>
         <section>
           <h2>お部屋のご紹介</h2>
+<!-- お手本のデータベースはroomといデータベースのroom_nameからroom_noまでを取ってきた-->
 <?php
   if (empty($tid) == true) {
-    $sql = "SELECT room_name, type_name, dayfee, main_image, room_no
-      FROM room, room_type 
-      WHERE room.type_id = room_type.type_id";
+    $sql = "SELECT id, name, value
+      FROM low_layer, book_type 
+      WHERE low_layer.id = low_layer.type_id";
   } else {
-    $sql = "SELECT room_name, type_name, dayfee, main_image, room_no
-      FROM room, room_type 
-      WHERE room.type_id = room_type.type_id
-      AND room.type_id = {$tid}"; 
+    $sql = "SELECT name, type_name, value
+      FROM low_layer, book_type
+      WHERE low_layer.id= book_type.type_id
+      AND low_layer.id = {$tid}"; 
   }
   $result = mysqli_query($link, $sql);
   $cnt = mysqli_num_rows($result);
   if ($cnt == 0) {
-    echo "<b>ご指定のお部屋は只今準備ができておりません</b>";  
+    echo "<b>not found...</b>";  
   } else {
 ?>
-          <h3>自慢のお部屋をご紹介</h3>
+          <h3>書籍のご紹介</h3>
           <p>
             和室・洋室・和洋室と、ご希望に沿った形でお部屋をお選び頂けます。
           </p>
