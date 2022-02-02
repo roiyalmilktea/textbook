@@ -51,7 +51,7 @@ unset($_SESSION['reserveNo']);
             <tr><th>予約番号</th><td><?php echo $reserveNo; ?></td></tr>
           </table>
           <br>
-          <p>当日はお気をつけてお出かけください。心よりお待ちいたしております。</p>
+          <p>///当日はお気をつけてお出かけください。心よりお待ちいたしております。</p>
           <a class="submit_a" href="./index.php">トップページへ</a>
         </section>
       </article>

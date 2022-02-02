@@ -1,9 +1,8 @@
 <?php
-  if (empty($_GET["tid"]) == true) {
-      $tid = "";
-  } else {
-      $tid = htmlspecialchars($_GET["tid"]);
-  }
+  $bno = htmlspecialchars($_GET["bno"]);
+  echo '<script>';
+  echo 'console.log('.json_encode($bno).')';
+  echo '</script>';
   require_once('./dbConfig.php');
   $link = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
   if ($link == null) {
@@ -15,7 +14,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <link href="./css/style.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="./css/style.css" type="text/css">
   <title>JIKKYO PENSION</title>
 </head>
 <body>
@@ -37,52 +36,43 @@
   <!-- コンテンツ：開始 -->
   <div id="contents">
     <!-- メイン：開始 -->
+<?php
+  $sql = "SELECT title_name, imformation, main_image, image_1, image_2,image_3, book_name, book_value FROM book, book_type  
+        WHERE book.type_id = book_type.book_id";
+	// ここにAND処理をすること
+  $result = mysqli_query($link, $sql);
+  $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+?>
     <main id="main">
       <article>
         <section>
-          <h2>お部屋のご紹介</h2>
-<!-- お手本のデータベースはroomといデータベースのroom_nameからroom_noまでを取ってきた-->
-<?php
-  if (empty($tid) == true) {
-    $sql = "SELECT category, title_name,  main_image,book_value
-      FROM book, book_type 
-      WHERE book.type_id = book_type.book_id";
-  } else {
-    $sql = "SELECT category, title_name,  main_image,book_value
-      FROM book, book_type
-      WHERE book.type_id= book_type.book_id
-      AND book.type_id = {$tid}"; 
-  }
-  $result = mysqli_query($link, $sql);
-  $cnt = mysqli_num_rows($result);
-  if ($cnt == 0) {
-    echo "<b>not found...</b>";  
-  } else {
-?>
-          <h3>書籍のご紹介</h3>
+          <h2>お部屋の詳細</h2>
+          <h3>『<?php echo $row['title_name']; ?>』</h3>
           <p>
-            和室・洋室・和洋室と、ご希望に沿った形でお部屋をお選び頂けます。
+<?php echo $row['imformation']; ?>
           </p>
           <table>
-            <th>お部屋名称</th>
+            <tr>
+              <td><img class="middle" src="./images/<?php echo $row['main_image']; ?>"></td>
+              <td><img class="middle" src="./images/<?php echo $row['image_1']; ?>"></td>
+            </tr>
+            <tr>
+              <td><img class="middle" src="./images/<?php echo $row['image_2']; ?>"></td>
+              <td><img class="middle" src="./images/<?php echo $row['image_3']; ?>"></td>
+            </tr>
+          </table>
+          <br>
+          <table>
             <th>お部屋タイプ</th>
             <th>一泊料金<br>（部屋単位）</th>
-            <th colspan="2">お部屋イメージ</th>
-<!-- ここにPHPスクリプトを埋め込む -->          
-<?php
-    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-      echo "<tr>";
-      echo "<td>{$row['title_name']}</td>";
-      echo "<td>{$row['category']}</td>";
-      $bookfee = number_format($row['book_value']);
-      echo "<td class='number'>&yen; {$bookfee}</td>";
-      echo "<td><img class='small' src='./images/{$row['main_image']}'></td>";
-      echo "<td><a href='./bookDetail.php?bno={$row['category']}'>詳細</a></td>";
-      echo "</tr>";
-    }
-  }
-?>
+
+            <tr>
+              <td><?php echo $row['book_name']; ?></td>
+              <td class="number">&yen;<?php echo number_format($row['book_value']); ?></td>
+              
+            </tr>
           </table>
+          <br>
         </section>
       </article>
     </main>
@@ -90,16 +80,20 @@
     <!-- サイド：開始 -->
     <aside id="side">
       <section>
-       
+        <h2>ご予約</h2>
+        <ul>
+          <li><a href="./index.html">宿泊日入力</a></li>
+        </ul>
+      </section>
       <section>
-        <h2>分野別紹介</h2>
+        <h2>お部屋紹介</h2>
 <?php include("./sideList.php"); ?>
       </section>
     </aside>
     <!-- サイド：終了 -->
     <!-- ページトップ：開始 -->
     <div id="pageTop">
-      <a href="#top">ページのトップへ戻る</a>
+      <a href="./index.html#top">ページのトップへ戻る</a>
     </div>
     <!-- ページトップ：終了 -->
   </div>
@@ -114,4 +108,4 @@
   mysqli_close($link);
 ?>
 </body>
-</html>
+</html>>

@@ -1,11 +1,11 @@
 <?php
-session_start();
-if (isset($_SESSION['reserveNo']) == false) {
-    header("location: ./index.php");
-    exit;
-}
-$reserveNo = $_SESSION['reserveNo'];
-unset($_SESSION['reserveNo']);
+  session_start();
+  require_once('./dbConfig.php');
+  $link = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+  if ($link == null) {
+    die("接続に失敗しました：" . mysqli_connect_error());
+  }
+  mysqli_set_charset($link, "utf8");
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -34,6 +34,7 @@ unset($_SESSION['reserveNo']);
       <li><a href="./bookList.php">お部屋紹介</a></li>
       <li><a href="./bookReserveDetail.php">ご予約</a></li>
       <li><a href="./bookPurchase.php">購入</a></li>
+
     </ul>
   </nav>
   <!-- メニュー：終了 -->
@@ -44,15 +45,36 @@ unset($_SESSION['reserveNo']);
       <article>
   <!-- 各ページスクリプト挿入場所 -->
         <section>
-          <h2>予約完了</h2>
-          <p>予約が完了しました。以下の予約番号を控えておいてください。</p>
-          <h3>予約情報</h3>
-          <table class="input">
-            <tr><th>予約番号</th><td><?php echo $reserveNo; ?></td></tr>
+          <h2>空室検索</h2>
+          <h3>(**検索日付**)の空室一覧</h3>
+          <p>(**空室数**)部屋の空室があります</p>
+          <table>
+            <th>お部屋名称</th>
+            <th>お部屋タイプ</th>
+            <th>一泊料金<br>（部屋単位）</th>
+            <th colspan="2">お部屋イメージ</th>
+<?php
+  $reserveDt = $_POST['reserveDay'];	// 予約したい日付
+  $_SESSION['reserve']['day'] = $reserveDt;
+  $sql = "SELECT room_name,type_name,dayfee,main_image,room_no
+    FROM room, room_type 
+    WHERE room.type_id = room_type.type_id
+    AND room.room_no NOT IN (SELECT room_no FROM reserve
+    WHERE date(reserve_date) = '{$reserveDt}')";
+
+  $result = mysqli_query($link, $sql);
+  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+    echo "<tr>";
+    echo "<td>{$row['room_name']}</td>";
+    echo "<td>{$row['type_name']}</td>";
+    $dayfee = number_format($row['dayfee']);
+    echo "<td class='number'>&yen; {$dayfee}</td>";
+    echo "<td><img class='small' src='./images/{$row['main_image']}'></td>";
+    echo "<td><a href='./reserveDetail.php?rno={$row['room_no']}'>選択</a></td>";
+    echo "</tr>";
+  }
+?>
           </table>
-          <br>
-          <p>当日はお気をつけてお出かけください。心よりお待ちいたしております。</p>
-          <a class="submit_a" href="./index.php">トップページへ</a>
         </section>
       </article>
     </main>
@@ -67,7 +89,7 @@ unset($_SESSION['reserveNo']);
       </section>
       <section>
         <h2>お部屋紹介</h2>
-<?php require_once("./sideList.php"); ?>
+<?php include("./sideList.php"); ?>
       </section>
     </aside>
     <!-- サイド：終了 -->
@@ -83,5 +105,10 @@ unset($_SESSION['reserveNo']);
     Copyright c 2016 Jikkyo Pension All Rights Reserved.
   </footer>
   <!-- フッター：終了 -->
+<?php
+  mysqli_free_result($result);
+  mysqli_close($link);
+?>
+
 </body>
 </html>
