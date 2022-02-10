@@ -28,7 +28,7 @@
       
   }else {             			  // 入力エラーがあった場合
       $_SESSION['errMsg'] = $errMsg;  // エラー内容をセッションに格納する
-      header("location: ./bookReserve.php?rno=". $_SESSION['reserve']['roomno']);
+      header("location: ./bookDetail.php?rno=". $_SESSION['reserve']['roomno']);
   }
   exit();
 ?>

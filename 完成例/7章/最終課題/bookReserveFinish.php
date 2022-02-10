@@ -12,18 +12,17 @@ unset($_SESSION['reserveNo']);
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="./css/style.css" type="text/css">
-  <title>JIKKYO PENSION</title>
+  <title>LIBRARY</title>
 </head>
 <body>
   <!-- ヘッダー：開始-->
   <header id="header">
     <div id="pr">
-      <p>部活・サークル等のグループ利用に最適！アットホームなペンション！</p>
+      <p>さっそく読んでみよう！</p>
     </div>
-    <h1><a href="./index.php"><img src="./images/logo.png" alt=""></a></h1>
+    <h1><a href="./index.php"></a></h1>
     <div id="contact">
-      <h2>ご予約／お問い合わせ</h2>
-      <span class="tel">☎0120-000-000</span>
+  
     </div>
   </header>
   <!-- ヘッダー：終了 -->
@@ -51,7 +50,7 @@ unset($_SESSION['reserveNo']);
             <tr><th>予約番号</th><td><?php echo $reserveNo; ?></td></tr>
           </table>
           <br>
-          <p>///当日はお気をつけてお出かけください。心よりお待ちいたしております。</p>
+          <p>予約完了です。</p>
           <a class="submit_a" href="./index.php">トップページへ</a>
         </section>
       </article>
@@ -60,13 +59,9 @@ unset($_SESSION['reserveNo']);
     <!-- サイド：開始 -->
     <aside id="side">
       <section>
-        <h2>ご予約</h2>
-        <ul>
-          <li><a href="./reserveDay.php">宿泊日入力</a></li>
-        </ul>
-      </section>
+        
       <section>
-        <h2>お部屋紹介</h2>
+        
 <?php require_once("./sideList.php"); ?>
       </section>
     </aside>

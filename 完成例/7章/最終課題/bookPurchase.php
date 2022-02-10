@@ -1,16 +1,17 @@
 <?php
+
   session_start();
   $dnameErr = "";
   if (isset($_SESSION['errMsg']['dname'])) {
     $dnameErr = "<span style='color: red;'>" . $_SESSION['errMsg']['dname'] ."</span>";
   }
   unset($_SESSION['errMsg']); // すべてのエラーメッセージをクリア
-  require_once('./dbConfig.php');
-  $link = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-  if ($link == null) {
-    die("接続に失敗しました：" . mysqli_connect_error());
-  }
-  mysqli_set_charset($link, "utf8");
+  // require_once('./dbConfig.php');
+  // $link = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+  // if ($link == null) {
+  //   die("接続に失敗しました：" . mysqli_connect_error());
+  // }
+  // mysqli_set_charset($link, "utf8");
 
 
   $dname = "";
@@ -29,12 +30,11 @@
   <!-- ヘッダー：開始-->
   <header id="header">
     <div id="pr">
-      <p>部活・サークル等のグループ利用に最適！アットホームなペンション！</p>
+      <p>Web上に希望図書が無ければ購入できます。</p>
     </div>
     <h1><a href="./index.php"><img src="./images/logo.png" alt=""></a></h1>
     <div id="contact">
-      <h2>ご予約／お問い合わせ</h2>
-      <span class="tel">☎0120-000-000</span>
+   
     </div>
   </header>
   <!-- ヘッダー：終了 -->
@@ -92,7 +92,7 @@
        
       </section>
       <section>
-        <h2>お部屋紹介</h2>
+        <h2>分野別紹介</h2>
 <?php require_once("./sideList.php"); ?>
       </section>
     </aside>
@@ -110,8 +110,8 @@
   </footer>
   <!-- フッター：終了 -->
 <?php
-  mysqli_free_result( $result );
-  mysqli_close( $link );
+  //mysqli_free_result( $result );
+  // mysqli_close( $link );
 ?>
 </body>
 </html>

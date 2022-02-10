@@ -16,18 +16,17 @@
 <head>
   <meta charset="UTF-8">
   <link href="./css/style.css" rel="stylesheet" type="text/css">
-  <title>JIKKYO PENSION</title>
+  <title>bookList</title>
 </head>
 <body>
   <!-- ヘッダー：開始-->
   <header id="header">
     <div id="pr">
-      <p>部活・サークル等のグループ利用に最適！アットホームなペンション！</p>
+      <p>書籍を選択する！</p>
     </div>
     <h1><a href="./index.php"><img src="./images/logo.png" alt=""></a></h1>
     <div id="contact">
-      <h2>ご予約／お問い合わせ</h2>
-      <span class="tel">☎0120-000-000</span>
+      
     </div>
   </header>
   <!-- ヘッダー：終了 -->
@@ -40,15 +39,15 @@
     <main id="main">
       <article>
         <section>
-          <h2>お部屋のご紹介</h2>
+          <h2>分野別紹介</h2>
 <!-- お手本のデータベースはroomといデータベースのroom_nameからroom_noまでを取ってきた-->
 <?php
   if (empty($tid) == true) {
-    $sql = "SELECT category, title_name,  main_image,book_value
+    $sql = "SELECT category, title_name, main_image, book_value
       FROM book, book_type 
       WHERE book.type_id = book_type.book_id";
   } else {
-    $sql = "SELECT category, title_name,  main_image,book_value
+    $sql = "SELECT category, title_name, main_image,book_value
       FROM book, book_type
       WHERE book.type_id= book_type.book_id
       AND book.type_id = {$tid}"; 
@@ -61,13 +60,14 @@
 ?>
           <h3>書籍のご紹介</h3>
           <p>
-            和室・洋室・和洋室と、ご希望に沿った形でお部屋をお選び頂けます。
+            Webapplication,Binary,Networkから興味がある分野を選んで下さい。
           </p>
+          
           <table>
-            <th>お部屋名称</th>
-            <th>お部屋タイプ</th>
-            <th>一泊料金<br>（部屋単位）</th>
-            <th colspan="2">お部屋イメージ</th>
+            <th>書籍名</th>
+            <th>分野</th>
+            <th>料金<br>（税込み）</th>
+            <th colspan="3">表紙</th>
 <!-- ここにPHPスクリプトを埋め込む -->          
 <?php
     while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {

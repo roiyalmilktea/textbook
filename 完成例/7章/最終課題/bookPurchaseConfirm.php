@@ -1,11 +1,11 @@
 <?php
   session_start();
-  require_once('./dbConfig.php');
-  $link = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-  if ($link == null) {
-    die("接続に失敗しました：" . mysqli_connect_error());
-  }
-  mysqli_set_charset($link, "utf8");
+  // require_once('./dbConfig.php');
+  // $link = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+  // if ($link == null) {
+  //   die("接続に失敗しました：" . mysqli_connect_error());
+  // }
+  // mysqli_set_charset($link, "utf8");
  
   $dname   = $_SESSION['reserve']['dname'];
   $dtelno  = $_SESSION['reserve']['dtelno'];
@@ -18,18 +18,17 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="./css/style.css" type="text/css">
-  <title>JIKKYO PENSION</title>
+  <title>LIBRARY</title>
 </head>
 <body>
   <!-- ヘッダー：開始-->
   <header id="header">
     <div id="pr">
-      <p>部活・サークル等のグループ利用に最適！アットホームなペンション！</p>
+      <p>サイト上に希望図書が無ければ、購入できます。</p>
     </div>
     <h1><a href="./index.php"><img src="./images/logo.png" alt=""></a></h1>
     <div id="contact">
-      <h2>ご予約／お問い合わせ</h2>
-      <span class="tel">☎0120-000-000</span>
+     
     </div>
   </header>
   <!-- ヘッダー：終了 -->
@@ -37,7 +36,7 @@
   <nav id="menu">
     <ul>
       <li><a href="./index.php">ホーム</a></li>
-      <li><a href="./bookList.php">お部屋紹介</a></li>
+      <li><a href="./bookList.php">分野別紹介</a></li>
       <li><a href="./bookReserveDetail.php">ご予約</a></li>
       <li><a href="./bookPurchase.php">購入</a></li>
     </ul>
@@ -50,21 +49,21 @@
       <article>
 <!-- 各ページスクリプト挿入場所 -->
       <section>
-        <form action="./bookReserveInsert.php" method="post">
+        <form action="./bookPurchaseInsert.php" method="post">
         <h2>ご予約（最終確認）</h2>
         <p>予約内容をご確認後、よろしければ予約確定ボタンを押してください。</p>
         <h3>予約情報</h3>
 
           
         <br>
-        <h3>代表者情報</h3>
+        <h3>利用者情報</h3>
         <table class="input">
-          <tr><th>代表者氏名</th><td><?php echo $dname; ?></td></tr>
-          <tr><th>連絡先電話番号</th><td><?php echo $dtelno; ?></td></tr>
-          <tr><th>メールアドレス</th><td><?php echo $dmail; ?></td></tr>
+          <tr><th>タイトル</th><td><?php echo $dname; ?></td></tr>
+          <tr><th>著者名</th><td><?php echo $dtelno; ?></td></tr>
+          <tr><th>出版社</th><td><?php echo $dmail; ?></td></tr>
         </table>
         <br>
-        <h3>予約詳細情報</h3>
+        <h3>詳細情報</h3>
         <table class="input">
           
           <tr><th>連絡事項</th><td><?php echo $message; ?></td></tr>
@@ -81,7 +80,7 @@
     <aside id="side">
      
       <section>
-        <h2>お部屋紹介</h2>
+        <h2>分野別紹介</h2>
 <?php require_once("./sideList.php"); ?>
       </section>
     </aside>
@@ -99,8 +98,8 @@
   </footer>
   <!-- フッター：終了 -->
 <?php
-  mysqli_free_result($result);
-  mysqli_close($link);
+  //mysqli_free_result($result);
+  //mysqli_close($link);
 ?>
 </body>
 </html>

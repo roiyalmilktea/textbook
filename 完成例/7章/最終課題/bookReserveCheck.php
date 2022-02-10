@@ -20,7 +20,7 @@
       $errMsg['dname'] = "名前が未入力です";
   }
   if (empty($dtelno) == true) {
-      $errMsg['dtelno'] = "電話番号が未入力です";
+      $errMsg['dtelno'] = "連絡先未入力です";
   }
 
   if (count($errMsg) == 0) {    // エラーがなかった場合
